@@ -18,9 +18,9 @@ module.exports = function() {
 		    host: 'localhost',
 		    user: 'vlad',
 		    password: '1234',
-		    database: 'chatApplication'
+		    database: 'chat_database'
 		},
-		'insertTemp': 'INSERT INTO $table ($fields) VALUES ($values) ',
+		'insertTemp': 'INSERT INTO $table ($columns) VALUES ($values) ',
 		'selectTemp': 'SELECT $columns FROM $table ',
 		'criteriaTemp': 'WHERE $criteria ',
 		'userColumns': 'username, password, email, account_status',
@@ -28,7 +28,7 @@ module.exports = function() {
 		//token constants
 		'tokenOpt': { 
 			algorithm: 'RS256', 
-			expiresInMinutes: 60 
+			expiresIn: 60 
 		},
 		//Exception/error messages
 		INCOMPLETE_DATA: new Error('INCOMPLETE_DATA'),

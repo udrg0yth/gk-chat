@@ -2,50 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Chat App</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(.) styles/vendor.css -->
-    <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/ionic/release/css/ionic.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
-  </head>
-  
-<body ng-app="mainModule">
-	<div ui-view>
-    
-  </div>
-   <script type="text/ng-template" id="login.html">
-  <div class="list">
-      <label class="item item-input">
-        <input type="text" placeholder="Username" ng-model = "user.name">
-      </label>
-      <label class="item item-input">
-        <input type="password" placeholder="Password" ng-model="user.password" required >
-      </label>
-      <label ng-show="user.name==='flower'" class="item item-input">
-        <textarea placeholder="Comments"></textarea>
-      </label> 
-  </div>
-</script> 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
-       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
-       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
-       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
-
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
+    <!-- Start angular external dependencies -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
@@ -56,18 +19,66 @@
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-base64/angular-base64.min.js"></script>
+    <script src="bower_components/ngstorage/ngStorage.min.js"></script>
     <script src="bower_components/ionic/release/js/ionic.js"></script>
     <script src="bower_components/ionic/release/js/ionic-angular.js"></script>
-	<script src="login/loginModule.js"></script>
-	<script src="login/loginController.js"></script>
-	<script src="mainModule.js"></script>
-	<script src="templates/login.html"/>
-    <!-- endbower -->
-    <!-- endbuild -->
+    <!-- End angular external dependencies -->
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <!-- endbuild -->
+    <!-- Start login module -->
+    <script src="login/loginModule.js"></script>
+    <script src="login/loginController.js"></script>
+    <script src="login/loginService.js"></script>
+    <script src="login/loginConstant.js"></script>
+    <script src="login/registrationController.js"></script>
+    <!-- End login module -->
+
+    <!-- Start chat module -->
+    <script src="chat/chatModule.js"></script>
+    <script src="chat/chatController.js"></script>
+    <script src="chat/chatService.js"></script>
+    <script src="chat/chatConstant.js"></script>
+    <!-- End chat module -->
+
+    <script src="mainModule.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+  </head>
+  
+<body ng-app="mainModule">
+	<div ui-view></div>
+
+  <script type="text/ng-template" id="login.html">
+    <div class="list">
+      <label class="item item-input">
+        <input type="text" placeholder="Username" ng-model = "user.username">
+      </label>
+      <label class="item item-input">
+        <input type="password" placeholder="Password" ng-model="user.password" required >
+      </label>
+      <button class="button button-positive" ng-click="login()">Login</button><a  ng-click="register()">Don't have an account? Register.</a>
+    </div>
+  </script> 
+
+  <script type="text/ng-template" id="register.html">
+    <div class="list col col-50">
+      <label class="item item-input">
+        <input type="text" placeholder="Username" ng-model = "user.username">
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Email" ng-model = "user.email">
+      </label>
+      <label class="item item-input">
+        <input type="password" placeholder="Password" ng-model="user.password" required >
+      </label>
+      <button class="button button-positive" ng-click="register()">Register</button>
+    </div>
+  </script> 
+   
+  <script type="text/ng-template" id="chat.html">
+    <div>
+    </div>
+  </script>
+
 </body>
 </html>

@@ -15,7 +15,8 @@ module.exports = function(app,
 						.replace('$columns', authConst.userColumns)
 						.replace('$table', authConst.userTable)
 					   + authConst.criteriaTemp
-						.replace('$criteria', column + '=' + data);
+						.replace('$criteria', column + '="' + data + '"');
+		console.log(queryString);
 		return connection.query(queryString);
 	};
 

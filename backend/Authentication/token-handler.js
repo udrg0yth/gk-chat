@@ -5,8 +5,11 @@ module.exports = function(app,
 	var secretKey   =  uuid.v4(); 
 
 	function tokenInterceptor(req, res, next) {
-		if(req.url === authConst.loginUrl)
-			next();
+		if(req.url === authConst.loginUrl
+		|| req.url === authConst.registrationUrl) {
+			return next();
+		}
+
 		var data = req.body;
 		if(!data.token){
 			res.status(authConst.UNAUTHORIZED).json(authConst.authFailed);
@@ -23,7 +26,7 @@ module.exports = function(app,
 
 	return {
 		'generateToken': function(claims) {
-			return jwt.sign(claims, secretKey, authConst.tokenOpt);
+			return jwt.sign(claims, secretKey);
 		}
 	};
 };
