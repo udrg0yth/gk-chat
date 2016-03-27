@@ -12,13 +12,14 @@ angular.module('loginModule').controller('loginController',['$scope', '$state', 
 
 			loginService
 			.login(data)
-			.then(function(data, status, headers, config) {
+			.success(function(data, status, headers, config) {
 				var token = headers()['x-auth-token'];
 				if(token != null) {
 					loginService.saveToken(token);
 					$state.go('chat');
 				}
-			}, function(error) {
+			})
+			.error(function(error) {
 				console.log(error);
 			});
 		};

@@ -34,13 +34,14 @@ module.exports = function(app, authConst) {
 					if(rows.account_status === 'INACTIVE') {
 						throw authConst.INACTIVE_ACCOUNT;
 					}
+
 					var id 		 = rows[0].user_id,
 						username = rows[0].username,
-						password = rows[0].password;
-					if(!authTools.checkPasswords(password, credentials[1])) {
+						password = rows[0].password,
+						email    = rows[0].email;
+					if(!authTools.checkPasswords(credentials[1], password)) {
 						throw authConst.BAD_CREDENTIALS;
 					} 
-
 					var token = tokenHandler.generateToken({id: id,
 				                                        	username: username,
 				                                        	email: email});
@@ -53,8 +54,9 @@ module.exports = function(app, authConst) {
 			data.password = authTools.hashPassword(data.password);
 			return mysqlHandler
 				.saveUser(data)
-				.then(function() {
-					var token = tokenHandler.generateToken({username: data.username,
+				.then(function(data) {
+					var token = tokenHandler.generateToken({id: data.insertedId,
+															username: data.username,
 			                                        		email: data.email});
 					//authTools.sendActivationLink(data);
 					res.writeHead(authConst.OK, {'X-Auth-Token': token});
