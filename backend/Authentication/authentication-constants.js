@@ -16,7 +16,7 @@ module.exports = function() {
 		//mysql connection
 		'mysqlSource': {
 		    host: 'localhost',
-		    user: 'vlad',
+		    user: 'root',
 		    password: '1234',
 		    database: 'chat_database'
 		},
