@@ -1,27 +1,27 @@
 angular.module('chatModule').constant('chatConstant', {
-	'signalingServerUrl' : 'https://socket-test-app.herokuapp.com/',
+	'signalingServerUrl' : 'http://localhost:8081',
 	'ICEConfig': {
 					iceServers: [  
 									{
-										urls:'stun:stun.l.google.com:19302'
+										urls:'stun:stun4.l.google.com:19302'
 									},
                                     {
 	                                   'url': 'turn:numb.viagenie.ca:3478?transport=udp',
-	                                   'credential': '',
+	                                   'credential': 'corina01',
 	                                   'username': 'vladradu97150@hotmail.com'
                                  	},
                                 	{
 	                                   'url': 'turn:numb.viagenie.ca:3478?transport=tcp',
-	                                   'credential': '',
+	                                   'credential': 'corina01',
 	                                   'username': 'vladradu97150@hotmail.com'
                                  	}	
                                 ]
-                 };
+                 },
 	'ICEOptions': { 
 					optional: [
 									{
 										'DtlsSrtpKeyAgreement': true
 									}
 							   ] 
-				  };
+				  }
 });

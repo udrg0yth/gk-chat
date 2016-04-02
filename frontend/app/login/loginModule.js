@@ -1,7 +1,6 @@
 angular.module('loginModule', ['ui.router', 'base64'])
 .config(function($httpProvider, $stateProvider, $urlRouterProvider){
 	
-	$urlRouterProvider.otherwise('/login');
 	$stateProvider
 		.state('login',  {
 				url: '/login',

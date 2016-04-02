@@ -1,6 +1,6 @@
 angular.module('mainModule', ['loginModule', 'chatModule','ngStorage'])
-.config(function($httpProvider, $stateProvider, $urlRouterProvider){
-
+.config(function($stateProvider, $urlRouterProvider){
+	$urlRouterProvider.otherwise('/chat');
 })
 .run(function(){
 

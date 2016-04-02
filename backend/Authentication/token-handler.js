@@ -9,7 +9,8 @@ module.exports = function(app,
 		|| req.url === authConst.registrationUrl) {
 			return next();
 		}
-
+		return next();
+		
 		var data = req.body;
 		if(!data.token){
 			res.status(authConst.UNAUTHORIZED).json(authConst.authFailed);
