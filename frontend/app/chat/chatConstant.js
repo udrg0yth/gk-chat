@@ -1,5 +1,5 @@
 angular.module('chatModule').constant('chatConstant', {
-	'signalingServerUrl' : 'http://localhost:8081',
+	'signalingServerUrl' : 'http://188.166.145.225:8081',
 	'ICEConfig': {
 					iceServers: [  
 									{
