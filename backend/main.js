@@ -15,7 +15,7 @@ require('./Authentication/authentication-server')(app);
 require('./Admin/admin-server')(app);
 require('./Signaling/signaling-server')(app);
 
-app.listen(8082, function () {
-  console.log('Listening on port 8082!');
+app.listen(8080, function () {
+  console.log('Listening on port 8080!');
 });
 
