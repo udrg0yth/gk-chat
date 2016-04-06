@@ -1,0 +1,34 @@
+<table ng-repeat="question in questions">
+	<tr>
+		<td>question.question</td>
+		<td>question.answer1</td>
+		<td>question.answer2</td>
+		<td>question.answer3</td>
+		<td>question.correct_answer</td>
+		<td>question.category</td>
+		<td><button ng-click="edit(question.question_id)">Edit</button></td>
+		
+	</tr>
+	<tr ng-show="editQuestionId === question.question_id">
+		<td>
+			 <label>Question:</label><br>
+			 <input type="text" ng-model="editedQ.question" ng-value="question.question"><br>
+			 <label>Answer1:</label><br>
+			 <input type="text" ng-model="editedQ.answer1" ng-value="question.answer1"><br>
+			 <label>Answer2:</label><br>
+			 <input type="text" ng-model="editedQ.answer2" ng-value="question.answer2"><br>
+			 <label>Answer3:</label><br>
+			 <input type="text" ng-model="editedQ.answer3" ng-value="question.answer3"><br>
+			 <label>Correct Answer:</label><br>
+			 <input type="text" ng-model="editedQ.correct_answer" ng-value="question.correct_answer"><br>
+			 <label>Create new category</label><br>
+			 <input type="text" ng-model="editedQ.new_category"><br>
+			 <button ng-click="createCategory()">Create</button><br>
+			 <label> Select category:</label><br>
+			 <select ng-repeat="category in categories">
+			 	<option ng-value="category">category</option>
+			 </select><br>
+			 <button ng-click="saveEditedQuestion()">Save</button>
+		</td>
+	</tr>
+</table>

@@ -4,7 +4,7 @@ module.exports = function() {
 		//url
 		'updateUrl': '/updateQuestion',
 		'insertUrl': '/insertQuestion',
-		'getAllUrl': '/getQuestions',
+		'getAllUrl': '/getAllQuestions',
 		//mysql connection
 		'mysqlSource': {
 		    host: 'localhost',
@@ -14,7 +14,7 @@ module.exports = function() {
 		},
 		'insertTemp': 'INSERT INTO $table ($columns) VALUES ($values) ',
 		'selectTemp' : 'SELECT $columns FROM $table',
-		'questionsColumns' : 'question_id, answer1, answer2, answer3, correct_answer ',
+		'questionsColumns' : 'question_id, answer1, answer2, answer3, correct_answer, category',
 		'criteriaTemp': 'WHERE $criteria ',
 		'questionsTable': 'gk_questions'
 	};

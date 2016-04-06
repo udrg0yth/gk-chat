@@ -34,10 +34,11 @@ module.exports = function(app,
 			var queryString = 'UPDATE ' 
 							+ gkConst.questionsTable + ' SET '
 							+ 'question="' + data.question + '", '
-							+ 'answer1="' + data.answer1+'", '
-							+ 'answer2="' + data.answer2+'", '
-							+ 'answer3="' + data.answer3+'", '
-							+ 'correct_answer="' + data.correct_answer+'" '
+							+ 'answer1="' + data.answer1 + '", '
+							+ 'answer2="' + data.answer2 + '", '
+							+ 'answer3="' + data.answer3 + '", '
+							+ 'correct_answer="' + data.correct_answer + '" '
+							+ 'category="' + data.category + '" '
 							+ 'WHERE question_id=' + data.question_id;
 			return connection.query(queryString);
 		}

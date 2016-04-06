@@ -7,7 +7,7 @@ module.exports = function(app) {
 			return mysqlHandler
 				.getAll()
 				.then(function(data) {
-					res.status(200).json({data:data});
+					res.status(200).json({questions:data});
 				});
 		},
 		'saveQuestion': function(data, res) {
