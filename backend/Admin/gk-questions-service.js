@@ -23,6 +23,13 @@ module.exports = function(app) {
 				.then(function() {
 					res.status(200).json({});
 				});
+		},
+		'getAllCategories': function(res) {
+			return mysqlHandler
+				.getAllCategories()
+				.then(function(data) {
+					res.status(200).json({categories:data});
+				});
 		}
 	};
 };

@@ -41,6 +41,13 @@ module.exports = function(app,
 							+ 'category="' + data.category + '" '
 							+ 'WHERE question_id=' + data.question_id;
 			return connection.query(queryString);
+		},
+		'getAllCategories': function(){
+			var queryString = gkConst
+						.selectDistinctTemp
+						.replace('$column', 'category')
+						.replace('$table', gkConst.questionsTable);
+			return connection.query(queryString);
 		}
 	};
 

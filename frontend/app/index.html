@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chat App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="bower_components/ionic/release/css/ionic.css" />
+    <link rel="stylesheet" href="app/styles/main.css">
+
+    <!-- Start angular external dependencies -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-base64/angular-base64.min.js"></script>
+    <script src="bower_components/ngstorage/ngStorage.min.js"></script>
+    <script src="bower_components/ionic/release/js/ionic.js"></script>
+    <script src="bower_components/ionic/release/js/ionic-angular.js"></script>
+    <!-- End angular external dependencies -->
+
+    <!-- Start login module -->
+    <script src="app/login/loginModule.js"></script>
+    <script src="app/login/loginController.js"></script>
+    <script src="app/login/loginService.js"></script>
+    <script src="app/login/loginConstant.js"></script>
+    <script src="app/login/registrationController.js"></script>
+    <!-- End login module -->
+
+    <!-- Start chat module -->
+    <script src="app/chat/adapter.js"></script>
+    <script src="app/chat/chatModule.js"></script>
+    <script src="app/chat/chatController.js"></script>
+    <script src="app/chat/chatService.js"></script>
+    <script src="app/chat/signalingService.js"></script>
+    <script src="app/chat/chatConstant.js"></script>
+    <script src="app/chat/socket.min.js"></script>
+    <!-- End chat module -->
+
+    <script src="app/mainModule.js"></script>
+    <script src="app/scripts/app.js"></script>
+    <script src="app/scripts/controllers/main.js"></script>
+  </head>
+  
+<body ng-app="mainModule">
+	<div ui-view></div>
+
+  <script type="text/ng-template" id="login.html">
+    <div class="list">
+      <label class="item item-input">
+        <input type="text" placeholder="Username" ng-model = "user.username">
+      </label>
+      <label class="item item-input">
+        <input type="password" placeholder="Password" ng-model="user.password" required >
+      </label>
+      <button class="button button-positive" ng-click="login()">Login</button><a  ng-click="register()">Don't have an account? Register.</a>
+    </div>
+  </script> 
+
+  <script type="text/ng-template" id="register.html">
+    <div class="list col col-50">
+      <label class="item item-input">
+        <input type="text" placeholder="Username" ng-model = "user.username">
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Email" ng-model = "user.email">
+      </label>
+      <label class="item item-input">
+        <input type="password" placeholder="Password" ng-model="user.password" required >
+      </label>
+      <button class="button button-positive" ng-click="register()">Register</button>
+    </div>
+  </script> 
+   
+  <script type="text/ng-template" id="chat.html">
+    <div>
+    </div>
+  </script>
+
+</body>
+</html>
