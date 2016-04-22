@@ -1,0 +1,29 @@
+{
+  "name": "chat",
+  "authors": [
+    "chat-dev-group <chat.dev.group@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "angular": "^1.5.4",
+    "angular-ui-router": "^0.2.18",
+    "angular-sanitize": "^1.5.3",
+    "angular-route": "^1.5.3",
+    "angular-bootstrap-simple-chat": "^0.4.0"
+  },
+  "resolutions": {
+    "angular": "^1.5.4"
+  }
+}

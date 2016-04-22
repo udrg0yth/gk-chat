@@ -1,0 +1,42 @@
+
+<html>
+<head>
+
+	
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+	<script src="bower_components/angular-route/angular-route.min.js"></script>
+	<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="bower_components/angular-bootstrap-simple-chat/src/scripts/index.js"></script>
+
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/angular-bootstrap-simple-chat/src/css/style.css">
+	<link rel="stylesheet" href="styles/custom.css">
+
+	
+
+	<!-- start login component -->
+	<script src="login/loginModule.js"></script>
+	<script src="login/loginConstant.js"></script>
+	<script src="login/loginService.js"></script>
+	<script src="login/loginController.js"></script>
+	<!-- end login component -->
+
+	<!-- start chat component -->
+	<script src="chat/chatModule.js"></script>
+	<script src="chat/chatController.js"></script>
+	<!-- end chat component -->
+
+	<script src="mainModule.js"></script>
+
+</head>
+<body ng-app="mainModule">
+	<!--start login form -->
+	<div ui-view></div>
+	<!--end login form -->
+
+
+</body>
+</html>

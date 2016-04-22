@@ -1,0 +1,94 @@
+	<!-- start registration form -->
+	
+	<!-- end registration form -->
+
+	<!-- start personality quiz -->
+	<div class = "col-md-4">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+			    <div class="panel-title">
+			    	<span class="badge">5</span>
+			    	<span> You prefer this to that.</span>
+			    </div>
+			</div>
+	 		<div class="panel-body center-block">
+	 			<div class="btn-group center-block">
+		    		<button type="button" class="btn btn-primary">Strongly disagree</button>
+					<button type="button" class="btn btn-info">&nbsp;&nbsp;&nbsp;Disagree&nbsp;&nbsp;&nbsp;</button>
+					<button type="button" class="btn btn-default">&nbsp;&nbsp;&nbsp;Neutral&nbsp;&nbsp;&nbsp;&nbsp;</button>
+					<button type="button" class="btn btn-info">&nbsp;&nbsp;&nbsp;&nbsp;Agree&nbsp;&nbsp;&nbsp;&nbsp;</button>
+					<button type="button" class="btn btn-primary">&nbsp;&nbsp;Strongly agree&nbsp;&nbsp;</button>
+				</div>
+	  		</div>
+		</div>
+	</div>
+	<!-- end personality quiz -->
+
+	<!-- start general knowledge quiz -->
+	<div class = "col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+			    <div class="panel-title">
+					<span class="btn btn-info btn-lg">Geography</span>
+			    	<span><img src="geo.png"></span>
+			    	
+			    	<strong> What is the capital of Rome?</strong>
+			    </div>
+			</div>
+	 		<div class="panel-body center-block">
+	 			<div class="panel">
+	 				<div class="panel-body">
+	 					<span class="badge">1</span>
+	 				</div>
+	 			</div>
+	 			<div class="panel">
+	 				<div class="panel-body">
+	 					<span class="badge">2</span>
+	 				</div>
+	 			</div>
+	 			<div class="panel">
+	 				<div class="panel-body">
+	 					<span class="badge">3</span>
+	 				</div>
+	 			</div>
+	 			<div class="panel">
+	 				<div class="panel-body">
+	 					<span class="badge">4</span>
+	 				</div>
+	 			</div>
+	  		</div>
+		</div>
+	</div>
+	<!-- end general knowledge quiz -->
+	<!--  start iq quiz -->
+	<div class = "col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+			    <div class="panel-title">
+			    	<strong> Find the missing figure</strong>
+			    </div>
+			</div>
+			<div class="panel-body">
+				<img src="iq_question.png" style="width:100%;height:auto;" usemap="#answerMap">
+				<map name="answerMap">
+ 					<area shape="poly" coords="0,100,82,126,53,45" href="#">
+ 				</map>
+			</div>
+		</div>
+	</div>
+	<!--  end iq quiz -->
+
+    <div class="col-lg-8 col-md-8 col-sm-8">
+    	<div class="panel panel-info">
+			<div class="panel-heading">
+			    <div class="panel-title">
+			    	<strong> Chat</strong>
+			    </div>
+			</div>
+			<div class="panel-body">
+				<div class="message-container">
+					<strong>sssssssssssssssssssssssssssss</strong>
+				</div>
+			</div>
+		</div>
+	</div>

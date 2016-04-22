@@ -1,0 +1,64 @@
+<div style="width:100vw;height:100vh;background-image: url('../assets/background.jpg');background-size: cover; background-repeat:   no-repeat;  background-position: center center;">
+<div class = "col-lg-10 col-md-10 " style="margin-left:10%;">
+    <div class="panel panel-default" style="background: rgba(46, 51, 56, 0.2)!important;">
+      <div class="panel-heading" style="background: rgba(255, 255, 180, 0.5)!important;">
+          <div class="panel-title">
+            <strong> Chat </strong>
+          </div>
+      </div>
+      <div class="panel-body" >
+         <div class="row"  id="userList"  style="max-height:70%;overflow-y: scroll; ">
+          <div ng-repeat="u in users" class="col-lg-12 col-md-12">
+              <div class="col-lg-2 col-md-2" ng-class-odd="'col-lg-push-10 col-md-push-10'">
+                <a href="" ng-click="showUserModal($index)"><img title="{{u.user.name.first}}" src="{{u.user.picture}}" class="img-thumbnail img-responsive img-circle" ng-class-even="'pull-right'" ng-class-odd="'pull-left'" style="width:70px;"></a>
+              </div>  
+              <div class="col-lg-10 col-md-10" ng-class-odd="'col-lg-pull-2 col-md-pull-2'">
+                <div class="panel panel-default" style="background: rgba(255, 255, 255, 0.7)!important;" >
+                  <div class="panel-body" style="word-wrap: break-word;">
+                    {{u.user.text||"Hello!"}}<br>
+                    <span class="label label-info">{{ u.date||'' | date:'h:mma' }}</span>
+                  </div>
+                </div>
+              </div> 
+           </div>
+          </div>
+          <div class="row" style="padding:1%;">
+              <div class="col-lg-12 col-md-12">
+                <div class="input-group">
+                    <input class="form-control input-large" style="background: rgba(255, 255, 255, 0.8)!important;" type="text" placeholder="Add to the conversation" id="inputText">
+                    <span class="input-group-addon" ng-click="doPost()">Post</span>
+                  </div>
+              </div>
+              <div class="clearfix"></div>
+          </div>
+      </div>
+    </div>
+ </div>
+</div>
+ <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header bg-info">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h1 id="myModalLabel" class="text-center"></h1>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xs-4 col-xs-offset-4"><img src="{{currUser.picture}}" class="img-thumbnail img-responsive img-circle"></div>
+            </div>
+            <hr>
+            <div class="row">
+              <h4 class="text-center"><i class="fa fa-fw fa-map-marker fa-2x"></i> {{currUser.location.street}} {{currUser.location.city}}, {{currUser.location.state}}</h4>
+              <h4 class="text-center"><i class="fa fa-fw fa-phone fa-2x"></i> {{currUser.cell}}</h4>
+              <h4 class="text-center"><i class="fa fa-fw fa-envelope-o fa-2x"></i> {{currUser.email}}</h4>
+              <h4 class="text-center"><i class="fa fa-fw fa-user fa-2x"></i> {{currUser.username}}</h4>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-info">
+            <button class="btn btn-lg btn-default center-block" data-dismiss="modal" aria-hidden="true">Okay!</button>
+        </div>
+    </div>
+    </div>
+  </div>

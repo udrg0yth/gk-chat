@@ -1,0 +1,28 @@
+a {
+	cursor:pointer;
+	cursor:hand;
+}
+
+a:hover, a:visited, a:link, a:active {
+text-decoration: none;
+}
+
+a:hover {
+	color: #FFFFFF;
+}
+
+.fa {
+  color:#fff;
+}
+
+#userList {
+  display:none;
+}
+
+#loader {
+  position:absolute;
+  z-index:2;
+  width:100%;
+  text-align:center;
+  top:40%;
+}
