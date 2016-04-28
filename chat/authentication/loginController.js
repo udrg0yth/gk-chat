@@ -3,6 +3,8 @@ function($scope, $state, loginService, tokenService) {
 	$scope.user = {};
 	$scope.errorMessage = '';
 	$scope.showErrorMessage = false;
+	$scope.showUsernameSpinner = false;
+	$scope.showEmailSpinner = false;
 
 	if(tokenService.checkToken()) {
 		$state.go('chat');
