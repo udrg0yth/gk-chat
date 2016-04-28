@@ -1,5 +1,5 @@
 angular
-.module('mainModule', ['ui.router','loginModule', 'chatModule'])
+.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule'])
 .config(['$stateProvider', '$urlRouterProvider',  function ($stateProvider, $urlRouterProvider) {
 	$stateProvider
 	.state('login', {
