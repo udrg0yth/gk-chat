@@ -18,5 +18,5 @@ angular
      controller: 'chatController'
 	});
 
-	$urlRouterProvider.otherwise('/chat');
+	$urlRouterProvider.otherwise('/login');
 }]);
