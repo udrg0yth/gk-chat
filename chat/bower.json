@@ -22,7 +22,8 @@
     "angular-sanitize": "^1.5.3",
     "angular-route": "^1.5.3",
     "angular-bootstrap-simple-chat": "^0.4.0",
-    "ngstorage": "^0.3.10"
+    "ngstorage": "^0.3.10",
+    "angular-base64": "^2.0.5"
   },
   "resolutions": {
     "angular": "^1.5.4"
