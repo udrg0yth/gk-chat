@@ -26,8 +26,19 @@ module.exports = function(app,
 	app.use(tokenInterceptor);
 
 	return {
-		'generateToken': function(claims) {
+		generateToken: function(claims) {
 			return jwt.sign(claims, secretKey);
+		},
+		verifyToken: function(token) {
+			if(!token) {
+				return false;
+			}
+			try {
+				jwt.verify(data.token, secretKey);
+			} catch(ex) {
+				return false;
+			}
+			return true;
 		}
 	};
 };

@@ -3,6 +3,14 @@ module.exports = function(app) {
 	var corsFilter    =  require('./cors-filter')(app, authConst);
 	var authService   =  require('./authentication-service')(app, authConst);
   
+  	app.post(authConst.verifyTokenUrl, function(req, res) {
+		var data = req.body;
+		if(!authService.verifyToken(data.token)) {
+			return res.status(authConst.UNAUTHORIZED).json({error : authCont.BAD_CREDENTIALS});
+		}
+		res.status(authConst.OK).json({success: true});
+  	});
+
     app.post(authConst.usernameCheckUrl, function(req, res) {
     	var data = req.body;
     	if(!data.username){
@@ -45,7 +53,8 @@ module.exports = function(app) {
 		var data = req.body;
 		if(!data.username 
 		|| !data.password 
-		|| !data.email) {
+		|| !data.email
+		|| !data.gender) {
 			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS});
 		}
 		

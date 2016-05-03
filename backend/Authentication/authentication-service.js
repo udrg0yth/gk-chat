@@ -4,7 +4,7 @@ module.exports = function(app, authConst) {
 	var authTools 	  =  require('./authentication-tools')(authConst);
 
 	return {
-		'checkEmailExistence': function(email){
+		checkEmailExistence: function(email){
 			return mysqlHandler
 			.retrieveUserByEmail(email)
 			.then(function(rows) {
@@ -13,7 +13,7 @@ module.exports = function(app, authConst) {
 				}
 			});
 		},
-		'checkUsernameExistence': function(username) {
+		checkUsernameExistence: function(username) {
 			return mysqlHandler
 				.retrieveUserByUsername(username)
 				.then(function(rows) {
@@ -22,7 +22,7 @@ module.exports = function(app, authConst) {
 					}
 				});
 		},
-		'loginUser': function(header, res) {
+		loginUser: function(header, res) {
 			var credentials = authTools.getCredentials(header);
 
 			return mysqlHandler
@@ -49,22 +49,28 @@ module.exports = function(app, authConst) {
 					res.end();
 				});
 		},
-		'registerUser': function(data, res) {
-			data.account_status = 'INACTIVE';
+		registerUser: function(data, res) {
 			data.password = authTools.hashPassword(data.password);
+			data.account_status = 'INACTIVE';
+
 			return mysqlHandler
 				.saveUser(data)
 				.then(function(data) {
 					var token = tokenHandler.generateToken({id: data.insertedId,
 															username: data.username,
-			                                        		email: data.email});
+			                                        		email: data.email,
+			                                        		gender: data.gender,
+			                                        		credits: data.credits});
 					//authTools.sendActivationLink(data);
 					res.writeHead(authConst.OK, {'X-Auth-Token': token});
 					res.end();
 				});
 		},
-		'logoutUser': function() {
+		logoutUser: function() {
 
+		},
+		verifyToken: function(token) {
+			return tokenHandler.verifyToken(token);
 		}
 	}
 };
