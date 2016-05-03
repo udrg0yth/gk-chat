@@ -1,4 +1,6 @@
 module.exports = function(authConst) {
+	var maxIqDistance = 70.0,
+		maxAgeDistance = 60.0;
 	var personalityScore = {
 		INFP: {
 			INFP: 0.8,
@@ -47,7 +49,10 @@ module.exports = function(authConst) {
 			return data.correct_gk_questions/data.total_gk_questions;
 		},
 		matchScore: function(firstUser, secondUser) {
-
+			return 0.4 * personalityScore[firstUser.personalityType][secondUser.personalityType] +
+				   0.25 * (1.0 - Math.abs(firstUser.iqScore - secondUser.iqScore)/maxIqDistance)  +
+				   0.25 * (1.0 - Math.abs(firstUser.gkScore - secondUser.gkScore)) + 
+				   0.1 * (1.0 - Math.abs(firstUser.age - secondUser.age)/maxAgeDistance);
 		}
 	};
 };

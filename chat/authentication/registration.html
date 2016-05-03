@@ -1,23 +1,38 @@
 <div class="col">
-	<div class="col-md-3">
+	<div class="form-group col-md-3" ng-form="registrationForm">
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-		  <input type="text" ng-model="user.username" class="form-control input-lg" placeholder="Username">
+		  <input type="text" name="username" ng-model="user.username" ng-blur="checkUsername()" class="form-control input-lg" placeholder="Username" required>
 		</div>
-		<i ng-if="showUsernameSpinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+		<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i>
+		<div ng-if="registrationForm.username.$invalid" class="alert alert-danger" role="alert"><strong> Error! </strong>Field is mandatory</div>
+		<div ng-if="usernameUnavailable" class="alert alert-danger" role="alert"><strong> Error! </strong>Username is already in use!</div>
+		<div ng-if="usernameAvailable" class="alert alert-success" role="alert"><strong> :) </strong>Username is available</div>
+
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-		  <input type="text" ng-model="user.email" class="form-control input-lg" placeholder="Email">
+		  <input type="text" name="email" ng-model="user.email" ng-blur="checkEmail()" class="form-control input-lg" placeholder="Email" required>
 		</div>
 		<i ng-if="showEmailSpinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+		<div ng-if="registrationForm.email.$invalid" class="alert alert-danger" role="alert"><strong> Error! </strong>Field is mandatory</div>
+		<div ng-if="emailUnavailable" class="alert alert-danger" role="alert"><strong> Error! </strong>There is already an account attached to this email!</div>
+		<div ng-if="emailAvailable" class="alert alert-success" role="alert"><strong> :) </strong>No accounts attached to this email</div>
+
+
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-		  <input type="password" ng-model="user.password" class="form-control input-lg" placeholder="Password">
+		  <input type="password" name="password" ng-model="user.password" class="form-control input-lg" placeholder="Password" required>
 		</div>
+		<div ng-if="registrationForm.password.$invalid" class="alert alert-danger" role="alert"><strong> Error! </strong>Field is mandatory</div>
+
+
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-		  <input type="password" ng-model="user.repeatedPassword" class="form-control input-lg" placeholder="Repeat password">
+		  <input type="password" name="repeatedPassword" ng-model="user.repeatedPassword" class="form-control input-lg" placeholder="Repeat password" required>
 		</div>
+		<div ng-if="registrationForm.repeatedPassword.$invalid" class="alert alert-danger" role="alert"><strong> Error! </strong>Field is mandatory</div>
+
+
 		<div class="btn-group" data-toggle="button">
 			<label class="btn btn-default"> Male
 				<input type="radio" ng-model="user.gender" value="male">

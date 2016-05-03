@@ -14,7 +14,7 @@ module.exports = function() {
 		usernameCheckUrl: '/usernameUse',
 		emailCheckUrl: '/emailUse',
 		verifyTokenUrl: '/verifyToken',
-		subtractCreditsUrl: '/subtractCredits'
+		subtractCreditsUrl: '/subtractCredits',
 		//mysql connection
 		mysqlSource: {
 		    host: 'localhost',
