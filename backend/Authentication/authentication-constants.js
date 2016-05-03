@@ -25,11 +25,18 @@ module.exports = function() {
 		insertTemp: 'INSERT INTO $table ($columns) VALUES ($values) ',
 		selectTemp: 'SELECT $columns FROM $table ',
 		criteriaTemp: 'WHERE $criteria ',
+		//users
 		userColumns: 'username, password, email, account_status, credits, last_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
 					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
 		userTable: 'user',
+		//gk questions
+		gkQuestionsColumns: 'question, answer1, answer2, answer3, answer4',
+		gkQuestionsTable: 'gk_questions',
+		//personality questions
+		personalityQuestionsColumns: 'question, negatively_affected_type',
+		personalityQuestionsTable: 'personality_questions',
 		//token constants
 		tokenOpt: { 
 			algorithm: 'RS256', 

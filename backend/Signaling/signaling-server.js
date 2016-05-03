@@ -1,11 +1,25 @@
-module.exports = function(app) {
-
+    var express     =  require('express');
+    var bodyParser  =  require('body-parser');
+    var app         =  express();
 
     var HashMap     = require('hashmap');
     var http        = require('http').Server(app);
     var socketio    = require('socket.io')(http);
-    var socketQueue = new HashMap();
     var uuid = require('node-uuid');
+
+
+    var socketQueue = new HashMap();
+        
+    var corsOptions = {
+        origin : 'localhost'  //digital ocean server ip
+    }
+
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({
+        extended : true
+    }));
+
+    require('./cors-filter')(app);
 
     socketio.on('connection', function (socket) {
         if(socketQueue.count() == 0) {
@@ -39,5 +53,3 @@ module.exports = function(app) {
     http.listen(8081, function(){
       console.log('listening on *:8081');
     });
-
-};
