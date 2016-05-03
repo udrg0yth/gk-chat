@@ -54,7 +54,8 @@ module.exports = function(app) {
 		if(!data.username 
 		|| !data.password 
 		|| !data.email
-		|| !data.gender) {
+		|| !data.gender
+		|| !data.birthdate) {
 			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS});
 		}
 		

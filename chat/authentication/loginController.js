@@ -1,17 +1,33 @@
 angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage',
 function($scope, $state, loginService, tokenService, $localStorage) {
-	$scope.user = {};
+	$scope.user = {
+		gender: 'male'
+	};
 	$scope.errorMessage = '';
+	$scope.passwordsMatch = true;
+	$scope.submittedRegistration = false;
+	$scope.submittedLogin = false;
 	$scope.showErrorMessage = false;
 	$scope.showUsernameSpinner = false;
 	$scope.showEmailSpinner = false;
+
+	$('.date-pick input').datepicker({
+		format : 'yyyy-mm-dd',
+		startView: "years",
+		autoclose : true
+	});
 
 	if(tokenService.checkToken()) {
 		//$state.go('chat');
 	}
 
 	$scope.login = function() {
+		$scope.submittedLogin = true;
 		$scope.showErrorMessage = false;
+		if($scope.loginForm.$invalid) {
+			return;
+		}
+		$scope.submittedLogin = false;
 		loginService.authenticate($scope.user).success(function(data) {
  			if(data.token) {
  				$localStorage.token = data.token;
@@ -33,13 +49,24 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 	};
 
 	$scope.register = function() {
+		$scope.submittedRegistration = true;
+		if($scope.registrationForm.$invalid) {
+			return;
+		}
+		if($scope.user.password 
+		!== $scope.user.repeatedPassword) {
+			$scope.passwordsMatch = false;
+			return;
+		} else {
+			$scope.passwordsMatch = true;
+		}
+		$scope.submittedRegistration = false;
 		console.log($scope.registrationForm.username.$invalid);
 		//$state.go('chat');
 	};
 
 	$scope.checkUsername = function() {
-		if(!$scope.user.username 
-		|| $scope.user.username === '') {
+		if($scope.registrationForm.username.$invalid) {
 			return;
 		}
 		$scope.showUsernameSpinner = true;

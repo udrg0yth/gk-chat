@@ -24,7 +24,8 @@
     "angular-bootstrap-simple-chat": "^0.4.0",
     "ngstorage": "^0.3.10",
     "angular-base64": "^2.0.5",
-    "components-font-awesome": "^4.6.1"
+    "components-font-awesome": "^4.6.1",
+    "bootstrap-datepicker": "^1.6.0"
   },
   "resolutions": {
     "angular": "^1.5.4"

@@ -8,6 +8,9 @@ angular.module('loginModule').service('loginService', ['$http', 'loginConstant',
 	 			}
 	 		});
 	 	},
+	 	register: function(user) {
+	 		return $http.post(loginConstant.authBaseUrl + loginConstant.registrationUrl, user);
+	 	},
 	 	checkUsername: function(username) {
 	 		return $http.post(loginConstant.authBaseUrl + loginConstant.checkUsernameUrl, {
 	 			username: username
