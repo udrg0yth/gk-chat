@@ -18,8 +18,9 @@
     app.use(bodyParser.urlencoded({
         extended : true
     }));
-
+    var signConst = require('./signaling-const')();
     require('./cors-filter')(app);
+    require('./signaling-service')(app, signConst);
 
     socketio.on('connection', function (socket) {
         if(socketQueue.count() == 0) {
