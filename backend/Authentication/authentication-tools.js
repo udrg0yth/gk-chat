@@ -1,6 +1,13 @@
 module.exports = function(authConst) {
-	var passwordHash = require('password-hash');
-
+	var passwordHash = require('password-hash'),
+	    nodemailer = require('nodemailer'),
+	    transporter = nodemailer.createTransport({
+       		    service: 'Gmail',
+		        auth: {
+		            user: 'chat.dev.group@gmail.com',
+		            pass: 'randomette'
+		        }
+		});
 
 	return {
 		hashPassword: function(rawPass) {
@@ -20,7 +27,21 @@ module.exports = function(authConst) {
 			return credentials;
 		},
 		sendActivationLink: function(user) {
-			//encrypt username as activation string with private.key
+		    var mailOptions = {
+			    from: 'chat.dev.group@gmail.com>',
+			    to: user.email,
+			    subject: 'Randomette confirmation',
+			    text: 'test'
+			    // html: '<b>Hello world</b>' // for html!
+			};
+
+			transporter.sendMail(mailOptions, function(error, info){
+			    if(error){
+			        console.log(error);
+			    }else{
+			        console.log('Message sent: ' + info.response);
+			    };
+			});
 		}
 	}
 }

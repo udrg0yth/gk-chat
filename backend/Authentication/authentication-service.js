@@ -2,25 +2,42 @@ module.exports = function(app, authConst) {
 	var mysqlHandler  =  require('./mysql-handler')(app, authConst);
     var tokenHandler  =  require('./token-handler')(app, authConst);
 	var authTools 	  =  require('./authentication-tools')(authConst);
+	var profileTools  =  require('./profile-tools')(authConst);
 
 	return {
 		checkEmailExistence: function(email){
-			return mysqlHandler
+			 mysqlHandler
 			.retrieveUserByEmail(email)
 			.then(function(rows) {
 				if(rows.length > 0) {
 			   		throw authConst.EMAIL_IN_USE;
 				}
+			})
+			.catch(function(error) {
+
 			});
 		},
 		checkUsernameExistence: function(username) {
-			return mysqlHandler
-				.retrieveUserByUsername(username)
-				.then(function(rows) {
-					if(rows.length > 0) {
-						throw authConst.USERNAME_IN_USE;
-					}
-				});
+		     mysqlHandler
+			.retrieveUserByUsername(username)
+			.then(function(rows) {
+				if(rows.length > 0) {
+					throw authConst.USERNAME_IN_USE;
+				}
+			})
+			.catch(function(error) {
+			
+			});
+		},
+		resendActivationMail: function(userId) {
+			 mysqlHandler
+		    .retrieveUserById(userId)
+		    .then(function(rows) {
+				authTools.sendActivationLink(rows[0]);
+			})
+			.catch(function(error) {
+			
+			});
 		},
 		loginUser: function(header, res) {
 			var credentials = authTools.getCredentials(header);
@@ -35,16 +52,18 @@ module.exports = function(app, authConst) {
 						throw authConst.INACTIVE_ACCOUNT;
 					}
 
-					var id 		 = rows[0].user_id,
-						username = rows[0].username,
-						password = rows[0].password,
-						email    = rows[0].email;
-					if(!authTools.checkPasswords(credentials[1], password)) {
+					if(!authTools.checkPasswords(credentials[1], rows[0].password)) {
 						throw authConst.BAD_CREDENTIALS;
 					} 
-					var token = tokenHandler.generateToken({id: id,
-				                                        	username: username,
-				                                        	email: email});
+					var token = tokenHandler.generateToken({id:           rows[0].user_id,
+				                                        	username:     rows[0].username,
+				                                            gender:       rows[0].gender,
+				                                        	birthdate:    rows[0].birthdate,
+				                                        	credits:      rows[0].credits,
+				                                        	personality:  rows[0].current_personality,
+				                                            iqScore:      profileTools.computeIq(rows[0]),
+				                                            gkScore:      profileTools.computeGeneralKnowledge(rows[0])
+				                                          });
 					res.writeHead(authConst.OK, {'X-Auth-Token': token});
 					res.end();
 				});
@@ -56,18 +75,21 @@ module.exports = function(app, authConst) {
 			return mysqlHandler
 				.saveUser(data)
 				.then(function(data) {
-					var token = tokenHandler.generateToken({id: data.insertedId,
-															username: data.username,
-			                                        		email: data.email,
-			                                        		gender: data.gender,
-			                                        		credits: data.credits});
-					//authTools.sendActivationLink(data);
+					var token = tokenHandler.generateToken({id:           data.insertedId,
+															username:     data.username,
+			                                        		gender:       data.gender,
+			                                        		birthdate:    data.birthdate,
+			                                        		credits:      data.credits,
+			                                        		personality:  data.current_personality,
+			                                        		iqScore:      profileTools.computeIq(data),
+			                                        		gkScore:      profileTools.computeGeneralKnowledge(data)
+			                                        	  });
+					authTools.sendActivationLink(data);
 					res.writeHead(authConst.OK, {'X-Auth-Token': token});
 					res.end();
 				});
 		},
 		logoutUser: function() {
-
 		},
 		verifyToken: function(token) {
 			return tokenHandler.verifyToken(token);

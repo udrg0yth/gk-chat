@@ -25,14 +25,26 @@ module.exports = function(app,
 			var values = '"' + user.username + '",' +
 			             '"' + user.password + '",' +
 			             '"' + user.email + '",' +
-			             '"' + user.account_status + '"';
+			             '"' + user.birthdate + '",' +
+			             '"' + user.account_status + '",' +
+			             '"' + 150 + '",' +
+			             '"' + 1 + '",' +
+			             '"' + 0.0.0.0 + '".' +
+			             '"' + 0 + '",' + 
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '"';
 			var queryString = authConst
 							.insertTemp
 							.replace('$table', authConst.userTable)
 							.replace('$columns', authConst.userColumns)
 							.replace('$values', values);
 			return connection.query(queryString);
-		},
+		}
 		retrieveUserById: function(userId) {
 			return retrieveUserByTemplate('user_id', userId);
 		},
