@@ -2,14 +2,14 @@
 <div class="row">
 <div class = "col-lg-3 col-md-3 text-center">
   <a ><img src="../assets/anonymous.png" style="width:60%;max-height:auto;" class="img-thumbnail img-responsive img-circle"></a><br>
-  <div>Credits: &nbsp;<span class="badge">42</span></div>
-  <button class="btn btn-primary btn-small" ng-click="showPaymentModal()">Recharge</button><br>
+  <div><span style="color:white;">Credits: &nbsp;</span><span class="badge">42</span></div>
+  <button class="btn btn-info" ng-click="showPaymentModal()">Recharge</button><br>
   <ul style="list-style-type:none;text-align:left !important;">
-     <li><span style="color:yellow;">Age:</span> 24</li>
-     <li><span style="color:yellow;">Gender:</span> Male</li>
-      <li><span style="color:yellow">Personality(MBTI):</span> ESTJ</li>
-      <li><span style="color:yellow">IQ:</span> 90</li>
-      <li><span style="color:yellow">General knowledge:</span> 1</li>
+     <li><span style="color:yellow;">Age:</span><span style="color:white;"> 24</span></li>
+     <li><span style="color:yellow;">Gender:</span><span style="color:white;"> Male</span></li>
+      <li><span style="color:yellow">Personality(MBTI):</span><span style="color:white;"> ESTJ</span></li>
+      <li><span style="color:yellow">IQ:</span><span style="color:white;"> 90</span></li>
+      <li><span style="color:yellow">General knowledge:</span><span style="color:white;">1</span></li>
   </ul><br>
   <div class="list-group">
     <a class="btn btn-info btn-block">Personality(MBTI)</a>
@@ -20,19 +20,19 @@
   </div> 
 </div>
 <div class = "col-lg-8 col-md-8 " >
-    <div class="panel panel-default" style="background: rgba(46, 51, 56, 0.2)!important;">
-      <div class="panel-heading" style="background: rgba(255, 255, 180, 0.5)!important;">
+    <div class="panel panel-default" id="chat" style="background: rgba(46, 51, 56, 0.2)!important;">
+      <div class="panel-heading" id="chatHeading" style="background: rgba(255, 255, 180, 0.5)!important;">
           <div class="panel-title">
             <strong> Chat </strong>
           </div>
       </div>
       <div class="panel-body" >
-         <div class="row"  id="userList"  style="max-height:70%;overflow-y: scroll; ">
+         <div class="row"  id="chatBody" style="max-height:70%;overflow-y: scroll; ">
           <div ng-repeat="u in users" class="col-lg-12 col-md-12">
-              <div class="col-lg-2 col-md-2" ng-class-odd="'col-lg-push-10 col-md-push-10'">
+              <div class="col-lg-2 col-md-2" id="leftChatMessage" ng-class-odd="'col-lg-push-10 col-md-push-10'">
                 <a href="" ng-click="showUserModal($index)"><img title="{{u.user.name.first}}" src="../assets/anonymous.png" class="img-thumbnail img-responsive img-circle" ng-class-even="'pull-right'" ng-class-odd="'pull-left'" style="width:70px;"></a>
               </div>  
-              <div class="col-lg-10 col-md-10" ng-class-odd="'col-lg-pull-2 col-md-pull-2'">
+              <div class="col-lg-10 col-md-10" id="rightChatMessage" ng-class-odd="'col-lg-pull-2 col-md-pull-2'">
                 <div class="panel panel-default" style="background: rgba(255, 255, 255, 0.7)!important;" >
                   <div class="panel-body" style="word-wrap: break-word;">
                     {{u.user.text||"Hello!"}}<br>
@@ -45,8 +45,8 @@
           <div class="row" style="padding:1%;">
               <div class="col-lg-12 col-md-12">
                 <div class="input-group">
-                    <input class="form-control input-large" style="background: rgba(255, 255, 255, 0.8)!important;" type="text" placeholder="Add to the conversation" id="inputText">
-                    <span class="input-group-addon" ng-click="doPost()">Post</span>
+                    <input class="form-control input-large" ng-keypress="doPost($event)" style="background: rgba(255, 255, 255, 0.8)!important;" type="text" placeholder="Add to the conversation" ng-model="chat.message" id="inputText">
+                    <span class="input-group-addon" ng-click="doPost()" >Post</span>
                   </div>
               </div>
               <div class="clearfix"></div>
@@ -82,7 +82,7 @@
                 <div class="panel-body panel-body-payment">
                     <div class="the-price">
                         <h1>
-                            $0.99</h1>
+                            $1.99</h1>
                     </div>
                     <table class="table">
               <!-- class="active" for blue bg -->
@@ -90,7 +90,7 @@
                             <td>
               <span class="glyphicon glyphicon-ok text-success">
               </span>
-                                300 credits
+                                200 credits
                             </td>
                         </tr>
                     </table>
@@ -99,7 +99,7 @@
             <span>
              <img src="../assets/paypal-icon.png"/>
           </span>
-                    <a href="http://www.jquery2dotnet.com" class="btn btn-primary" role="button">Sign Up</a>
+                    <a href="http://www.jquery2dotnet.com" class="btn btn-primary" role="button">Recharge</a>
                 </div>
             </div>
         </div>
@@ -119,14 +119,14 @@
                 <div class="panel-body panel-body-payment">
                     <div class="the-price">
                         <h1>
-                            $2.99</h1>
+                            $3.99</h1>
                     </div>
                     <table class="table">
                         <tr >
                             <td>
               <span class="glyphicon glyphicon-ok text-success">
               </span>
-                                600 credits
+                                450 credits
                             </td>
                         </tr>
                     </table>
@@ -135,7 +135,7 @@
             <span>
              <img src="../assets/paypal-icon.png"/>
           </span>
-                    <a href="http://www.jquery2dotnet.com" class="btn btn-success" role="button">Sign Up</a>
+                    <a href="http://www.jquery2dotnet.com" class="btn btn-success" role="button">Recharge</a>
                 </div>
             </div>
         </div>
