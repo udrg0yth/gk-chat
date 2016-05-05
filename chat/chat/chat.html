@@ -2,9 +2,21 @@
 <div class="row">
 <div class = "col-lg-3 col-md-3 text-center">
   <a ><img src="../assets/anonymous.png" style="width:60%;max-height:auto;" class="img-thumbnail img-responsive img-circle"></a><br>
-  <button>Profile</button><button>Sign out</button>
+  <div>Credits: &nbsp;<span class="badge">42</span></div>
+  <button class="btn btn-primary btn-small" ng-click="showPaymentModal()">Recharge</button><br>
+  <ul style="list-style-type:none;text-align:left !important;">
+     <li><span style="color:yellow;">Age:</span> 24</li>
+     <li><span style="color:yellow;">Gender:</span> Male</li>
+      <li><span style="color:yellow">Personality(MBTI):</span> ESTJ</li>
+      <li><span style="color:yellow">IQ:</span> 90</li>
+      <li><span style="color:yellow">General knowledge:</span> 1</li>
+  </ul><br>
   <div class="list-group">
-    <a class="list-group-item">Personality</a>
+    <a class="btn btn-info btn-block">Personality(MBTI)</a>
+    <a class="btn btn-info btn-block">Reasoning</a>
+    <a class="btn btn-info btn-block">General knowledge</a>
+    <a class="btn btn-warning btn-block">Filters</a>
+    <a class="btn btn-danger btn-block">Match me!</a>
   </div> 
 </div>
 <div class = "col-lg-8 col-md-8 " >
@@ -44,30 +56,89 @@
  </div>
  </div>
 </div>
- <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header bg-info">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h1 id="myModalLabel" class="text-center"></h1>
-        </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-xs-4 col-xs-offset-4"><img src="{{currUser.picture}}" class="img-thumbnail img-responsive img-circle"></div>
+ <modal id="userModal">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-4 col-xs-offset-4"><img src="{{currUser.picture}}" class="img-thumbnail img-responsive img-circle"></div>
+      </div>
+      <hr>
+      <div class="row">
+        <h4 class="text-center"><i class="fa fa-fw fa-map-marker fa-2x"></i> {{currUser.location.street}} {{currUser.location.city}}, {{currUser.location.state}}</h4>
+        <h4 class="text-center"><i class="fa fa-fw fa-phone fa-2x"></i> {{currUser.cell}}</h4>
+        <h4 class="text-center"><i class="fa fa-fw fa-envelope-o fa-2x"></i> {{currUser.email}}</h4>
+        <h4 class="text-center"><i class="fa fa-fw fa-user fa-2x"></i> {{currUser.username}}</h4>
+      </div>
+    </div>
+ </modal>
+ <modal id="paymentModal">
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-primary panel-payment">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Silver</h3>
+                </div>
+                <div class="panel-body panel-body-payment">
+                    <div class="the-price">
+                        <h1>
+                            $0.99</h1>
+                    </div>
+                    <table class="table">
+              <!-- class="active" for blue bg -->
+                        <tr>
+                            <td>
+              <span class="glyphicon glyphicon-ok text-success">
+              </span>
+                                300 credits
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="panel-footer">
+            <span>
+             <img src="../assets/paypal-icon.png"/>
+          </span>
+                    <a href="http://www.jquery2dotnet.com" class="btn btn-primary" role="button">Sign Up</a>
+                </div>
             </div>
-            <hr>
-            <div class="row">
-              <h4 class="text-center"><i class="fa fa-fw fa-map-marker fa-2x"></i> {{currUser.location.street}} {{currUser.location.city}}, {{currUser.location.state}}</h4>
-              <h4 class="text-center"><i class="fa fa-fw fa-phone fa-2x"></i> {{currUser.cell}}</h4>
-              <h4 class="text-center"><i class="fa fa-fw fa-envelope-o fa-2x"></i> {{currUser.email}}</h4>
-              <h4 class="text-center"><i class="fa fa-fw fa-user fa-2x"></i> {{currUser.username}}</h4>
-            </div>
-          </div>
         </div>
-        <div class="modal-footer bg-info">
-            <button class="btn btn-lg btn-default center-block" data-dismiss="modal" aria-hidden="true">Okay!</button>
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-success panel-payment">
+                <div class="cnrflash">
+                    <div class="cnrflash-inner">
+                        <span class="cnrflash-label">MOST
+                            <br>
+                            POPULAR</span>
+                    </div>
+                </div>
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Gold</h3>
+                </div>
+                <div class="panel-body panel-body-payment">
+                    <div class="the-price">
+                        <h1>
+                            $2.99</h1>
+                    </div>
+                    <table class="table">
+                        <tr >
+                            <td>
+              <span class="glyphicon glyphicon-ok text-success">
+              </span>
+                                600 credits
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="panel-footer">
+            <span>
+             <img src="../assets/paypal-icon.png"/>
+          </span>
+                    <a href="http://www.jquery2dotnet.com" class="btn btn-success" role="button">Sign Up</a>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-  </div>
+</div>
+</modal>

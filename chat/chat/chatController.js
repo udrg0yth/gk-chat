@@ -1,5 +1,5 @@
-angular.module('chatModule').controller('chatController', ['$scope', '$http',
-function($scope, $http) {
+angular.module('chatModule').controller('chatController', ['$scope', '$http', '$state', 'tokenService',
+function($scope, $http, $state, tokenService) {
 
   $http.get('http://api.randomuser.me/0.4/?results=20').success(function(data) {
     $scope.users = data.results;
@@ -9,13 +9,19 @@ function($scope, $http) {
   }).error(function(data, status) {
     alert('get data error!');
   });
+
+  $scope.logout = function() {
+      tokenService.deleteToken();
+      $state.go('login');
+  };
   
   $scope.showUserModal = function(idx){
-    var user = $scope.users[idx].user;
-    $scope.currUser = user;
-    $('#myModalLabel').text(user.name.first
-         + ' ' + user.name.last);
-    $('#myModal').modal('show');
+    $scope.currUser = $scope.users[idx].user;
+    $('#userModal').modal('show');
+  };
+
+  $scope.showPaymentModal = function() {
+    $('#paymentModal').modal('show');
   };
   
   $scope.doPost = function() {

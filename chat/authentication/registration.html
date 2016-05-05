@@ -2,7 +2,7 @@
 	<div class="form-group col-md-3" ng-form="registrationForm">
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-		  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername()" class="form-control input-lg" placeholder="Username" required>
+		  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername()" ng-change="onUsernameInputChange()" class="form-control input-lg" placeholder="Username" required>
 		</div>
 		<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i>
 		<div ng-if="submittedRegistration && registrationForm.username.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
@@ -16,7 +16,7 @@
 
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-		  <input type="text" name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" ng-model="user.email" ng-blur="checkEmail()" class="form-control input-lg" placeholder="Email" required>
+		  <input type="text" name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" ng-model="user.email" ng-blur="checkEmail()" ng-change="onEmailInputChange()" class="form-control input-lg" placeholder="Email" required>
 		</div>
 		<i ng-if="showEmailSpinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
 		<div ng-if="submittedRegistration && registrationForm.email.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
@@ -50,7 +50,10 @@
 			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 			<input type="text" data-date-format="yyyy-mm-dd" placeholder="Date of birth" name="birthdate" ng-model="user.birthdate" class="form-control input-lg" required/>
 		</div>
-
+		<div ng-if="submittedRegistration && registrationForm.birthdate.$error.required" class="alert alert-danger" role="alert"><strong> <i class="glyphicon glyphicon-warning-sign
+"></i></strong>&nbsp;Field is mandatory!</div>
+		<div ng-if="submittedRegistration && invalidDate" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
+"></i></strong>&nbsp;Invalid date format! Should be of 'yyyy-MM-dd'</div>
 		<div class="btn-group" data-toggle="button">
 			<label class="btn btn-default"> Male
 				<input type="radio" ng-model="user.gender" value="male">
@@ -59,6 +62,7 @@
 				<input type="radio" ng-model="user.gender" value="female">
 			</label>
 		</div>
+		<div ng-if= "showErrorMessage" class="alert alert-danger" role="alert"><strong> Error! </strong>{{errorMessage}}</div>
 		<button type="button" ng-click="register()" class="btn btn-primary btn-lg btn-block">Register</button>
 	</div>
 </div>

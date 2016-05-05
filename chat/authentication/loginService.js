@@ -4,7 +4,7 @@ angular.module('loginModule').service('loginService', ['$http', 'loginConstant',
  		authenticate: function(user) {
 	 		return $http.get(loginConstant.authBaseUrl + loginConstant.loginUrl, {
 	 			headers: {
-	 				Authentication: $base64.encode(user.username + ':' + user.password)
+	 				Authorization: $base64.encode(user.username + ':' + user.password)
 	 			}
 	 		});
 	 	},
@@ -21,6 +21,13 @@ angular.module('loginModule').service('loginService', ['$http', 'loginConstant',
 	 		return $http.post(loginConstant.authBaseUrl + loginConstant.checkEmailUrl, {
 	 			email: email
 	 		});
-	 	}
+	 	},
+	 	getErrorMessage: function(error) {
+
+	 	},
+	 	isDate: function(val) {
+			var d = new Date(val);
+			return !isNaN(d.valueOf());
+		}
  	};
 }]);

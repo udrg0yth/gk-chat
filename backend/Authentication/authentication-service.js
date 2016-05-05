@@ -5,29 +5,17 @@ module.exports = function(app, authConst) {
 	var profileTools  =  require('./profile-tools')(authConst);
 
 	return {
+		verifyToken: function(token) {
+			return tokenHandler.verifyToken(token);
+		},
 		checkEmailExistence: function(email){
-			 mysqlHandler
-			.retrieveUserByEmail(email)
-			.then(function(rows) {
-				if(rows.length > 0) {
-			   		throw authConst.EMAIL_IN_USE;
-				}
-			})
-			.catch(function(error) {
+			return mysqlHandler
+			.retrieveUserByEmail(email);
 
-			});
 		},
 		checkUsernameExistence: function(username) {
-		     mysqlHandler
-			.retrieveUserByUsername(username)
-			.then(function(rows) {
-				if(rows.length > 0) {
-					throw authConst.USERNAME_IN_USE;
-				}
-			})
-			.catch(function(error) {
-			
-			});
+		    return mysqlHandler
+			.retrieveUserByUsername(username);
 		},
 		resendActivationMail: function(userId) {
 			 mysqlHandler
@@ -43,16 +31,20 @@ module.exports = function(app, authConst) {
 			var credentials = authTools.getCredentials(header);
 
 			return mysqlHandler
-				.retrieveUserByEmail(credentials[0])
+				.retrieveUserByUsername(credentials[0])
 				.then(function(rows) {
 					if(rows.length === 0) {
+						console.log('xxx');
 						throw authConst.BAD_CREDENTIALS;
 					}
 					if(rows.account_status === 'INACTIVE') {
+						console.log('yyy');
 						throw authConst.INACTIVE_ACCOUNT;
 					}
 
 					if(!authTools.checkPasswords(credentials[1], rows[0].password)) {
+						console.log(credentials[1], rows[0].password);
+						console.log('zzz');
 						throw authConst.BAD_CREDENTIALS;
 					} 
 					var token = tokenHandler.generateToken({id:           rows[0].user_id,
@@ -82,17 +74,13 @@ module.exports = function(app, authConst) {
 			                                        		credits:      data.credits,
 			                                        		personality:  data.current_personality,
 			                                        		iqScore:      profileTools.computeIq(data),
-			                                        		gkScore:      profileTools.computeGeneralKnowledge(data)
-			                                        	  });
+			                                        		gkScore:      profileTools.computeGeneralKnowledge(data)});
 					authTools.sendActivationLink(data);
 					res.writeHead(authConst.OK, {'X-Auth-Token': token});
 					res.end();
 				});
 		},
 		logoutUser: function() {
-		},
-		verifyToken: function(token) {
-			return tokenHandler.verifyToken(token);
 		}
 	}
 };

@@ -10,16 +10,15 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 	$scope.showErrorMessage = false;
 	$scope.showUsernameSpinner = false;
 	$scope.showEmailSpinner = false;
+	$scope.invalidDate = false;
+	$scope.usernameAlreadyCheckedPositive = false;
+	$scope.emailAlreadyCheckedPositive = false;
 
 	$('.date-pick input').datepicker({
 		format : 'yyyy-mm-dd',
 		startView: "years",
 		autoclose : true
 	});
-
-	if(tokenService.checkToken()) {
-		//$state.go('chat');
-	}
 
 	$scope.login = function() {
 		$scope.submittedLogin = true;
@@ -28,15 +27,13 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 			return;
 		}
 		$scope.submittedLogin = false;
-		loginService.authenticate($scope.user).success(function(data) {
- 			if(data.token) {
- 				$localStorage.token = data.token;
- 			}
-
- 		}).success(function(data) {
- 			if(data.token) {
- 				$localStorage.token = data.token;
- 			}
+		loginService.authenticate($scope.user)
+		.success(function(data, status, headers) {
+			var head = headers();
+			if(head['x-auth-token']) {
+				$localStorage.token = head['x-auth-token'];
+				$state.go('chat');
+			}
  		}).error(function(error) {
  			$scope.errorMessage = 'Wrong username or password!';
  			$scope.showErrorMessage = true;
@@ -49,6 +46,7 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 	};
 
 	$scope.register = function() {
+		$scope.errorMessage = false;
 		$scope.submittedRegistration = true;
 		if($scope.registrationForm.$invalid) {
 			return;
@@ -60,8 +58,24 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		} else {
 			$scope.passwordsMatch = true;
 		}
+		if(!isDate(user.birthdate)){
+			$scope.invalidDate = true;
+			return;
+		} else {
+			$scope.invalidDate = false;
+		}
 		$scope.submittedRegistration = false;
-		console.log($scope.registrationForm.username.$invalid);
+		loginService.register($scope.user)
+		.success(function(data, status, headers) {
+			var head = headers();
+			if(head['x-auth-token']) {
+				$localStorage.token = head['x-auth-token'];
+			}
+		})
+		.error(function(err) {
+			$scope.errorMessage = 'Could not create account. Try again.';
+			$scope.showErrorMessage = true;
+		});
 		//$state.go('chat');
 	};
 
@@ -69,15 +83,23 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		if($scope.registrationForm.username.$invalid) {
 			return;
 		}
+		if($scope.usernameAlreadyCheckedPositive) {
+			return;
+		}
 		$scope.showUsernameSpinner = true;
 		loginService
 		.checkUsername($scope.user.username)
 		.success(function(data) {
 			$scope.showUsernameSpinner = false;
+			$scope.usernameAlreadyCheckedPositive = true;
 		})
 		.error(function(error) {
 			$scope.showUsernameSpinner = false;
 		});
+	};
+
+	$scope.onUsernameInputChange = function() {
+		$scope.usernameAlreadyCheckedPositive = false;
 	};
 
 	$scope.checkEmail = function() {
@@ -85,15 +107,23 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		|| $scope.user.email === '') {
 			return;
 		}
+		if($scope.emailAlreadyCheckedPositive) {
+			return;
+		}
 		$scope.showEmailSpinner = true;
 		loginService
 		.checkEmail($scope.user.email)
 		.success(function(data) {
 			$scope.showEmailSpinner = false;
+			$scope.emailAlreadyCheckedPositive = true;
 		})
 		.error(function(error) {
 			$scope.showEmailSpinner = false;
 		});
+	};
+
+	$scope.onEmailInputChange = function() {
+		$scope.emailAlreadyCheckedPositive = false;
 	};
 
 }]);

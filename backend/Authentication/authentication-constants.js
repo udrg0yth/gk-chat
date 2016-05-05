@@ -20,7 +20,7 @@ module.exports = function() {
 		    host: 'localhost',
 		    user: 'root',
 		    password: '1234',
-		    database: 'chat_database'
+		    database: 'chat_application'
 		},
 		insertTemp: 'INSERT INTO $table ($columns) VALUES ($values) ',
 		selectTemp: 'SELECT $columns FROM $table ',
@@ -46,6 +46,7 @@ module.exports = function() {
 		NOT_ENOUGH_CREDITS: new Error('NOT_ENOUGH_CREDITS'),
 		INCOMPLETE_DATA: new Error('INCOMPLETE_DATA'),
 		BAD_CREDENTIALS: new Error('BAD_CREDENTIALS'),
+		TOKEN_EXPIRED: new Error('TOKEN_EXPIRED'),
 		INACTIVE_ACCOUNT: new Error('INACTIVE_ACCOUNT'),
 		EMAIL_IN_USE: new Error('EMAIL_IN_USE'),
 		USERNAME_IN_USE: new Error('USERNAME_IN_USE'),

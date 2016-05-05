@@ -29,7 +29,7 @@ module.exports = function(app,
 			             '"' + user.account_status + '",' +
 			             '"' + 150 + '",' +
 			             '"' + 1 + '",' +
-			             '"' + 0.0.0.0 + '".' +
+			             '"0.0.0.0",' +
 			             '"' + 0 + '",' + 
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
@@ -44,7 +44,7 @@ module.exports = function(app,
 							.replace('$columns', authConst.userColumns)
 							.replace('$values', values);
 			return connection.query(queryString);
-		}
+		},
 		retrieveUserById: function(userId) {
 			return retrieveUserByTemplate('user_id', userId);
 		},

@@ -6,7 +6,7 @@ module.exports = function(app) {
   	app.post(authConst.verifyTokenUrl, function(req, res) {
 		var data = req.body;
 		if(!authService.verifyToken(data.token)) {
-			return res.status(authConst.UNAUTHORIZED).json({error : authCont.BAD_CREDENTIALS});
+			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
 		}
 		res.status(authConst.OK).json({success: true});
   	});
@@ -14,35 +14,48 @@ module.exports = function(app) {
     app.post(authConst.usernameCheckUrl, function(req, res) {
     	var data = req.body;
     	if(!data.username){
-    		return res.status(authConst.UNAUTHORIZED).json({error : authConst.INCOMPLETE_DATA});
+    		return res.status(authConst.UNAUTHORIZED).json({error : authConst.INCOMPLETE_DATA.message});
     	}
-    	
     	authService
     	.checkUsernameExistence(data.username)
+		.then(function(rows) {
+			if(rows.length > 0) {
+				res.status(authConst.UNAUTHORIZED).json({error : authConst.USERNAME_IN_USE.message});
+			} else {
+				res.status(authConst.OK).json({success : true});
+			}
+		})
     	.catch(function(error) {
     		res.status(authConst.UNAUTHORIZED).json({error : error});
     	});
+    	
     });
 
     app.post(authConst.emailCheckUrl, function(req, res) {
     	var data = req.body;
     	if(!data.email){
-    		return res.status(authConst.UNAUTHORIZED).json({error : authConst.INCOMPLETE_DATA});
+    		return res.status(authConst.UNAUTHORIZED).json({error : authConst.INCOMPLETE_DATA.message});
     	}
 
     	authService
     	.checkEmailExistence(data.email)
+    	.then(function(rows) {
+			if(rows.length > 0) {
+		   		res.status(authConst.UNAUTHORIZED).json({error : authConst.EMAIL_IN_USE.message});
+			} else {
+    			res.status(authConst.OK).json({success : true});
+			}
+		})
     	.catch(function(error) {
-    		res.status(authConst.UNAUTHORIZED).json({error : error});
+	    	res.status(authConst.UNAUTHORIZED).json({error : error});
     	});
     });
 
 	app.get(authConst.loginUrl, function(req, res) {
-		var header = req.headers['authorization'];
-		if(!header){
-			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS});
+		var header = req.headers.authorization;
+		if(!header) {
+			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
 		}
-		
 		authService.loginUser(header, res)
 		.catch(function(error){
 			res.status(authConst.UNAUTHORIZED).json({error : error});
@@ -56,7 +69,7 @@ module.exports = function(app) {
 		|| !data.email
 		|| !data.gender
 		|| !data.birthdate) {
-			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS});
+			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
 		}
 		
 		authService.registerUser(data, res)
