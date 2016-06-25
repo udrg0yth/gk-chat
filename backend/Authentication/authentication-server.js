@@ -11,6 +11,14 @@ module.exports = function(app) {
 		res.status(authConst.OK).json({success: true});
   	});
 
+  	app.post('/uploadQuestion', function(req, res) {
+  		var data = req.body;
+  		authService.saveQuestion(data, res)
+  		.catch(function(error) {
+  			res.status(401).json({});
+  		});
+  	});
+
     app.post(authConst.usernameCheckUrl, function(req, res) {
     	var data = req.body;
     	if(!data.username){

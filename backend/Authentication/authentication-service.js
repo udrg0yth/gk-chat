@@ -27,6 +27,13 @@ module.exports = function(app, authConst) {
 			
 			});
 		},
+		saveQuestion: function(question, res) {
+			 return mysqlHandler
+		    .saveQuestion(question)
+		    .then(function(rows) {
+				res.status(200).json({});
+			});
+		},
 		loginUser: function(header, res) {
 			var credentials = authTools.getCredentials(header);
 

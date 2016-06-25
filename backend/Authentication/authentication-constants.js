@@ -20,7 +20,7 @@ module.exports = function() {
 		    host: 'localhost',
 		    user: 'root',
 		    password: '1234',
-		    database: 'chat_application'
+		    database: 'chat_database'
 		},
 		insertTemp: 'INSERT INTO $table ($columns) VALUES ($values) ',
 		selectTemp: 'SELECT $columns FROM $table ',
@@ -32,8 +32,10 @@ module.exports = function() {
 					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
 		userTable: 'user',
 		//gk questions
-		gkQuestionsColumns: 'gk_question, gk_answer1, gk_answer2, gk_answer3, gk_answer4',
+		gkQuestionsColumns: 'gk_question, category_id, gk_answer1, gk_answer2, gk_answer3, gk_answer4',
 		gkQuestionsTable: 'gk_questions',
+		CATEGORY_COLUMNS: 'category',
+		CATEGORY_TABLE: 'category',
 		//personality questions
 		personalityQuestionsColumns: 'personality_question, negatively_affected_type',
 		personalityQuestionsTable: 'personality_questions',
@@ -50,5 +52,7 @@ module.exports = function() {
 		INACTIVE_ACCOUNT: new Error('INACTIVE_ACCOUNT'),
 		EMAIL_IN_USE: new Error('EMAIL_IN_USE'),
 		USERNAME_IN_USE: new Error('USERNAME_IN_USE'),
+
+		PERSONALITY_TYPES: ['E','S','F','J','I','N','T','P']
 	};
 };
