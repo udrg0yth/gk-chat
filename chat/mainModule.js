@@ -4,7 +4,7 @@ angular
 	$stateProvider
 	.state('login', {
      url: '/login',
-     templateUrl: 'authentication/login.html',
+     templateUrl: '/main.html',
      controller: 'loginController'
 	})
 	.state('registration', {
