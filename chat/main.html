@@ -1,31 +1,36 @@
-<div class="container text-center">
+<div class="container">
 	<div class="row">
-			<div class="form-group col-md-4 col-lg-4" ng-form name="loginForm">
-				<div class="input-group">
-				  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-				  <input type="text" name="username" ng-model="user.username" class="form-control input-lg" placeholder="Username" required>
-				</div>
-				<div ng-if="submittedLogin && loginForm.username.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-	"></i></strong>&nbsp;Please enter your username!</div>
-				<div class="input-group">
-				  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				  <input type="password" name="password" ng-model="user.password" class="form-control input-lg" placeholder="Password" required>
-				</div>
-				<div ng-if="submittedLogin && loginForm.password.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-	"></i></strong>&nbsp;Please enter your password!</div>
-				<div ng-if= "showErrorMessage" class="alert alert-danger" role="alert"><strong> Error! </strong>{{errorMessage}}</div>
-				<button type="button" class="btn btn-primary btn-lg btn-block" ng-click="login()">Login</button>
+		<div class="col-lg-4 col-md-4">
+			<div class="row" style="margin-top:40%;">
+				<img src = "assets/james.png" style="width:40%;"class="img-responsive center-block" alt="Responsive image">
 			</div>
-	</div>
-	<div class = "row">
-		<div class="col-md-4 col-lg-4">
-			<a href="#"><img src="assets/facebook.png" style="width:100%; height:50px;"></a>
+		</div>
+		<div class="col-lg-4 col-md-4">
+			<div class="row" style="margin-top:10%;">
+				<img src = "assets/random.png" class="img-responsive center-block" alt="Responsive image">
+			</div>
+			<div ui-view></div>
+		</div>
+		<div class="col-lg-4 col-md-4">
+			<div class="row" style="margin-top:40%;">
+				<img src = "assets/jessy.png" style="width:40%;"class="img-responsive center-block" alt="Responsive image">
+			</div>
 		</div>
 	</div>
-	<!-- <div class = "row">
-		<h2 style=
-		<div class="col-md-4 col-lg-4">
-			<button type="button" class="btn btn-warning btn-lg btn-block" ng-click="login()">Join us</button>
+</div>
+
+<div class="container" style="left:20%;top:70%;position:absolute;">
+<div class = "row">
+		<div class="col-md-4 col-lg-4 col-centered">
+				<img src = "assets/user_icon.png" class="img-responsive center-block" style="width:50%;" alt="Responsive image"><br>
+			<p class="text-center cf">Register an account</p>
 		</div>
-	</div> -->
+		<div class="col-md-4 col-lg-4 col-centered">
+			<img src = "assets/questions_icon.png" class="img-responsive center-block" style="width:50%;" alt="Responsive image"><br>
+			<p class="text-center cf">Build your profile by answering personality, general knowledge and logic questions</p>
+		</div>
+		<div class="col-md-4 col-lg-4 col-centered"> 
+			<img src = "assets/chat_icon.png" class="img-responsive center-block" style="width:50%;" alt="Responsive image"><br>
+			<p class="text-center cf">Find your perfect match</p>
+		</div>
 </div>

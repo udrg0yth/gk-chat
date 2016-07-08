@@ -1,3 +1,8 @@
+p {
+    font-family: 'kongtext';
+    font-size: 15px;
+}
+
 a {
 	cursor:pointer;
 	cursor:hand;

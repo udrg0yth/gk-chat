@@ -1,22 +1,36 @@
 angular
-.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64'])
+.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard'])
 .config(['$stateProvider', '$urlRouterProvider',  function ($stateProvider, $urlRouterProvider) {
 	$stateProvider
+	.state('main', {
+		url: '/main',
+      	views: {
+    		mainView : {
+      			templateUrl: 'main.html'
+      		}
+     	 }
+	})
 	.state('login', {
      url: '/login',
-     templateUrl: '/main.html',
+     parent: 'main',
+     templateUrl: 'authentication/profile.html',
      controller: 'loginController'
 	})
 	.state('registration', {
 	 url: '/registration',
+	 parent: 'main',
      templateUrl: 'authentication/registration.html',
      controller: 'loginController'
 	})
 	.state('chat', {
+     controller: 'chatController',
      url: '/chat',
-     templateUrl: 'chat/chat.html',
-     controller: 'chatController'
+	      views: {
+	    		mainView : {
+	      			templateUrl: 'chat/chat.html'
+	      		}
+	      }
 	});
 
-	$urlRouterProvider.otherwise('/login');
+	$urlRouterProvider.otherwise('/main/login');
 }]);

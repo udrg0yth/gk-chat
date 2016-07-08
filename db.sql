@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.12, for Win32 (AMD64)
+-- MySQL dump 10.13  Distrib 5.7.10, for Win64 (x86_64)
 --
 -- Host: localhost    Database: chat_database
 -- ------------------------------------------------------
--- Server version	5.7.12-log
+-- Server version	5.7.10-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,7 @@ CREATE TABLE `category` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(64) NOT NULL,
   PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +35,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'Geography'),(2,'History');
+INSERT INTO `category` VALUES (1,'Geography'),(2,'History'),(3,'Art'),(4,'Literature'),(5,'Music'),(6,'Mathematics'),(7,'Botanics'),(8,'Physics'),(9,'Zoology'),(10,'Astronomy'),(11,'Philosophy'),(12,'Mythology'),(13,'Medicine'),(14,'Chemistry'),(15,'Society'),(16,'Economy'),(17,'Politics'),(18,'Computing'),(19,'Transport'),(20,'Religion');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +57,7 @@ CREATE TABLE `gk_questions` (
   PRIMARY KEY (`gk_question_id`),
   KEY `fk_category` (`category_id`),
   CONSTRAINT `fk_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `gk_questions` (
 
 LOCK TABLES `gk_questions` WRITE;
 /*!40000 ALTER TABLE `gk_questions` DISABLE KEYS */;
-INSERT INTO `gk_questions` VALUES (2,'Which African Country Is The Largest In Area?','Sudan','South Africa','Libya','Algeria',1),(3,'In Which Country Is Mount Ararat?','Armenia','Georgia','Azerbaijan','Turkey',1),(4,'What African City Has The Most Inhabitants?','Cairo','Johannesburg','Kinshasa','Lagos',1),(5,'On How Many Hills Was Rome Built?','Three','Six','Nine','Seven',1),(6,'What Was The Capital Of West Germany Before Berlin Was Reinstated?','Frankfurt','Munchen','Dortmund','Bonn',1),(7,'Of Which Country Is Kathmandu The Capital?','Afghanistan','Bhutan','Tajikistan','Nepal',1);
+INSERT INTO `gk_questions` VALUES (2,'Which African Country Is The Largest In Area?','Sudan','South Africa','Libya','Algeria',1),(3,'In Which Country Is Mount Ararat?','Armenia','Georgia','Azerbaijan','Turkey',1),(4,'What African City Has The Most Inhabitants?','Cairo','Johannesburg','Kinshasa','Lagos',1),(5,'On How Many Hills Was Rome Built?','Three','Six','Nine','Seven',1),(6,'What Was The Capital Of West Germany Before Berlin Was Reinstated?','Frankfurt','Munchen','Dortmund','Bonn',1),(7,'Of Which Country Is Kathmandu The Capital?','Afghanistan','Bhutan','Tajikistan','Nepal',1),(8,'Composer George Gershwin died in1937 at the age of 38. How did he die?','Lung tumor','Murdered','Heart attack','Brain tumor',2),(9,'What type of natural disaster hit the American Midwest in 1935?','Tornado','Cyclone','Earthquake','Dust storm',2),(10,'On what river was the Angient Egypt concentrated along?','Zambezi','Niger','Congo','Nile',2),(11,'Who was the first pharaoh?','Djet','Hor-Aha','Djer','Narmer',2),(12,'How long is the nile (km)?','5995','8512','6212','6853',1),(13,'What precedes the Iron Age?','Tin age','Stone age','Chalcolithic','Bronze age',2),(14,'What was it that allowed for the transition from the Paleolithic Age to the Neolithic Age?','Industrial Revolution','American Revolution','War','Agricultural Revolution',2),(15,'What two (2) beings roamed the earth at the same time as homo sapiens?','Homo habilius and Homo erectus','Homo sapiens sapiens and Homo erectus','Cro-Magnons and Homo sapiens','Cro-Magnons and Neanderthals',2),(16,'What are modern humans called?','Homo erectus','Homo sapiens','Cro-Magnon','Homo sapiens sapiens',2),(17,'When did emperor Constantine I consacrate the Church of the Holy Sepulchre in Jerusalem?','265','65','401','335',2),(18,'Who was banished to Trier, on charge that he prevented the corn fleet from sailing to Constantinople?','Julius II','Constantine I','Flavius Dalmatius','Athanasius',2),(19,'What is Anatolia also known as?','Asia major','Armenia','Anatolian island','Asia minor',1),(20,'When did Constantinople fall to the Ottoman empire?','1493','1345','1435','1453',2),(21,'When was Abraham Lincoln assassinated?','1834','1901','1852','1865',2),(22,'In what year was John F. Kennedy assassinated?','1936','1954','1967','1963',2),(23,'In what year did the Berlin wall fall?','1998','1961','1989','1991',2),(24,'What\'s the capital of United Arab Emirates?','Riyadh','Sana\'a','Muscat','Abu Dhabi',1),(25,'What\'s the capital of Saudi Arabia?','Abu Dhabi','Sana\'a','Muscat','Riyadh',1),(26,'What\'s the capital of Yemen?','Abu Dhabi','Riyadh','Muscat','Sana\'a',1),(27,'What\'s the capital of Oman?','Abu Dhabi','Riyadh','Sana\'a','Muscat',1),(28,'What\'s the capital of Spain?','Lisbon','Rome','Velletta','Madrid',1),(29,'What\'s the capital of Italy?','Lisbon','Madrid','Velletta','Rome',1),(30,'What\'s the capital of Portugal?','Rome','Madrid','Velletta','Lisbon',1),(31,'What\'s the capital of Malta?','Rome','Madrid','Lisbon','Velletta',1),(32,'What\'s the capital of Switzerland?','Lucerne','Geneva','Zurich','Bern',1),(33,'What\'s the capital of Norway?','Tallinn','Helsinki','Stockholm','Oslo',1),(34,'What\'s the capital of Sweden?','Tallinn','Helsinki','Oslo','Stockholm',1),(35,'What\'s the capital of Finland?','Tallinn','Stockholm','Oslo','Helsinki',1),(36,'What\'s the capital of Estonia?','Helsinki','Stockholm','Oslo','Tallinn',1);
 /*!40000 ALTER TABLE `gk_questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,7 +82,7 @@ CREATE TABLE `personality_questions` (
   `personality_question` text NOT NULL,
   `negatively_affected_type` int(11) NOT NULL,
   PRIMARY KEY (`personality_question_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-25 14:02:05
+-- Dump completed on 2016-07-08 14:26:22

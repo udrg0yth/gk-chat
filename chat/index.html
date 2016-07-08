@@ -13,13 +13,15 @@
     <script src="bower_components/angular-bootstrap-simple-chat/src/scripts/index.js"></script>
     <script src="bower_components/ngstorage/ngstorage.min.js"></script>
     <script src="bower_components/angular-base64/angular-base64.min.js"></script>
+	<script src="bower_components/angular-wizard/dist/angular-wizard.min.js"></script>
 
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 	<link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" href="bower_components/angular-bootstrap-simple-chat/src/css/style.css">
 	<link rel="stylesheet" href="styles/custom.css">
-
+	<link rel="stylesheet" href="styles/font.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/angular-wizard/dist/angular-wizard.min.css">
 	
 
 	<!-- start login component -->
@@ -40,16 +42,8 @@
 
 </head>
 <body ng-app="mainModule" style="background-image:url('/assets/background.jpg');background-size:cover;">
-	<div id="fb-root"></div>
-	<script>(function(d, s, id) {
-	  var js, fjs = d.getElementsByTagName(s)[0];
-	  if (d.getElementById(id)) return;
-	  js = d.createElement(s); js.id = id;
-	  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.6&appId=813488098772208";
-	  fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));</script>
-	<!--start login form -->
-	<div ui-view></div>
+	
+	<div ui-view="mainView"></div>
 	<!--end login form -->
 
 

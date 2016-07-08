@@ -14,7 +14,7 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 	$scope.usernameAlreadyCheckedPositive = false;
 	$scope.emailAlreadyCheckedPositive = false;
 
-	$('.date-pick input').datepicker({
+	$('#datepick input').datepicker({
 		format : 'yyyy-mm-dd',
 		startView: "years",
 		autoclose : true

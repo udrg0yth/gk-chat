@@ -1,68 +1,20 @@
-<div class="col">
-	<div class="form-group col-md-3" ng-form="registrationForm">
-		<div class="input-group">
-		  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-		  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername()" ng-change="onUsernameInputChange()" class="form-control input-lg" placeholder="Username" required>
-		</div>
-		<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i>
-		<div ng-if="submittedRegistration && registrationForm.username.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Field is mandatory!</div>
-		<div ng-if="submittedRegistration && registrationForm.username.$error.pattern" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Username must be a combination of 3 to 15 letters and digits</div>
-		<div ng-if="usernameUnavailable" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Username is already in use!</div>
-		<div ng-if="usernameAvailable" class="alert alert-success" role="alert"><strong> <i class="glyphicon glyphicon-ok
-"></i> </strong>&nbsp;Username is available</div>
-
-		<div class="input-group">
-		  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-		  <input type="text" name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" ng-model="user.email" ng-blur="checkEmail()" ng-change="onEmailInputChange()" class="form-control input-lg" placeholder="Email" required>
-		</div>
-		<i ng-if="showEmailSpinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
-		<div ng-if="submittedRegistration && registrationForm.email.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Field is mandatory!</div>
-		<div ng-if="submittedRegistration && registrationForm.email.$error.pattern" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Not a valid email!</div>
-		<div ng-if="emailUnavailable" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;There is already an account attached to this email!</div>
-		<div ng-if="emailAvailable" class="alert alert-success" role="alert"><strong><i class="glyphicon glyphicon-ok
-"></i></strong>&nbsp;No accounts attached to this email</div>
+<div class="form-group" ng-form="registrationForm" style="margin-top:15%;">
+	
+	<div class="input-group">
+	  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+	  <input type="text" name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" ng-model="user.email" ng-blur="checkEmail()" ng-change="onEmailInputChange()" class="form-control input-lg" placeholder="Email" required>
+	</div><br>
+	<i ng-if="showEmailSpinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
 
 
-		<div class="input-group">
-		  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-		  <input type="password" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/" name="password" ng-model="user.password" class="form-control input-lg" placeholder="Password" required>
-		</div>
-		<div ng-if="submittedRegistration && registrationForm.password.$error.required" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Field is mandatory</div>
-		<div ng-if="submittedRegistration && registrationForm.password.$error.pattern" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Between 8 and 16 characters at least 1 Alphabet and 1 Number!</div>
-
-		<div class="input-group">
-		  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-		  <input type="password" name="repeatedPassword" ng-model="user.repeatedPassword" class="form-control input-lg" placeholder="Repeat password" required>
-		</div>
-		<div ng-if="submittedRegistration && registrationForm.repeatedPassword.$error.required" class="alert alert-danger" role="alert"><strong> <i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Field is mandatory!</div>
-		<div ng-if="!passwordsMatch" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Passwords do not match!</div>
-		<div class="input-group date-pick">
-			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-			<input type="text" data-date-format="yyyy-mm-dd" placeholder="Date of birth" name="birthdate" ng-model="user.birthdate" class="form-control input-lg" required/>
-		</div>
-		<div ng-if="submittedRegistration && registrationForm.birthdate.$error.required" class="alert alert-danger" role="alert"><strong> <i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Field is mandatory!</div>
-		<div ng-if="submittedRegistration && invalidDate" class="alert alert-danger" role="alert"><strong><i class="glyphicon glyphicon-warning-sign
-"></i></strong>&nbsp;Invalid date format! Should be of 'yyyy-MM-dd'</div>
-		<div class="btn-group" data-toggle="button">
-			<label class="btn btn-default"> Male
-				<input type="radio" ng-model="user.gender" value="male">
-			</label>
-			<label class="btn btn-default">Female
-				<input type="radio" ng-model="user.gender" value="female">
-			</label>
-		</div>
-		<div ng-if= "showErrorMessage" class="alert alert-danger" role="alert"><strong> Error! </strong>{{errorMessage}}</div>
-		<button type="button" ng-click="register()" class="btn btn-primary btn-lg btn-block">Register</button>
+	<div class="input-group">
+	  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+	  <input type="password" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/" name="password" ng-model="user.password" class="form-control input-lg" placeholder="Password" required>
 	</div>
+
+	<div class="input-group">
+	  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+	  <input type="password" name="repeatedPassword" ng-model="user.repeatedPassword" class="form-control input-lg" placeholder="Repeat password" required>
+	</div><br>
+	<button type="button" ng-click="register()" class="btn btn-primary btn-lg btn-block">Register</button>
 </div>

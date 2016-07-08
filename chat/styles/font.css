@@ -1,0 +1,11 @@
+@font-face {
+	font-family: 'kongtext';
+	src: url('./kongtext.eot');
+	src: local('kongtext'), url('./kongtext.woff') format('woff'), url('./kongtext.ttf') format('truetype');
+}
+/* use this class to attach this font to any element i.e. <p class="fontsforweb_fontid_836">Text with this font applied</p> */
+.fontsforweb_fontid_836 {
+	font-family: 'kongtext' !important;
+}
+
+/* Font downloaded from FontsForWeb.com */
