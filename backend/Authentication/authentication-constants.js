@@ -26,10 +26,15 @@ module.exports = function() {
 		selectTemp: 'SELECT $columns FROM $table ',
 		criteriaTemp: 'WHERE $criteria ',
 		//users
-		userColumns: 'username, password, email, birthdate, account_status, credits, last_personality_question_id,'
+		userColumns: 'username, email, password, gender, birthdate, account_status, credits, last_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
 					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
+		registrationColumns: 'email, password, account_status, credits, last_personality_question_id,'
+					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
+					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
+		profileColumns: 'username, birthdate, gender',
 		userTable: 'user',
 		//gk questions
 		gkQuestionsColumns: 'gk_question, category_id, gk_answer1, gk_answer2, gk_answer3, gk_answer4',

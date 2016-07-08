@@ -45,6 +45,28 @@ module.exports = function(app,
 							.replace('$values', values);
 			return connection.query(queryString);
 		},
+		registerUser: function(user) {
+			var values = '"' + user.email + '",' +
+			             '"' + user.password + '",' +
+			             '"' + user.accountStatus + '",' +
+			             '"' + 150 + '",' +
+			             '"' + 1 + '",' +
+			             '"0.0.0.0",' +
+			             '"' + 0 + '",' + 
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '"';
+			var queryString = authConst
+							.insertTemp
+							.replace('$table', authConst.userTable)
+							.replace('$columns', authConst.userColumns)
+							.replace('$values', values);
+			return connection.query(queryString);
+		},
 		saveQuestion: function(question) {
 			var queryString = 'INSERT INTO gk_questions (gk_question, gk_answer1, gk_answer2, ' +
 			'gk_answer3, gk_answer4, category_id) values ("' +  question.question + '","' + question.answer1 + '","' +

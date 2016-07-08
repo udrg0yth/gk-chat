@@ -72,11 +72,8 @@ module.exports = function(app) {
 
 	app.post(authConst.registrationUrl, function(req, res) {
 		var data = req.body;
-		if(!data.username 
-		|| !data.password 
-		|| !data.email
-		|| !data.gender
-		|| !data.birthdate) {
+		if(!data.password 
+		|| !data.email) {
 			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
 		}
 		

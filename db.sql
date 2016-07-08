@@ -104,10 +104,10 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) NOT NULL,
+  `username` varchar(32) DEFAULT NULL,
   `password` varchar(64) NOT NULL,
   `email` varchar(64) NOT NULL,
-  `birthdate` datetime NOT NULL,
+  `birthdate` datetime DEFAULT NULL,
   `account_status` varchar(16) NOT NULL,
   `credits` int(11) NOT NULL,
   `last_personality_question_id` int(11) NOT NULL,
@@ -120,6 +120,7 @@ CREATE TABLE `user` (
   `total_hard_iq_answers` int(11) NOT NULL,
   `correct_gk_answers` int(11) NOT NULL,
   `total_gk_answers` int(11) NOT NULL,
+  `gender` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -142,4 +143,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-08 14:26:22
+-- Dump completed on 2016-07-08 14:40:41

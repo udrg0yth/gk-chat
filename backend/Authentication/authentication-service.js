@@ -67,7 +67,7 @@ module.exports = function(app, authConst) {
 					res.end();
 				});
 		},
-		registerUser: function(data, res) {
+		/*registerUser: function(data, res) {
 			data.password = authTools.hashPassword(data.password);
 			data.account_status = 'INACTIVE';
 
@@ -85,6 +85,17 @@ module.exports = function(app, authConst) {
 					authTools.sendActivationLink(data);
 					res.writeHead(authConst.OK, {'X-Auth-Token': token});
 					res.end();
+				});
+		},*/
+		registerUser: function(data, res) {
+			data.password = authTools.hashPassword(data.password);
+			data.accountStatus = 'INACTIVE';
+
+			return mysqlHandler
+				.registerUser(data)
+				.then(function(data) {
+					authTools.sendActivationLink(data);
+					res.status(authConst.OK).json({});
 				});
 		},
 		logoutUser: function() {

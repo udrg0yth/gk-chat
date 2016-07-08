@@ -13,7 +13,7 @@ angular
 	.state('login', {
      url: '/login',
      parent: 'main',
-     templateUrl: 'authentication/profile.html',
+     templateUrl: 'authentication/login.html',
      controller: 'loginController'
 	})
 	.state('registration', {

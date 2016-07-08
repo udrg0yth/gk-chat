@@ -58,12 +58,7 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		} else {
 			$scope.passwordsMatch = true;
 		}
-		if(!isDate(user.birthdate)){
-			$scope.invalidDate = true;
-			return;
-		} else {
-			$scope.invalidDate = false;
-		}
+
 		$scope.submittedRegistration = false;
 		loginService.register($scope.user)
 		.success(function(data, status, headers) {
@@ -76,7 +71,6 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 			$scope.errorMessage = 'Could not create account. Try again.';
 			$scope.showErrorMessage = true;
 		});
-		//$state.go('chat');
 	};
 
 	$scope.checkUsername = function() {
