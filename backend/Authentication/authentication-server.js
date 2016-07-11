@@ -1,91 +1,119 @@
-module.exports = function(app) {
-	var authConst 	  =  require('./authentication-constants')();
-	var corsFilter    =  require('./cors-filter')(app, authConst);
-	var authService   =  require('./authentication-service')(app, authConst);
+module.exports = function(application, genericConstants) {
+	var authenticationConstants 	  	=  require('./authentication-constants')(),
+		corsFilter    					=  require('./cors-filter')(application, authenticationConstants),
+		authenticationService  		  	=  require('./authentication-service')(application, authenticationConstants, genericConstants);
   
-  	app.post(authConst.verifyTokenUrl, function(req, res) {
+  	application.post(genericConstants.VERIFY_TOKEN_URL, function(req, res) {
 		var data = req.body;
-		if(!authService.verifyToken(data.token)) {
-			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
+		if(!authenticationService.verifyToken(data.token)) {
+			return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.BAD_CREDENTIALS.message});
 		}
-		res.status(authConst.OK).json({success: true});
+		res.status(genericConstants.OK).json({success: true});
   	});
 
-  	app.post('/uploadQuestion', function(req, res) {
+  	application.post('/uploadQuestion', function(req, res) {
   		var data = req.body;
-  		authService.saveQuestion(data, res)
+  		authenticationService.saveQuestion(data, res)
   		.catch(function(error) {
   			res.status(401).json({});
   		});
   	});
 
-    app.post(authConst.usernameCheckUrl, function(req, res) {
+    application.post(genericConstants.USERNAME_CHECK_URL, function(req, res) {
     	var data = req.body;
     	if(!data.username){
-    		return res.status(authConst.UNAUTHORIZED).json({error : authConst.INCOMPLETE_DATA.message});
+    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
     	}
-    	authService
+    	authenticationService
     	.checkUsernameExistence(data.username)
 		.then(function(rows) {
 			if(rows.length > 0) {
-				res.status(authConst.UNAUTHORIZED).json({error : authConst.USERNAME_IN_USE.message});
+				res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.USERNAME_IN_USE.message});
 			} else {
-				res.status(authConst.OK).json({success : true});
+				res.status(genericConstants.OK).json({success : true});
 			}
 		})
     	.catch(function(error) {
-    		res.status(authConst.UNAUTHORIZED).json({error : error});
+    		res.status(genericConstants.UNAUTHORIZED).json({error : error});
     	});
     	
     });
 
-    app.post(authConst.emailCheckUrl, function(req, res) {
+    application.post(genericConstants.EMAIL_CHECK_URL, function(req, res) {
     	var data = req.body;
     	if(!data.email){
-    		return res.status(authConst.UNAUTHORIZED).json({error : authConst.INCOMPLETE_DATA.message});
+    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
     	}
 
-    	authService
+    	authenticationService
     	.checkEmailExistence(data.email)
     	.then(function(rows) {
 			if(rows.length > 0) {
-		   		res.status(authConst.UNAUTHORIZED).json({error : authConst.EMAIL_IN_USE.message});
+		   		res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.EMAIL_IN_USE.message});
 			} else {
-    			res.status(authConst.OK).json({success : true});
+    			res.status(genericConstants.OK).json({success : true});
 			}
 		})
     	.catch(function(error) {
-	    	res.status(authConst.UNAUTHORIZED).json({error : error});
+	    	res.status(genericConstants.UNAUTHORIZED).json({error : error});
     	});
     });
 
-	app.get(authConst.loginUrl, function(req, res) {
+	application.get(genericConstants.LOGIN_URL, function(req, res) {
 		var header = req.headers.authorization;
 		if(!header) {
-			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
+			return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.BAD_CREDENTIALS.message});
 		}
-		authService.loginUser(header, res)
+		authenticationService
+		.loginUser(header, res)
 		.catch(function(error){
-			res.status(authConst.UNAUTHORIZED).json({error : error});
+			res.status(genericConstants.UNAUTHORIZED).json({error : error});
 		});
 	});
 
-	app.post(authConst.registrationUrl, function(req, res) {
+	application.post(genericConstants.ACTIVATE_ACCOUNT_URL, function(req,res) {
 		var data = req.body;
-		if(!data.password 
-		|| !data.email) {
-			return res.status(authConst.UNAUTHORIZED).json({error : authConst.BAD_CREDENTIALS.message});
+		if(!data.hash){
+    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
+    	}
+
+    	authenticationService
+		.activateAccount(data.hash, res)
+		.catch(function(error){
+			res.status(genericConstants.UNAUTHORIZED).json({error : error});
+		});
+	});
+
+	application.post(genericConstants.REGISTRATION_URL, function(req, res) {
+		var header = req.headers['authorization'];
+
+		if(!header){
+			return res.status(genericConstants.UNAUTHORIZED).json({
+				error : authenticationConstants.BAD_CREDENTIALS.message
+			});
 		}
 		
-		authService.registerUser(data, res)
+		authenticationService.registerUser(header, res)
 		.catch(function(error){
-			res.status(authConst.INTERNAL_ERROR).json({error : error});
+			console.log(error.message);
+			res.status(genericConstants.INTERNAL_ERROR).json({error : error});
 		});
 	});
 
-	app.get(authConst.logoutUrl, function(req, res) {
-		authService
-		.logoutUser()
+	application.post(genericConstants.RESEND_EMAIL_URL, function(req, res) {
+		var data = req.body;
+		if(!data.email){
+    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
+    	}
+
+    	authenticationService
+		.resendEmail(data.email, res)
+		.catch(function(error){
+			res.status(genericConstants.UNAUTHORIZED).json({error : error});
+		});
+	});
+
+	application.get(genericConstants.LOGOUT_URL, function(req, res) {
 		res.status(authConst.OK).json({});
 	});
     

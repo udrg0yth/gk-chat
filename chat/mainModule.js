@@ -16,6 +16,18 @@ angular
      templateUrl: 'authentication/login.html',
      controller: 'loginController'
 	})
+	.state('mailSent', {
+		url: '/mail',
+		parent: 'main',
+		templateUrl: 'authentication/mail.html',
+		controller: 'loginController'
+	})
+	.state('completeProfile', {
+		url: '/complete/:userHash',
+		parent: 'main',
+		templateUrl: 'authentication/profile.html',
+		controller: 'loginController'
+	})
 	.state('registration', {
 	 url: '/registration',
 	 parent: 'main',

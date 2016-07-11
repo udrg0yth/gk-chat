@@ -1,19 +1,20 @@
-var express     =  require('express');
-var bodyParser  =  require('body-parser');
-var app         =  express();
-	
+var express    			=  require('express'),
+	bodyParser 			=  require('body-parser'),
+	application         =  express(),
+	genericConstants 	= require('./genericConstants')();
+
 var corsOptions = {
-    origin : 'localhost'  //digital ocean server ip
+    origin : 'localhost' 
 }
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+application.use(bodyParser.json());
+application.use(bodyParser.urlencoded({
     extended : true
 }));
 
-require('./Authentication/authentication-server')(app);
+require('./authentication/authentication-server')(application, genericConstants);
 
-app.listen(8080, function () {
+application.listen(8080, function () {
   console.log('Listening on port 8080!');
 });
 

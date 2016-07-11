@@ -1,11 +1,11 @@
-<div class="form-group" ng-form="registrationForm" style="margin-top:15%;">
+<div class="form-group text-center" ng-form="registrationForm" style="margin-top:15%;">
 	
 	<div class="input-group">
 	  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
 	  <input type="text" name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" ng-model="user.email" ng-blur="checkEmail()" ng-change="onEmailInputChange()" class="form-control input-lg" placeholder="Email" required>
 	</div><br>
 	<i ng-if="showEmailSpinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
-
+	<div ng-if="showEmailUsed" class="alert alert-danger" role="alert">Email is already registered!</div>
 
 	<div class="input-group">
 	  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
@@ -16,5 +16,6 @@
 	  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
 	  <input type="password" name="repeatedPassword" ng-model="user.repeatedPassword" class="form-control input-lg" placeholder="Repeat password" required>
 	</div><br>
+	<div ng-if="showPasswordMismatch" class="alert alert-danger" role="alert">Passwords do not match!</div>
 	<button type="button" ng-click="register()" class="btn btn-primary btn-lg btn-block">Register</button>
 </div>

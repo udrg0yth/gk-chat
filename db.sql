@@ -71,6 +71,70 @@ INSERT INTO `gk_questions` VALUES (2,'Which African Country Is The Largest In Ar
 UNLOCK TABLES;
 
 --
+-- Table structure for table `iq_links`
+--
+
+DROP TABLE IF EXISTS `iq_links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `iq_links` (
+  `iq_links_id` int(11) NOT NULL AUTO_INCREMENT,
+  `link` text NOT NULL,
+  PRIMARY KEY (`iq_links_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `iq_links`
+--
+
+LOCK TABLES `iq_links` WRITE;
+/*!40000 ALTER TABLE `iq_links` DISABLE KEYS */;
+/*!40000 ALTER TABLE `iq_links` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `iq_questions`
+--
+
+DROP TABLE IF EXISTS `iq_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `iq_questions` (
+  `iq_questions_id` int(11) NOT NULL AUTO_INCREMENT,
+  `iq_question` int(11) NOT NULL,
+  `iq_answer1` int(11) NOT NULL,
+  `iq_answer2` int(11) NOT NULL,
+  `iq_answer3` int(11) NOT NULL,
+  `iq_answer4` int(11) NOT NULL,
+  `iq_answer5` int(11) NOT NULL,
+  `iq_answer6` int(11) NOT NULL,
+  PRIMARY KEY (`iq_questions_id`),
+  KEY `iq_answer1` (`iq_answer1`),
+  KEY `iq_answer2` (`iq_answer2`),
+  KEY `iq_answer3` (`iq_answer3`),
+  KEY `iq_answer4` (`iq_answer4`),
+  KEY `iq_answer5` (`iq_answer5`),
+  KEY `iq_answer6` (`iq_answer6`),
+  CONSTRAINT `iq_questions_ibfk_1` FOREIGN KEY (`iq_answer1`) REFERENCES `iq_links` (`iq_links_id`),
+  CONSTRAINT `iq_questions_ibfk_2` FOREIGN KEY (`iq_answer2`) REFERENCES `iq_links` (`iq_links_id`),
+  CONSTRAINT `iq_questions_ibfk_3` FOREIGN KEY (`iq_answer3`) REFERENCES `iq_links` (`iq_links_id`),
+  CONSTRAINT `iq_questions_ibfk_4` FOREIGN KEY (`iq_answer4`) REFERENCES `iq_links` (`iq_links_id`),
+  CONSTRAINT `iq_questions_ibfk_5` FOREIGN KEY (`iq_answer5`) REFERENCES `iq_links` (`iq_links_id`),
+  CONSTRAINT `iq_questions_ibfk_6` FOREIGN KEY (`iq_answer6`) REFERENCES `iq_links` (`iq_links_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `iq_questions`
+--
+
+LOCK TABLES `iq_questions` WRITE;
+/*!40000 ALTER TABLE `iq_questions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `iq_questions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `personality_questions`
 --
 
@@ -112,7 +176,6 @@ CREATE TABLE `user` (
   `credits` int(11) NOT NULL,
   `last_personality_question_id` int(11) NOT NULL,
   `current_personality` varchar(32) NOT NULL,
-  `correct_easy_iq_questions` int(11) NOT NULL,
   `total_easy_iq_answers` int(11) NOT NULL,
   `correct_medium_iq_answers` int(11) NOT NULL,
   `total_medium_iq_answers` int(11) NOT NULL,
@@ -121,8 +184,11 @@ CREATE TABLE `user` (
   `correct_gk_answers` int(11) NOT NULL,
   `total_gk_answers` int(11) NOT NULL,
   `gender` tinyint(4) DEFAULT NULL,
+  `correct_easy_iq_answers` int(11) NOT NULL,
+  `current_iq_score` int(11) NOT NULL,
+  `current_gk_score` decimal(10,0) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,6 +197,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (25,NULL,'sha1$f6d833fc$1$b58ecd4daba1f28274b471e6122b5583612091a5','vladradu97150@hotmail.com',NULL,'ACTIVE',150,1,'0.0.0.0',0,0,0,0,0,0,0,NULL,0,0,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +210,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-08 14:40:41
+-- Dump completed on 2016-07-11 12:20:40

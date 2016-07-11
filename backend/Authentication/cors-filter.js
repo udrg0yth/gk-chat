@@ -1,5 +1,5 @@
-module.exports = function(app, authConst) {
-	app.use(function(req, res, next) {
+module.exports = function(application) {
+	application.use(function(req, res, next) {
 	  var allowedOrigins = ['http://localhost:9000', 'http://localhost:8081'],
 	  	  origin = req.headers.origin;
 	  if(allowedOrigins.indexOf(origin) > -1){

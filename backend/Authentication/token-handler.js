@@ -1,29 +1,34 @@
-module.exports = function(app,
-						  authConst) {
+module.exports = function(application,
+						  authenticationConstants,
+						  genericConstants) {
 	var uuid        =  require('node-uuid');
 	var jwt 		=  require('jsonwebtoken');
 	var secretKey   =  uuid.v4(); 
 
 	function tokenInterceptor(req, res, next) {
-		if(req.url === authConst.loginUrl
-		|| req.url === authConst.registrationUrl) {
+		if(req.url === genericConstants.LOGIN_URL
+		|| req.url === genericConstants.REGISTRATION_URL) {
 			return next();
 		}
 		return next();
 		
 		var data = req.body;
 		if(!data.token){
-			res.status(authConst.UNAUTHORIZED).json(authConst.authFailed);
+			res.status(genericConstants.UNAUTHORIZED).json({
+				error: authenticationConstants.INVALID_TOKEN.message
+			});	
 		}
 		try {
 			jwt.verify(data.token, secretKey);
 			next();
 		} catch(ex) {
-			res.status(authConst.UNAUTHORIZED).json(authConst.authFailed);
+			res.status(genericConstants.UNAUTHORIZED).json({
+				error: authenticationConstants.INVALID_TOKEN.message
+			});
 		}
 	}
 
-	app.use(tokenInterceptor);
+	application.use(tokenInterceptor);
 
 	return {
 		generateToken: function(claims) {

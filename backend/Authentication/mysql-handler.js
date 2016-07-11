@@ -1,20 +1,19 @@
-module.exports = function(app,
-						  authConst) {
+module.exports = function(genericConstants) {
 
 	var mysql      = require('promise-mysql');
 	var connection;
 
-	mysql.createConnection(authConst.mysqlSource)
+	mysql.createConnection(genericConstants.MYSQL_SOURCE)
 	.then(function(conn){
 	    connection = conn;
 	});
 
 	function retrieveUserByTemplate(column, data) {
-		var queryString = authConst
-						.selectTemp
-						.replace('$columns', authConst.userColumns)
-						.replace('$table', authConst.userTable)
-					   + authConst.criteriaTemp
+		var queryString = genericConstants
+						.SELECT_TEMPLATE
+						.replace('$columns', genericConstants.USER_COLUMNS_WITH_ID)
+						.replace('$table', genericConstants.USER_TABLE)
+					   + genericConstants.CRITERIA_TEMPLATE
 						.replace('$criteria', column + '="' + data + '"');
 		console.log(queryString);
 		return connection.query(queryString);
@@ -38,10 +37,10 @@ module.exports = function(app,
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
 			             '"' + 0 + '"';
-			var queryString = authConst
-							.insertTemp
-							.replace('$table', authConst.userTable)
-							.replace('$columns', authConst.userColumns)
+			var queryString = genericConstants
+							.INSERT_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$columns', genericConstants.USER_COLUMNS)
 							.replace('$values', values);
 			return connection.query(queryString);
 		},
@@ -60,11 +59,22 @@ module.exports = function(app,
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
 			             '"' + 0 + '"';
-			var queryString = authConst
-							.insertTemp
-							.replace('$table', authConst.userTable)
-							.replace('$columns', authConst.userColumns)
+			var queryString = genericConstants
+							.INSERT_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$columns', genericConstants.REGISTRATION_COLUMNS)
 							.replace('$values', values);
+			return connection.query(queryString);
+		},
+		activateAccount: function(userId) {
+			var map = 'account_status="ACTIVE"',
+				queryString = genericConstants
+							.UPDATE_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$map', map)
+						 +    genericConstants
+						 	.CRITERIA_TEMPLATE
+						 	.replace('$criteria', 'user_id="' + userId + '"');
 			return connection.query(queryString);
 		},
 		saveQuestion: function(question) {

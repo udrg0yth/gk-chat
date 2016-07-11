@@ -1,4 +1,4 @@
-module.exports = function(authConst) {
+module.exports = function(authConstants) {
 	
 	return {
 		computeIq: function(data) {

@@ -1,11 +1,12 @@
-module.exports = function(authConst) {
+module.exports = function(authenticationConstants) {
 	var passwordHash = require('password-hash'),
 	    nodemailer = require('nodemailer'),
+	    crypto = require('crypto'),
 	    transporter = nodemailer.createTransport({
        		    service: 'Gmail',
 		        auth: {
-		            user: 'chat.dev.group@gmail.com',
-		            pass: 'randomette'
+		            user: 'vladradu97150@gmail.com',
+		            pass: 'vladradu1995'
 		        }
 		});
 
@@ -26,13 +27,12 @@ module.exports = function(authConst) {
 			}
 			return credentials;
 		},
-		sendActivationLink: function(user) {
+		sendActivationLink: function(to, message) {
 		    var mailOptions = {
-			    from: 'chat.dev.group@gmail.com>',
-			    to: user.email,
+			    from: 'vladradu97150@gmail.com',
+			    to: to,
 			    subject: 'Randomette confirmation',
-			    text: 'test'
-			    // html: '<b>Hello world</b>' // for html!
+			    html: message
 			};
 
 			transporter.sendMail(mailOptions, function(error, info){
@@ -42,6 +42,18 @@ module.exports = function(authConst) {
 			        console.log('Message sent: ' + info.response);
 			    };
 			});
+		},
+		encrypt: function(text) {
+			  var cipher = crypto.createCipher(authenticationConstants.CRYPTO_ALGORITHM ,authenticationConstants.CRYPTO_SECRET),
+			  	  crypted = cipher.update(text,'utf8','hex');
+			  crypted += cipher.final('hex');
+			  return crypted;
+		},
+		decrypt: function(text) {
+			  var decipher = crypto.createDecipher(authenticationConstants.CRYPTO_ALGORITHM ,authenticationConstants.CRYPTO_SECRET),
+			  	  dec = decipher.update(text,'hex','utf8');
+			  dec += decipher.final('utf8');
+			  return dec;
 		}
 	}
 }

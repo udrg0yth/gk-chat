@@ -1,5 +1,5 @@
-angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage',
-function($scope, $state, loginService, tokenService, $localStorage) {
+angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage', '$stateParams', '$rootScope',
+function($scope, $state, loginService, tokenService, $localStorage, $stateParams, $rootScope) {
 	$scope.user = {
 		gender: 'male'
 	};
@@ -13,6 +13,9 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 	$scope.invalidDate = false;
 	$scope.usernameAlreadyCheckedPositive = false;
 	$scope.emailAlreadyCheckedPositive = false;
+	$scope.showEmailUsed = false;
+	$scope.showPasswordMismatch = false;
+	$scope.showResendMail = false;
 
 	$('#datepick input').datepicker({
 		format : 'yyyy-mm-dd',
@@ -20,24 +23,56 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		autoclose : true
 	});
 
+	if($stateParams.userHash) {
+		loginService
+		.activateAccount($stateParams.userHash)
+		.success(function() {
+		})
+		.error(function(error) {
+			$state.go('login');
+		});
+	}
+
 	$scope.login = function() {
 		$scope.submittedLogin = true;
 		$scope.showErrorMessage = false;
+		$scope.showResendMail = false;
 		if($scope.loginForm.$invalid) {
 			return;
 		}
 		$scope.submittedLogin = false;
-		loginService.authenticate($scope.user)
+		loginService
+		.authenticate($scope.user)
 		.success(function(data, status, headers) {
 			var head = headers();
 			if(head['x-auth-token']) {
+				console.log(head['x-auth-token']);
 				$localStorage.token = head['x-auth-token'];
-				$state.go('chat');
+				//$state.go('chat');
 			}
- 		}).error(function(error) {
- 			$scope.errorMessage = 'Wrong username or password!';
- 			$scope.showErrorMessage = true;
+ 		}).error(function(e) {
+ 			if(e.error === 'INCOMPLETE_PROFILE') {
+ 				$state.go('completeProfile');
+ 			} else if (e.error === 'INACTIVE_ACCOUNT') {
+ 				$scope.errorMessage = 'Inactive account! Please confirm your account by clicking on the link inside the sent mail!';
+ 				$scope.showResendMail = true;
+ 				$scope.showErrorMessage = true;
+ 			} else {
+ 				$scope.errorMessage = 'Wrong username or password!';
+ 				$scope.showErrorMessage = true;
+ 			}
  		});
+	};
+
+	$scope.resendEmail() {
+		loginService
+		.resendEmail($scope.user.email)
+		.success(function(data) {
+
+		})
+		.error(function(error) {
+
+		});
 	};
 
 	$scope.goRegister = function() {
@@ -48,11 +83,16 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 	$scope.register = function() {
 		$scope.errorMessage = false;
 		$scope.submittedRegistration = true;
+		$scope.showPasswordMismatch = false;
 		if($scope.registrationForm.$invalid) {
+			return;
+		}
+		if(!$scope.emailAlreadyCheckedPositive) {
 			return;
 		}
 		if($scope.user.password 
 		!== $scope.user.repeatedPassword) {
+			$scope.showPasswordMismatch = true;
 			$scope.passwordsMatch = false;
 			return;
 		} else {
@@ -61,11 +101,9 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 
 		$scope.submittedRegistration = false;
 		loginService.register($scope.user)
-		.success(function(data, status, headers) {
-			var head = headers();
-			if(head['x-auth-token']) {
-				$localStorage.token = head['x-auth-token'];
-			}
+		.success(function(data) {
+			$rootScope.email = $scope.user.email;
+			$state.go('mailSent');
 		})
 		.error(function(err) {
 			$scope.errorMessage = 'Could not create account. Try again.';
@@ -104,6 +142,7 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		if($scope.emailAlreadyCheckedPositive) {
 			return;
 		}
+		$scope.showEmailUsed = false;
 		$scope.showEmailSpinner = true;
 		loginService
 		.checkEmail($scope.user.email)
@@ -113,6 +152,7 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		})
 		.error(function(error) {
 			$scope.showEmailSpinner = false;
+			$scope.showEmailUsed = true;
 		});
 	};
 
@@ -120,4 +160,7 @@ function($scope, $state, loginService, tokenService, $localStorage) {
 		$scope.emailAlreadyCheckedPositive = false;
 	};
 
+	$scope.showTutorialModal = function() {
+		$('#tutorialProfileModal').modal('show');
+	}
 }]);

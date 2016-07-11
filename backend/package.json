@@ -4,6 +4,7 @@
   "description": "chat app",
   "dependencies": {
     "body-parser": "^1.13.3",
+    "crypto": "0.0.3",
     "express": "^4.11.0",
     "hashmap": "^2.0.3",
     "jsonwebtoken": "^5.7.0",
