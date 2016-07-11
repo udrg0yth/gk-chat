@@ -1,7 +1,8 @@
-module.exports = function(application, genericConstants) {
+module.exports = function(application, genericConstants, tokenHandler, authMysqlHandler) {
 	var authenticationConstants 	  	=  require('./authentication-constants')(),
 		corsFilter    					=  require('./cors-filter')(application, authenticationConstants),
-		authenticationService  		  	=  require('./authentication-service')(application, authenticationConstants, genericConstants);
+		authenticationService  		  	=  require('./authentication-service')(application, 
+			authenticationConstants, genericConstants, tokenHandler, authMysqlHandler);
   
   	application.post(genericConstants.VERIFY_TOKEN_URL, function(req, res) {
 		var data = req.body;

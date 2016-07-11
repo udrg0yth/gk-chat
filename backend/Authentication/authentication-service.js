@@ -1,24 +1,22 @@
-module.exports = function(application, authenticationConstants, genericConstants) {
-	var mysqlHandler 			 =  require('./mysql-handler')(genericConstants);
-    var tokenHandler 			 =  require('./token-handler')(application, authenticationConstants, genericConstants);
-	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants);
-	var profileTools  			 =  require('./profile-tools')(authenticationConstants);
+module.exports = function(application, authenticationConstants, genericConstants, tokenHandler, authMysqlHandler) {
+	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants),
+		profileTools  			 =  require('./profile-tools')(authenticationConstants);
 
 	return {
 		verifyToken: function(token) {
 			return tokenHandler.verifyToken(token);
 		},
 		checkEmailExistence: function(email){
-			return mysqlHandler
+			return authMysqlHandler
 			.retrieveUserByEmail(email);
 
 		},
 		checkUsernameExistence: function(username) {
-		    return mysqlHandler
+		    return authMysqlHandler
 			.retrieveUserByUsername(username);
 		},
 		resendEmail: function(email, res) {
-			return mysqlHandler
+			return authMysqlHandler
 		    .retrieveUserByEmail(email)
 		    .then(function(rows) {
 				if(rows.length > 0) {
@@ -34,7 +32,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 		},
 		activateAccount: function(hash, res) {
 			var userId = authenticationTools.decrypt(hash);
-			return mysqlHandler
+			return authMysqlHandler
 					.retrieveUserById(userId)
 					.then(function(rows) {
 						if(rows[0].account_status === 'ACTIVE') {
@@ -42,7 +40,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 								error: authenticationConstants.ACCOUNT_ALREADY_ACTIVE.message
 							});
 						} else {
-							mysqlHandler
+							authMysqlHandler
 						    .activateAccount()
 						    .then(function(rows) {
 						    	res.status(genericConstants.OK).json({});
@@ -51,7 +49,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 					});
 		},
 		saveQuestion: function(question, res) {
-			 return mysqlHandler
+			 return authMysqlHandler
 		    .saveQuestion(question)
 		    .then(function(rows) {
 				res.status(genericConstants.OK).json({});
@@ -60,7 +58,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 		loginUser: function(header, res) {
 			var credentials = authenticationTools.getCredentials(header);
 
-			return mysqlHandler
+			return authMysqlHandler
 				.retrieveUserByEmail(credentials[0])
 				.then(function(rows) {
 					if(rows.length === 0) {
@@ -95,7 +93,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 			data.password = authenticationTools.hashPassword(data.password);
 			data.account_status = 'INACTIVE';
 
-			return mysqlHandler
+			return authMysqlHandler
 				.saveUser(data)
 				.then(function(data) {
 					var token = tokenHandler.generateToken({id:           data.insertedId,
@@ -119,10 +117,10 @@ module.exports = function(application, authenticationConstants, genericConstants
 				accountStatus: 'INACTIVE'
 			};
 
-			return mysqlHandler
+			return authMysqlHandler
 				.registerUser(data)
 				.then(function(data) {
-					mysqlHandler
+					authMysqlHandler
 					.retrieveUserById(data.insertId)
 					.then(function(user) {
 						var message = 

@@ -1,5 +1,5 @@
-angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage', '$stateParams', '$rootScope',
-function($scope, $state, loginService, tokenService, $localStorage, $stateParams, $rootScope) {
+angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage', '$stateParams', '$rootScope', 'WizardHandler',
+function($scope, $state, loginService, tokenService, $localStorage, $stateParams, $rootScope, WizardHandler) {
 	$scope.user = {
 		gender: 'male'
 	};
@@ -17,11 +17,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 	$scope.showPasswordMismatch = false;
 	$scope.showResendMail = false;
 
-	$('#datepick input').datepicker({
-		format : 'yyyy-mm-dd',
-		startView: "years",
-		autoclose : true
-	});
+	
 
 	if($stateParams.userHash) {
 		loginService
@@ -29,7 +25,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		.success(function() {
 		})
 		.error(function(error) {
-			$state.go('login');
+			// $state.go('login');
 		});
 	}
 
@@ -64,7 +60,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
  		});
 	};
 
-	$scope.resendEmail() {
+	$scope.resendEmail= function() {
 		loginService
 		.resendEmail($scope.user.email)
 		.success(function(data) {
@@ -111,10 +107,25 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		});
 	};
 
-	$scope.checkUsername = function() {
-		if($scope.registrationForm.username.$invalid) {
+	$scope.firstStep = function() {
+		$scope.showInvalidDate = false;
+		if(!(moment($scope.user.birthdate, "YYYY-MM-DD", true).isValid())) {
+			$scope.errorMessage = 'Invalid date format! Expecting yyyy-MM-dd.';
+			$scope.showInvalidDate = true;
 			return;
+		} else {
+			WizardHandler.wizard().next();
 		}
+	};
+
+	$scope.checkUsername = function(registrationForm) {
+		$scope.showErrorMessage = false;
+		if(registrationForm.username.$invalid) {
+			$scope.errorMessage = 'Username must have between 3 and 15 alphanumeric characaters!'
+			$scope.showErrorMessage = true;
+			return;
+		} 
+
 		if($scope.usernameAlreadyCheckedPositive) {
 			return;
 		}
@@ -126,6 +137,8 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 			$scope.usernameAlreadyCheckedPositive = true;
 		})
 		.error(function(error) {
+			$scope.errorMessage = 'Username in use! Please choose another.'
+			$scope.showErrorMessage = true;
 			$scope.showUsernameSpinner = false;
 		});
 	};
@@ -160,7 +173,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		$scope.emailAlreadyCheckedPositive = false;
 	};
 
-	$scope.showTutorialModal = function() {
-		$('#tutorialProfileModal').modal('show');
-	}
+	$scope.showPersonalityQuestionModal = function() {
+		$('#personalityQuestionModal').modal('show');
+	};
 }]);

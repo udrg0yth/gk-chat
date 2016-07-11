@@ -35,6 +35,19 @@
 		</div>
 </div>
 
-<modal id="tutorialProfileModal" title="Profile">
-	<h1> Profile modal </h1>
+<modal id="personalityQuestionModal" title="Personality Question">
+	<div ng-cloak>
+		<div>
+			<span class="badge">{pquestion.questionId}</span>
+	    	<span> {{pquestion.question}}</span>
+		</div>
+		<div >
+			<div class="btn-group">
+		        <label class="btn btn-warning" ng-model="pquestion.answer" uib-btn-radio="'0'">Strongly Disagree</label>
+		        <label class="btn btn-success" ng-model="pquestion.answer" uib-btn-radio="'1'">Disagree</label>
+		        <label class="btn btn-default" ng-model="pquestion.answer" uib-btn-radio="'2'">Neutral</label>
+		        <label class="btn btn-success" ng-model="pquestion.answer" uib-btn-radio="'3'">Agree</label>
+		        <label class="btn btn-warning" ng-model="pquestion.answer" uib-btn-radio="'4'">Strongly Agree</label>
+		    </div>
+		</div>
 </modal>

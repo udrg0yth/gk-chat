@@ -31,15 +31,15 @@ module.exports = function() {
 		CRITERIA_TEMPLATE:  'WHERE $criteria ',
 
 		//users
-		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status, credits, last_personality_question_id,'
+		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
 					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
-		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, credits, last_personality_question_id,'
+		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
 					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
-		REGISTRATION_COLUMNS: 'email, password, account_status, credits, last_personality_question_id,'
+		REGISTRATION_COLUMNS: 'email, password, account_status, credits, current_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
 					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
@@ -51,6 +51,11 @@ module.exports = function() {
 		GK_QUESTION_COLUMNS_WITH_ID: 'gk_question_id, gk_question, category_id, gk_answer1, gk_answer2, gk_answer3, gk_answer4',
 		GK_QUESTION_TABLE: 'gk_questions',
 
+		//gk question user
+		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id, timestamp',
+		GK_QUESTION_USER_COLUMNS_WITH_ID: 'gk_question_user_id, user_id, gk_question_id, timestamp',
+		GK_QUESTION_USER_TABLE: 'gk_question_user',
+
 		//categories
 		CATEGORY_COLUMNS: 'category',
 		CATEGORY_COLUMNS_WITH_ID: 'category_id, category',
@@ -60,6 +65,10 @@ module.exports = function() {
 		PERSONALITY_QUESTION_COLUMNS: 'personality_question, negatively_affected_type',
 		PERSONALITY_QUESTION_COLUMNS_WITH_ID: 'personality_question_id, personality_question, negatively_affected_type',
 		PERSONALITY_QUESTIONS_TABLE: 'personality_questions',
+
+
+		INVALID_TOKEN: new Error('INVALID_TOKEN'),
+		UNKNOWN_USER: new Error('UNKNOWN_USER')
 	}
 
 };

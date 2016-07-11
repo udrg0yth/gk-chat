@@ -1,5 +1,5 @@
 angular
-.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard'])
+.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard', 'ui.bootstrap'])
 .config(['$stateProvider', '$urlRouterProvider',  function ($stateProvider, $urlRouterProvider) {
 	$stateProvider
 	.state('main', {

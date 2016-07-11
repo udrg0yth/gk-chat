@@ -1,33 +1,37 @@
 <wizard on-finish="finishedWizard()"> 
     <wz-step wz-title="Basic info">
-        <div class="form-group" ng-form="registrationForm" style="margin-top:15%;">
+        <div class="form-group text-center" ng-form="registrationForm" style="margin-top:15%;">
 			<div class="input-group">
 			  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-			  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername()" ng-change="onUsernameInputChange()" class="form-control input-lg" placeholder="Chose a username" required>
-			</div>
-			<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i>
+			  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername(registrationForm)" ng-change="onUsernameInputChange()" class="form-control input-lg" placeholder="Chose a username" required>
+			</div><br>
+			<div ng-if="showErrorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+			<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i><br>
 
 			<div id="datepick" class="input-group date-pick">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				<input type="text" data-date-format="yyyy-mm-dd" placeholder="Your date of birth" name="birthdate" ng-model="user.birthdate" class="form-control input-lg" required/>
-			</div>
-
-			<div class="btn-group" data-toggle="button">
-				<label class="btn btn-default"> Male
-					<input type="radio" ng-model="user.gender" value="male">
-				</label>
-				<label class="btn btn-default">Female
-					<input type="radio" ng-model="user.gender" value="female">
-				</label>
-			</div>
+			</div><br>
+			<div ng-if="showInvalidDate" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+			<div class="btn-group">
+		        <label class="btn btn-success" ng-model="user.gender" uib-btn-radio="'male'">Male</label>
+		        <label class="btn btn-success" ng-model="user.gender" uib-btn-radio="'female'">Female</label>
+		    </div>
 		</div>
-        <input type="submit" wz-next value="Continue" />
+		<script>
+			$('#datepick input').datepicker({
+				format : 'yyyy-mm-dd',
+				startView: "years",
+				autoclose : true
+			});
+		</script>
+        <button class="btn btn-primary" ng-click="firstStep()">Continue</button>
     </wz-step>
     <wz-step wz-title="Personality questions">
-    	<div style="margin-top:15%">
-        	<img src="../assets/puzzle0/puzzle.jpg" class="img-responsive center-block" style="width:100%;">
-        </div>
-        <input type="submit" wz-next value="Go on" />
+    	<p style="color:white;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
+    	   personality questions. 
+    	</p>
+        <button class="btn btn-warning" ng-click="showPersonalityQuestionModal()">Answer question</button>
     </wz-step>
     <wz-step wz-title="Logic questions">
         <p ng-click="showTutorialModal()">Logic question!</p>
