@@ -34,15 +34,15 @@ module.exports = function() {
 		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status, credits, last_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
 		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, credits, last_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
 		REGISTRATION_COLUMNS: 'email, password, account_status, credits, last_personality_question_id,'
 					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
 		PROFILE_COLUMNS: 'username, birthdate, gender',
 		USER_TABLE: 'user',
 

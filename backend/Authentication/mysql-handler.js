@@ -36,6 +36,8 @@ module.exports = function(genericConstants) {
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
 			             '"' + 0 + '"';
 			var queryString = genericConstants
 							.INSERT_TEMPLATE
@@ -52,6 +54,8 @@ module.exports = function(genericConstants) {
 			             '"' + 1 + '",' +
 			             '"0.0.0.0",' +
 			             '"' + 0 + '",' + 
+			             '"' + 0 + '",' +
+			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
