@@ -15,8 +15,12 @@ module.exports = function() {
 		EMAIL_CHECK_URL: 		'/auth/emailUse',
 		VERIFY_TOKEN_URL: 		'/auth/verifyToken',
 		ACTIVATE_ACCOUNT_URL:   '/auth/activateAccount',
-		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
 		RESEND_EMAIL_URL: 		'/auth/resendEmail',
+
+
+		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
+
+		NEXT_PERSONALITY_QUESTION_URL: '/personality/nextQuestion',
 		
 		MYSQL_SOURCE: {
 		    host: 		'localhost',
@@ -51,10 +55,25 @@ module.exports = function() {
 		GK_QUESTION_COLUMNS_WITH_ID: 'gk_question_id, gk_question, category_id, gk_answer1, gk_answer2, gk_answer3, gk_answer4',
 		GK_QUESTION_TABLE: 'gk_questions',
 
+		//iq questions
+		IQ_QUESTION_COLUMNS: 'iq_question, iq_difficulty, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
+		IQ_QUESTION_COLUMNS_WITH_ID: 'iq_question_id, iq_question, difficulty, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
+		IQ_QUESTION_TABLE: 'iq_question',
+
+		//iq question links
+		IQ_QUESTION_LINK_COLUMNS: 'link',
+		IQ_QUESTION_LINK_COLUMNS_WITH_ID: 'iq_question_link_id, link',
+		IQ_QUESTION_TABLE: 'iq_question_link',
+
 		//gk question user
 		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id, timestamp',
 		GK_QUESTION_USER_COLUMNS_WITH_ID: 'gk_question_user_id, user_id, gk_question_id, timestamp',
 		GK_QUESTION_USER_TABLE: 'gk_question_user',
+
+		//iq question user
+		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id, timestamp',
+		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id, timestamp',
+		IQ_QUESTION_USER_TABLE: 'iq_question_user',
 
 		//categories
 		CATEGORY_COLUMNS: 'category',

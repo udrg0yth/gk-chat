@@ -11,11 +11,21 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'userId="' + userId + '"');
 			return connection.query(queryString);
 		},
-		updateNextQuestion: function(userId) {
+		updateNextQuestionAndPersonality: function(userId, currentPersonality) {
 			var queryString = genericConstants
 							.UPDATE_TEMPLATE
 							.replace('$table', genericConstants.USER_TABLE)
-							.replace('$map', 'current_personality_question_id=current_personality_question_id+1')
+							.replace('$map', 'current_personality_question_id=current_personality_question_id+1,' +
+								'current_personality="' + currentPersonality + '"')
+							+ genericConstants.
+							CRITERIA_TEMPLATE
+							.replace('$criteria', 'userId="' + question.userId + '"');
+			return connection.query(queryString);
+		},
+		getCurrentPersonality: function(userId) {
+			var queryString = genericConstants
+							.SELECT_TEMPLATE
+							.replace('$columns', 'current_personality')
 							+ genericConstants.
 							CRITERIA_TEMPLATE
 							.replace('$criteria', 'userId="' + userId + '"');
