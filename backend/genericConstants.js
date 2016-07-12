@@ -87,7 +87,11 @@ module.exports = function() {
 
 
 		INVALID_TOKEN: new Error('INVALID_TOKEN'),
-		UNKNOWN_USER: new Error('UNKNOWN_USER')
+		UNKNOWN_USER: new Error('UNKNOWN_USER'),
+
+		GENERATE_RANDOM: function(max) {
+			return Math.floor(Math.rand() * max);
+		}
 	}
 
 };

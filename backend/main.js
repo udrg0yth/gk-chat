@@ -12,7 +12,9 @@ var corsOptions = {
 mysql.createConnection(genericConstants.MYSQL_SOURCE)
 .then(function(connection){
 	var authMysqlHandler    = require('./mysql-handlers/authentication-mysql-handler')(genericConstants, connection),
-		persMysqlHandler    = require('./mysql-handlers/personality-mysql-handler')(genericConstants, connection);
+		persMysqlHandler    = require('./mysql-handlers/personality-mysql-handler')(genericConstants, connection),
+		gkMysqlHandler		= require('./mysql-handlers/gk-mysql-handler')(genericConstants, connection),
+		intelMysqlHandler	= require('./mysql-handlers/intl-mysql-handler')(genericConstants, connection);
 		
 	    require('./authentication/authentication-server')(application, 
 			genericConstants, tokenHandler, authMysqlHandler);

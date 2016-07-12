@@ -73,12 +73,6 @@ module.exports = function(genericConstants, connection) {
 						 	.replace('$criteria', 'user_id="' + userId + '"');
 			return connection.query(queryString);
 		},
-		saveQuestion: function(question) {
-			var queryString = 'INSERT INTO gk_questions (gk_question, gk_answer1, gk_answer2, ' +
-			'gk_answer3, gk_answer4, category_id) values ("' +  question.question + '","' + question.answer1 + '","' +
-			question.answer2 + '","' + question.answer3 + '","' + question.answer4 + '","' + question.category + '")';
-			return connection.query(queryString);			 
-		},
 		retrieveUserById: function(userId) {
 			return retrieveUserByTemplate('user_id', userId);
 		},

@@ -8,6 +8,7 @@
     "express": "^4.11.0",
     "hashmap": "^2.0.3",
     "jsonwebtoken": "^5.7.0",
+    "node-schedule": "^1.1.1",
     "node-uuid": "^1.4.7",
     "nodemailer": "^2.3.2",
     "password-hash": "^1.2.2",
