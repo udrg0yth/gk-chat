@@ -58,12 +58,12 @@ module.exports = function() {
 		//iq questions
 		IQ_QUESTION_COLUMNS: 'iq_question, iq_difficulty, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
 		IQ_QUESTION_COLUMNS_WITH_ID: 'iq_question_id, iq_question, difficulty, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
-		IQ_QUESTION_TABLE: 'iq_question',
+		IQ_QUESTION_TABLE: 'iq_questions',
 
 		//iq question links
 		IQ_QUESTION_LINK_COLUMNS: 'link',
-		IQ_QUESTION_LINK_COLUMNS_WITH_ID: 'iq_question_link_id, link',
-		IQ_QUESTION_TABLE: 'iq_question_link',
+		IQ_QUESTION_LINK_COLUMNS_WITH_ID: 'iq_link_id, link',
+		IQ_QUESTION_TABLE: 'iq_links',
 
 		//gk question user
 		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id, timestamp',

@@ -40,6 +40,35 @@ INSERT INTO `category` VALUES (1,'Geography'),(2,'History'),(3,'Art'),(4,'Litera
 UNLOCK TABLES;
 
 --
+-- Table structure for table `gk_question_user`
+--
+
+DROP TABLE IF EXISTS `gk_question_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `gk_question_user` (
+  `gk_question_user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `gk_question_id` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gk_question_user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `gk_question_id` (`gk_question_id`),
+  CONSTRAINT `gk_question_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `gk_question_user_ibfk_2` FOREIGN KEY (`gk_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gk_question_user`
+--
+
+LOCK TABLES `gk_question_user` WRITE;
+/*!40000 ALTER TABLE `gk_question_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gk_question_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `gk_questions`
 --
 
@@ -94,6 +123,35 @@ LOCK TABLES `iq_links` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `iq_question_user`
+--
+
+DROP TABLE IF EXISTS `iq_question_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `iq_question_user` (
+  `iq_question_user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `gk_question_id` int(11) NOT NULL,
+  `timestampt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`iq_question_user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `gk_question_id` (`gk_question_id`),
+  CONSTRAINT `iq_question_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `iq_question_user_ibfk_2` FOREIGN KEY (`gk_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `iq_question_user`
+--
+
+LOCK TABLES `iq_question_user` WRITE;
+/*!40000 ALTER TABLE `iq_question_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `iq_question_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `iq_questions`
 --
 
@@ -109,6 +167,7 @@ CREATE TABLE `iq_questions` (
   `iq_answer4` int(11) NOT NULL,
   `iq_answer5` int(11) NOT NULL,
   `iq_answer6` int(11) NOT NULL,
+  `iq_correct_answer` int(11) DEFAULT NULL,
   PRIMARY KEY (`iq_questions_id`),
   KEY `iq_answer1` (`iq_answer1`),
   KEY `iq_answer2` (`iq_answer2`),
@@ -116,12 +175,14 @@ CREATE TABLE `iq_questions` (
   KEY `iq_answer4` (`iq_answer4`),
   KEY `iq_answer5` (`iq_answer5`),
   KEY `iq_answer6` (`iq_answer6`),
+  KEY `iq_correct_answer` (`iq_correct_answer`),
   CONSTRAINT `iq_questions_ibfk_1` FOREIGN KEY (`iq_answer1`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_2` FOREIGN KEY (`iq_answer2`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_3` FOREIGN KEY (`iq_answer3`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_4` FOREIGN KEY (`iq_answer4`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_5` FOREIGN KEY (`iq_answer5`) REFERENCES `iq_links` (`iq_links_id`),
-  CONSTRAINT `iq_questions_ibfk_6` FOREIGN KEY (`iq_answer6`) REFERENCES `iq_links` (`iq_links_id`)
+  CONSTRAINT `iq_questions_ibfk_6` FOREIGN KEY (`iq_answer6`) REFERENCES `iq_links` (`iq_links_id`),
+  CONSTRAINT `iq_questions_ibfk_7` FOREIGN KEY (`iq_correct_answer`) REFERENCES `iq_links` (`iq_links_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -174,7 +235,6 @@ CREATE TABLE `user` (
   `birthdate` datetime DEFAULT NULL,
   `account_status` varchar(16) NOT NULL,
   `credits` int(11) NOT NULL,
-  `last_personality_question_id` int(11) NOT NULL,
   `current_personality` varchar(32) NOT NULL,
   `total_easy_iq_answers` int(11) NOT NULL,
   `correct_medium_iq_answers` int(11) NOT NULL,
@@ -186,8 +246,11 @@ CREATE TABLE `user` (
   `gender` tinyint(4) DEFAULT NULL,
   `correct_easy_iq_answers` int(11) NOT NULL,
   `current_iq_score` int(11) NOT NULL,
-  `current_gk_score` decimal(10,0) NOT NULL,
-  PRIMARY KEY (`user_id`)
+  `current_gk_score` decimal(10,2) NOT NULL,
+  `current_personality_question_id` int(11) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `current_personality_question_id` (`current_personality_question_id`),
+  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`current_personality_question_id`) REFERENCES `personality_questions` (`personality_question_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -197,7 +260,6 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (25,NULL,'sha1$f6d833fc$1$b58ecd4daba1f28274b471e6122b5583612091a5','vladradu97150@hotmail.com',NULL,'ACTIVE',150,1,'0.0.0.0',0,0,0,0,0,0,0,NULL,0,0,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -210,4 +272,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-11 12:20:40
+-- Dump completed on 2016-07-12  9:26:10
