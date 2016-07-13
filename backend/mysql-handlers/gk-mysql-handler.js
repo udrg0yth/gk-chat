@@ -22,7 +22,7 @@ module.exports = function(genericConstants, connection) {
 		getRandomQuestion: function() {s
 							.SELECT_TEMPLATE
 							.replace('$table', genericConstants.GK_QUESTION_TABLE)
-							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS)
+							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 'gk_question_id="' + genericConstants.GENERATE_RANDOM(count) + '"');
 			return connection.query(queryString);
@@ -32,7 +32,7 @@ module.exports = function(genericConstants, connection) {
 							.SELECT_TEMPLATE
 							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE + ' JOIN ' + genericConstants.GK_QUESTION_TABLE
 							 + ' USING (gk_question_id)')
-							.replace('$columns', 'timestamp, ' + genericConstants.GK_QUESTION_COLUMNS)
+							.replace('$columns', 'timestamp, ' + genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 'userId="' + userId + '"');
 			return connection.query(queryString);

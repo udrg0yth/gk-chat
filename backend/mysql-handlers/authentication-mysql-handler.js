@@ -40,11 +40,26 @@ module.exports = function(genericConstants, connection) {
 		  connection
 		  .query(queryString)
 		  .then(function(rows) {
-		  	statisticsiqStatistics = rows[0];
+		  	statistics.iqStatistics = rows[0];
 		  })
 		  .catch(function(error) {
 		  	console.lor('Error while gathering IQ statistics!', error.message);
 		  });
+	});
+
+	schedule.scheduleJob('10 * * * *', function(){
+		  var queryString = 'SELECT gender, count(*) AS genderCount FROM ' + genericConstants.USER_TABLE
+			 + ' GROUP BY gender';
+			console.log(queryString);
+
+		    connection
+		   .query(queryString)
+		   .then(function(rows) {
+		    	statistics.genderStatistics = rows[0];
+		   })
+		   .catch(function(error) {
+		  	    console.lor('Error while gathering gender statistics!', error.message);
+		   });
 	});
 
 	function retrieveUserByTemplate(column, data) {
@@ -58,37 +73,16 @@ module.exports = function(genericConstants, connection) {
 		return connection.query(queryString);
 	};
 
+	
 	return {
 		getStatistics: function() {
 			return statistics;
 		},
-		getGenderCount: function() {
-			var queryString = 'SELECT gender, count(*) AS genderCount FROM ' + genericConstants.USER_TABLE
-			 + ' GROUP BY gender';
-			console.log(queryString);
+		setUserProfile: function(profile) {
+			var values = '"' + profile.username + '",' +
+			             '"' + profile.birthdate + '",' +
+			             '"' + profile.gender + '"';
 
-		    return connection.query(queryString);
-		},
-		saveUser: function(user) {
-			var values = '"' + user.username + '",' +
-			             '"' + user.password + '",' +
-			             '"' + user.email + '",' +
-			             '"' + user.birthdate + '",' +
-			             '"' + user.account_status + '",' +
-			             '"' + 150 + '",' +
-			             '"' + 1 + '",' +
-			             '"0.0.0.0",' +
-			             '"ESFJ,"' +
-			             '"' + 0 + '",' + 
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '",' +
-			             '"' + 0 + '"';
 			var queryString = genericConstants
 							.INSERT_TEMPLATE
 							.replace('$table', genericConstants.USER_TABLE)
