@@ -36,17 +36,17 @@ module.exports = function() {
 
 		//users
 		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
-					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
+					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, last_login_date',
 		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
-					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
+					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, last_login_date',
 		REGISTRATION_COLUMNS: 'email, password, account_status, credits, current_personality_question_id,'
-					+ ' current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
+					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_scor, last_login_date',
 		PROFILE_COLUMNS: 'username, birthdate, gender',
 		USER_TABLE: 'user',
 
@@ -85,6 +85,10 @@ module.exports = function() {
 		PERSONALITY_QUESTION_COLUMNS_WITH_ID: 'personality_question_id, personality_question, negatively_affected_type',
 		PERSONALITY_QUESTIONS_TABLE: 'personality_questions',
 
+		//conversation history
+		CONVERSATION_HISTORY_COLUMNS: 'first_user_id, second_user_id, engage_date',
+		CONVERSATION_HISTORY_COLUMNS_WITH_ID: 'conversation_history_id, first_user_id, second_user_id, engage_date',
+		CONVERSATION_HISTORY_TABLE: 'conversation_history',
 
 		INVALID_TOKEN: new Error('INVALID_TOKEN'),
 		UNKNOWN_USER: new Error('UNKNOWN_USER'),

@@ -19,15 +19,20 @@ module.exports = function(application, personalityConstants, genericConstants, p
 						}
 					});
 			},
+			getPersonality: function(userId, res) {
+				return persMysqlHandler
+					.getCurrentPersonality(userId)
+			},
 			updateNextQuestionAndPersonality: function(question, res) {
 				return persMysqlHandler
-					.getCurrentPersonality(question.userId)
+					.getCurrentPersonalityRaw(question.userId)
 					.then(function(rows) {
 						if(rows.length > 0) {
 							var updatedPersonality = personalityTools.updatePersonality(rows[0].current_personality, 
-								question.negativelyAffectedType, question.answer);
+								question.negativelyAffectedType, question.answer),
+								formattedPersonality = personalityTools.formatPersonality(updatedPersonality);
 							persMysqlHandler
-							.updateNextQuestionAndPersonality(question.userId, updatedPersonality)
+							.updateNextQuestionAndPersonality(question.userId, updatedPersonality, formattedPersonality)
 							.then(function(data) {
 								res.status(genericConstants.OK).json({});
 							})

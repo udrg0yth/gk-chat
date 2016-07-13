@@ -235,7 +235,6 @@ CREATE TABLE `user` (
   `birthdate` datetime DEFAULT NULL,
   `account_status` varchar(16) NOT NULL,
   `credits` int(11) NOT NULL,
-  `current_personality` varchar(32) NOT NULL,
   `total_easy_iq_answers` int(11) NOT NULL,
   `correct_medium_iq_answers` int(11) NOT NULL,
   `total_medium_iq_answers` int(11) NOT NULL,
@@ -248,10 +247,12 @@ CREATE TABLE `user` (
   `current_iq_score` int(11) NOT NULL,
   `current_gk_score` decimal(10,2) NOT NULL,
   `current_personality_question_id` int(11) NOT NULL,
+  `current_personality` varchar(4) NOT NULL,
+  `current_personality_raw` varchar(20) NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `current_personality_question_id` (`current_personality_question_id`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`current_personality_question_id`) REFERENCES `personality_questions` (`personality_question_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,6 +261,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,NULL,'123','123',NULL,'INACTIVE',0,15,2,12,5,6,5,10,NULL,5,122,0.50,1,'INTP','-23.-23.-23.-23');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -272,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-12 18:20:39
+-- Dump completed on 2016-07-13 14:38:31
