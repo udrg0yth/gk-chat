@@ -21,6 +21,8 @@ module.exports = function() {
 		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
 
 		NEXT_PERSONALITY_QUESTION_URL: '/personality/nextQuestion',
+		ANSWER_PERSONALITY_QUESTION_URL: '/personality/answerQuestion',
+		CURRENT_PERSONALITY_URL: '/personality',
 		
 		MYSQL_SOURCE: {
 		    host: 		'localhost',
@@ -92,6 +94,7 @@ module.exports = function() {
 
 		INVALID_TOKEN: new Error('INVALID_TOKEN'),
 		UNKNOWN_USER: new Error('UNKNOWN_USER'),
+		INCOMPLETE_DATA: new Error('INCOMPLETE_DATA'),
 
 		GENERATE_RANDOM: function(max) {
 			return Math.floor(Math.rand() * max);

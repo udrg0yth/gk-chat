@@ -41,6 +41,6 @@ module.exports = function() {
 						percentage: parseInt(splitPersonality[3])
 					}
 			};
-		};
+		}
 	};
 }

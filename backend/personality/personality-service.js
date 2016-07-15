@@ -22,8 +22,13 @@ module.exports = function(application, personalityConstants, genericConstants, p
 			getPersonality: function(userId, res) {
 				return persMysqlHandler
 					.getCurrentPersonality(userId)
+					.then(function(rows) {
+						res.status(genericConstants.OK).json({
+							currentPersonality: rows[0].current_personality
+						});
+					});
 			},
-			updateNextQuestionAndPersonality: function(question, res) {
+			answerQuestion: function(question, res) {
 				return persMysqlHandler
 					.getCurrentPersonalityRaw(question.userId)
 					.then(function(rows) {

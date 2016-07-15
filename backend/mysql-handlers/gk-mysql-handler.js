@@ -19,14 +19,6 @@ module.exports = function(genericConstants, connection) {
 	
 
 	return  {
-		getRandomQuestion: function() {s
-							.SELECT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_TABLE)
-							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
-							+ genericConstants.CRITERIA_TEMPLATE
-							.replace('$criteria', 'gk_question_id="' + genericConstants.GENERATE_RANDOM(count) + '"');
-			return connection.query(queryString);
-		},
 		getQuestionForUser: function(userId) {
 			var queryString = genericConstants
 							.SELECT_TEMPLATE

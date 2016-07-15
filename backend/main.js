@@ -1,8 +1,8 @@
 var express    			=  require('express'),
 	bodyParser 			=  require('body-parser'),
 	application         =  express(),
-	genericConstants 	= require('./genericConstants')(),
-	tokenHandler 		= require('./tokenHandler')(application, genericConstants),
+	genericConstants 	= require('./generic-constants')(),
+	tokenHandler 		= require('./token-handler')(application, genericConstants),
 	mysql      			= require('promise-mysql');
 
 var corsOptions = {
@@ -14,7 +14,7 @@ mysql.createConnection(genericConstants.MYSQL_SOURCE)
 	var authMysqlHandler    = require('./mysql-handlers/authentication-mysql-handler')(genericConstants, connection),
 		persMysqlHandler    = require('./mysql-handlers/personality-mysql-handler')(genericConstants, connection),
 		gkMysqlHandler		= require('./mysql-handlers/gk-mysql-handler')(genericConstants, connection),
-		intelMysqlHandler	= require('./mysql-handlers/intl-mysql-handler')(genericConstants, connection);
+		intelMysqlHandler	= require('./mysql-handlers/intel-mysql-handler')(genericConstants, connection);
 		
 	    require('./authentication/authentication-server')(application, 
 			genericConstants, tokenHandler, authMysqlHandler);
