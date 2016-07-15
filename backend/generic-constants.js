@@ -16,14 +16,14 @@ module.exports = function() {
 		VERIFY_TOKEN_URL: 		'/auth/verifyToken',
 		ACTIVATE_ACCOUNT_URL:   '/auth/activateAccount',
 		RESEND_EMAIL_URL: 		'/auth/resendEmail',
-
+		SET_PROFILE_URL:        '/auth/setProfile',
 
 		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
 
 		NEXT_PERSONALITY_QUESTION_URL: '/personality/nextQuestion',
 		ANSWER_PERSONALITY_QUESTION_URL: '/personality/answerQuestion',
 		CURRENT_PERSONALITY_URL: '/personality',
-		
+
 		MYSQL_SOURCE: {
 		    host: 		'localhost',
 		    user: 		'root',

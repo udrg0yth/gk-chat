@@ -12,14 +12,6 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 		res.status(genericConstants.OK).json({success: true});
   	});
 
-  	application.post('/uploadQuestion', function(req, res) {
-  		var data = req.body;
-  		authenticationService.saveQuestion(data, res)
-  		.catch(function(error) {
-  			res.status(401).json({});
-  		});
-  	});
-
     application.post(genericConstants.USERNAME_CHECK_URL, function(req, res) {
     	var data = req.body;
     	if(!data.username){
@@ -94,9 +86,28 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 			});
 		}
 		
-		authenticationService.registerUser(header, res)
+		authenticationService
+		.registerUser(header, res)
 		.catch(function(error){
 			console.log(error.message);
+			res.status(genericConstants.INTERNAL_ERROR).json({error : error});
+		});
+	});
+
+	application.post(genericConstants.SET_PROFILE_URL, function(req, res) {
+		var data = req.body;
+		if(!data.hash
+		|| !data.username
+		|| !data.birthdate
+		|| !data.gender) {
+			return res.status(genericConstants.UNAUTHORIZED).json({
+				error: genericConstants.INCOMPLETE_DATA.message
+			});
+		}
+
+		authenticationService
+		.setUserProfile(data, res)
+		.catch(function(error){
 			res.status(genericConstants.INTERNAL_ERROR).json({error : error});
 		});
 	});

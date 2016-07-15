@@ -48,13 +48,6 @@ module.exports = function(application, authenticationConstants, genericConstants
 						}
 					});
 		},
-		saveQuestion: function(question, res) {
-			 return authMysqlHandler
-		    .saveQuestion(question)
-		    .then(function(rows) {
-				res.status(genericConstants.OK).json({});
-			});
-		},
 		loginUser: function(header, res) {
 			var credentials = authenticationTools.getCredentials(header);
 
@@ -131,6 +124,15 @@ module.exports = function(application, authenticationConstants, genericConstants
 					});
 					res.status(genericConstants.OK).json({});
 				});
+		},
+		setUserProfile: function(data, res) {
+				var userId = authenticationTools.decrypt(data.hash);
+				delete data.hash;
+				return authMysqlHandler
+					.setUserProfile(userId, data)
+					.then(function() {
+						res.status(genericConstants.OK).json({});
+					});
 		},
 		logoutUser: function() {
 		}

@@ -78,16 +78,19 @@ module.exports = function(genericConstants, connection) {
 		getStatistics: function() {
 			return statistics;
 		},
-		setUserProfile: function(profile) {
-			var values = '"' + profile.username + '",' +
-			             '"' + profile.birthdate + '",' +
-			             '"' + profile.gender + '"';
+		setUserProfile: function(userId, profile) {
+			var map = 'username="'  + profile.username + '",' +
+			          'birthdate="' + profile.birthdate + '",' +
+			          'gender="'    + profile.gender + '"';
 
 			var queryString = genericConstants
-							.INSERT_TEMPLATE
+							.UPDATE_TEMPLATE
 							.replace('$table', genericConstants.USER_TABLE)
-							.replace('$columns', genericConstants.USER_COLUMNS)
-							.replace('$values', values);
+							.replace('$columns', genericConstants.PROFILE_COLUMNS)
+							.replace('$map', map)
+							+ genericConstants
+							.CRITERIA_TEMPLATE
+							.replace('$criteria', 'user_id="' + userId + '"');
 			return connection.query(queryString);
 		},
 		registerUser: function(user) {
