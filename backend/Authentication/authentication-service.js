@@ -3,6 +3,9 @@ module.exports = function(application, authenticationConstants, genericConstants
 		profileTools  			 =  require('./profile-tools')(authenticationConstants);
 
 	return {
+		getStatistics: function(res) {
+			res.status(genericConstants.OK).json(authMysqlHandler.getStatistics());
+		},
 		verifyToken: function(token) {
 			return tokenHandler.verifyToken(token);
 		},
@@ -41,7 +44,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 							});
 						} else {
 							authMysqlHandler
-						    .activateAccount()
+						    .activateAccount(userId)
 						    .then(function(rows) {
 						    	res.status(genericConstants.OK).json({});
 							});
@@ -82,26 +85,6 @@ module.exports = function(application, authenticationConstants, genericConstants
 					res.end();
 				});
 		},
-		/*registerUser: function(data, res) {
-			data.password = authenticationTools.hashPassword(data.password);
-			data.account_status = 'INACTIVE';
-
-			return authMysqlHandler
-				.saveUser(data)
-				.then(function(data) {
-					var token = tokenHandler.generateToken({id:           data.insertedId,
-															username:     data.username,
-			                                        		gender:       data.gender,
-			                                        		birthdate:    data.birthdate,
-			                                        		credits:      data.credits,
-			                                        		personality:  data.current_personality,
-			                                        		iqScore:      profileTools.computeIq(data),
-			                                        		gkScore:      profileTools.computeGeneralKnowledge(data)});
-					authenticationTools.sendActivationLink(data);
-					res.writeHead(genericConstants.OK, {'X-Auth-Token': token});
-					res.end();
-				});
-		},*/
 		registerUser: function(header, res) {
 			var credentials = authenticationTools.getCredentials(header),
 			data = {
@@ -116,9 +99,10 @@ module.exports = function(application, authenticationConstants, genericConstants
 					authMysqlHandler
 					.retrieveUserById(data.insertId)
 					.then(function(user) {
-						var message = 
-								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', authenticationTools.encrypt(data.insertId.toString()));
-						console.log(user[0]);
+						var encryptedId = authenticationTools.encrypt(data.insertId.toString()),
+							message = 
+								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', encryptedId);
+						console.log(authenticationTools.encrypt(data.insertId.toString()));
 						authenticationTools.sendActivationLink(user[0].email, message);
 						
 					});

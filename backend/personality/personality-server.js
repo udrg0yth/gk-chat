@@ -8,7 +8,7 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
 			    user = tokenHandler.decodeToken(token);
 
   		 personalityService
-  		.getNextQuestion(user.userId, res)
+  		.getNextQuestion(user.id, res)
   		.catch(function(error) {
   			res.status(genericConstants.UNAUTHORIZED).json({
   				error: error.message
@@ -19,9 +19,8 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
   application.get(genericConstants.CURRENT_PERSONALITY_URL, function(req, res){
       var token = req.headers['x-auth-token'],
           user = tokenHandler.decodeToken(token);
-
       personalityService
-      .getPersonality(user.userId, res)
+      .getPersonality(user.id, res)
       .catch(function(error) {
         res.status(genericConstants.UNAUTHORIZED).json({
           error: error.message
@@ -31,6 +30,9 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
 
   application.post(genericConstants.ANSWER_PERSONALITY_QUESTION_URL, function(req, res) {
       var question = req.body;
+      var token = req.headers['x-auth-token'],
+          user = tokenHandler.decodeToken(token);
+
       if(!question.answer
       || !question.negativelyAffectedType) {
         return res.status(genericConstants.UNAUTHORIZED).json({
@@ -39,7 +41,7 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
       }
 
       personalityService.
-      answerQuestion(question, res)
+      answerQuestion(user.id, question, res)
       .catch(function(error) {
         res.status(genericConstants.UNAUTHORIZED).json({
           error: error.message

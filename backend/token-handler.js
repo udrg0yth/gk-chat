@@ -45,7 +45,7 @@ module.exports = function(application,
 			return true;
 		},
 		decodeToken: function(token) {
-			return jwt.decodeToken(token);
+			return jwt.decode(token);
 		}
 	};
 };

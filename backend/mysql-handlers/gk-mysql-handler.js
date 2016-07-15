@@ -29,6 +29,16 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'userId="' + userId + '"');
 			return connection.query(queryString);
 		},
+		setTimeout: function(userId, questionId) {
+			var values = '"' + userId '",'
+					 =	 '"' + questionId +'"',
+				queryString = genericConstants
+							.INSERT_TEMPLATE
+							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE)
+							.replace('$columns', genericConstants.GK_QUESTION_USER_COLUMNS)
+							.replace('$values', values);
+			return connection.query(queryString);
+		},
 		getQuestionById: function(questionId) {
 			var queryString = genericConstants
 							.SELECT_TEMPLATE

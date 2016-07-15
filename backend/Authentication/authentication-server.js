@@ -4,6 +4,10 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 		authenticationService  		  	=  require('./authentication-service')(application, 
 			authenticationConstants, genericConstants, tokenHandler, authMysqlHandler);
   
+  	application.get(genericConstants.STATISTICS_URL, function(req, res) {
+  		authenticationService.getStatistics(res);
+  	});
+
   	application.post(genericConstants.VERIFY_TOKEN_URL, function(req, res) {
 		var data = req.body;
 		if(!authenticationService.verifyToken(data.token)) {

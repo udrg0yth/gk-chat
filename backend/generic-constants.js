@@ -17,6 +17,7 @@ module.exports = function() {
 		ACTIVATE_ACCOUNT_URL:   '/auth/activateAccount',
 		RESEND_EMAIL_URL: 		'/auth/resendEmail',
 		SET_PROFILE_URL:        '/auth/setProfile',
+		STATISTICS_URL: 		'/auth/statistics',
 
 		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
 
@@ -40,15 +41,15 @@ module.exports = function() {
 		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, last_login_date',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
 		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, last_login_date',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
 		REGISTRATION_COLUMNS: 'email, password, account_status, credits, current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_scor, last_login_date',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
 		PROFILE_COLUMNS: 'username, birthdate, gender',
 		USER_TABLE: 'user',
 
@@ -68,13 +69,13 @@ module.exports = function() {
 		IQ_QUESTION_TABLE: 'iq_links',
 
 		//gk question user
-		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id, timestamp',
-		GK_QUESTION_USER_COLUMNS_WITH_ID: 'gk_question_user_id, user_id, gk_question_id, timestamp',
+		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id',
+		GK_QUESTION_USER_COLUMNS_WITH_ID: 'gk_question_user_id, user_id, gk_question_id',
 		GK_QUESTION_USER_TABLE: 'gk_question_user',
 
 		//iq question user
-		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id, timestamp',
-		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id, timestamp',
+		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id',
+		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id',
 		IQ_QUESTION_USER_TABLE: 'iq_question_user',
 
 		//categories
