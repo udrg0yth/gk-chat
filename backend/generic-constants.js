@@ -21,9 +21,15 @@ module.exports = function() {
 
 		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
 
-		NEXT_PERSONALITY_QUESTION_URL: '/personality/nextQuestion',
-		ANSWER_PERSONALITY_QUESTION_URL: '/personality/answerQuestion',
-		CURRENT_PERSONALITY_URL: '/personality',
+		NEXT_PERSONALITY_QUESTION_URL: 		'/personality/nextQuestion',
+		ANSWER_PERSONALITY_QUESTION_URL: 	'/personality/answerQuestion',
+		CURRENT_PERSONALITY_URL: 			'/personality',
+
+		RANDOM_GK_QUESTION_URL: '/gk/randomQuestion',
+		ANSWER_GK_QUESTION_URL: '/gk/answerQuestion',
+
+		RANDOM_IQ_QUESTION_URL: '/iq/randomQuestion',
+		ANSWER_IQ_QUESTION_URL: '/iq/answerQuestion',
 
 		MYSQL_SOURCE: {
 		    host: 		'localhost',
@@ -59,8 +65,8 @@ module.exports = function() {
 		GK_QUESTION_TABLE: 'gk_questions',
 
 		//iq questions
-		IQ_QUESTION_COLUMNS: 'iq_question, iq_difficulty, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
-		IQ_QUESTION_COLUMNS_WITH_ID: 'iq_question_id, iq_question, difficulty, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
+		IQ_QUESTION_COLUMNS: 'difficulty, iq_question, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
+		IQ_QUESTION_COLUMNS_WITH_ID: 'iq_question_id, difficulty, iq_question, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
 		IQ_QUESTION_TABLE: 'iq_questions',
 
 		//iq question links
@@ -74,8 +80,8 @@ module.exports = function() {
 		GK_QUESTION_USER_TABLE: 'gk_question_user',
 
 		//iq question user
-		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id',
-		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id',
+		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id, difficulty',
+		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id, difficulty',
 		IQ_QUESTION_USER_TABLE: 'iq_question_user',
 
 		//categories
@@ -99,6 +105,17 @@ module.exports = function() {
 
 		GENERATE_RANDOM: function(max) {
 			return Math.floor(Math.rand() * max);
+		},
+		SHUFFLE_ARRAY: function (array) {
+		    var counter = array.length;
+		    while (counter > 0) {
+		        var index = Math.floor(Math.random() * counter);
+		        counter--;
+		        var temp = array[counter];
+		        array[counter] = array[index];
+		        array[index] = temp;
+		    }
+		    return array;
 		}
 	}
 

@@ -15,7 +15,7 @@ module.exports = function(application, personalityConstants, genericConstants, p
 							});
 						} else {
 							res.status(genericConstants.UNAUTHORIZED).json({
-								error: personalityConstants.NO_MORE_QUESTIONS.message 
+								message: personalityConstants.NO_MORE_QUESTIONS.message 
 							});
 						}
 					});
@@ -44,13 +44,14 @@ module.exports = function(application, personalityConstants, genericConstants, p
 								res.status(genericConstants.OK).json(formattedPersonality);
 							})
 							.catch(function(error) {
-								res.status(genericConstants.UNAUTHORIZED).json({
-					  				error: error.message
+								res.status(genericConstants.INTERNAL_ERROR).json({
+					  				message: error.message,
+					  				trace: 'P-SCE-AQ'
 					  			});
 							});
 						} else {
 							res.status(genericConstants.UNAUTHORIZED).json({
-								error: personalityConstants.UNKNOWN_USER.message 
+								message: personalityConstants.UNKNOWN_USER.message 
 							});
 						}
 					});

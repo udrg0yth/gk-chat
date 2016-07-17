@@ -1,6 +1,4 @@
 module.exports = function(genericConstants, connection) {
-	
-
 	return  {
 		getNextQuestion: function(userId) {
 			var queryString = genericConstants

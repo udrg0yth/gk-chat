@@ -23,7 +23,7 @@ module.exports = function(authenticationConstants) {
 							.toString()
 							.split(':');
 			if(credentials.length != 2) {
-				throw authConst.BAD_CREDENTIALS;
+				throw authenticationConstants.BAD_CREDENTIALS;
 			}
 			return credentials;
 		},

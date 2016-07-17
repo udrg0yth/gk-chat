@@ -56,7 +56,7 @@ CREATE TABLE `gk_question_user` (
   KEY `gk_question_id` (`gk_question_id`),
   CONSTRAINT `gk_question_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `gk_question_user_ibfk_2` FOREIGN KEY (`gk_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,6 +65,7 @@ CREATE TABLE `gk_question_user` (
 
 LOCK TABLES `gk_question_user` WRITE;
 /*!40000 ALTER TABLE `gk_question_user` DISABLE KEYS */;
+INSERT INTO `gk_question_user` VALUES (1,9,36,'2016-07-15 13:55:28');
 /*!40000 ALTER TABLE `gk_question_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,6 +135,7 @@ CREATE TABLE `iq_question_user` (
   `user_id` int(11) NOT NULL,
   `gk_question_id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `difficulty` tinyint(4) NOT NULL,
   PRIMARY KEY (`iq_question_user_id`),
   KEY `user_id` (`user_id`),
   KEY `gk_question_id` (`gk_question_id`),
@@ -168,6 +170,7 @@ CREATE TABLE `iq_questions` (
   `iq_answer5` int(11) NOT NULL,
   `iq_answer6` int(11) NOT NULL,
   `iq_correct_answer` int(11) DEFAULT NULL,
+  `difficulty` tinyint(4) NOT NULL,
   PRIMARY KEY (`iq_questions_id`),
   KEY `iq_answer1` (`iq_answer1`),
   KEY `iq_answer2` (`iq_answer2`),
@@ -274,4 +277,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-15 15:53:54
+-- Dump completed on 2016-07-17  9:51:37

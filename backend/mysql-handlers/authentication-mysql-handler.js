@@ -1,75 +1,5 @@
 module.exports = function(genericConstants, connection) {
-	var schedule = require('node-schedule'),
-		statistics = {};
-
-    var gatherPersonalityStatistics = function() {
-	    		var queryString = 'SELECT current_personality as personality, count(*) AS count FROM ' + genericConstants.USER_TABLE
-			   + ' GROUP BY current_personality';
-			  console.log(queryString);
-			  connection
-			  .query(queryString)
-			  .then(function(rows) {
-			  	statistics.personalityStatistics = rows[0];
-			  })
-			  .catch(function(error) {
-			  	console.log('Error while gathering personality statistics!', error.message);
-			  });
-		},
-		gatherGeneralKnowledgeStatistics = function() {
-				var queryString = 'SELECT FORMAT(STD(current_gk_score),2) AS standardDeviation, '
-			  + 'AVG(current_gk_score) AS averageScore FROM ' + genericConstants.USER_TABLE;
-			  console.log(queryString);
-			  connection
-			  .query(queryString)
-			  .then(function(rows) {
-			  	statistics.generalKnowledgeStatistics = rows[0];
-			  })
-			  .catch(function(error) {
-			  	console.log('Error while gathering general knowledge statistics!', error.message);
-			  });
-		},
-		gatherIQStatistics = function() {
-				var queryString = 'SELECT FORMAT(STD(current_iq_score),2) AS standardDeviation, '
-			  + 'AVG(current_iq_score) AS averageScore FROM ' + genericConstants.USER_TABLE;
-			  console.log(queryString);
-			  connection
-			  .query(queryString)
-			  .then(function(rows) {
-			  	statistics.iqStatistics = rows[0];
-			  })
-			  .catch(function(error) {
-			  	console.log('Error while gathering IQ statistics!', error.message);
-			  });
-		},
-		gatherGenderStatistics = function() {
-				  var queryString = 'SELECT gender, count(*) AS count FROM ' + genericConstants.USER_TABLE
-				 + ' GROUP BY gender';
-				console.log(queryString);
-
-			    connection
-			   .query(queryString)
-			   .then(function(rows) {
-			    	statistics.genderStatistics = rows[0];
-			   })
-			   .catch(function(error) {
-			  	    console.log('Error while gathering gender statistics!', error.message);
-			   });
-		};
-
-	if( Object.keys(statistics).length === 0) {
-		  gatherPersonalityStatistics();
-		  gatherGeneralKnowledgeStatistics();
-		  gatherIQStatistics();
-		  gatherGenderStatistics();
-	}
-
-	//should run every day!
-	schedule.scheduleJob('1 * * * *', function(){
-		  gatherPersonalityStatistics();
-		  gatherGeneralKnowledgeStatistics();
-		  gatherIQStatistics();
-		  gatherGenderStatistics();
-	});
+	
 
 	function retrieveUserByTemplate(column, data) {
 		var queryString = genericConstants
@@ -84,8 +14,25 @@ module.exports = function(genericConstants, connection) {
 
 	
 	return {
-		getStatistics: function() {
-			return statistics;
+		gatherPersonalityStatistics: function() {
+	    	var queryString = 'SELECT current_personality as personality, count(*) AS count FROM ' + genericConstants.USER_TABLE
+			   + ' GROUP BY current_personality';
+			return connection.query(queryString);
+		},
+		gatherGeneralKnowledgeStatistics: function() {
+			var queryString = 'SELECT FORMAT(STD(current_gk_score),2) AS standardDeviation, '
+		 	   + 'AVG(current_gk_score) AS averageScore FROM ' + genericConstants.USER_TABLE;
+		 	return connection.query(queryString);
+		},
+		gatherIQStatistics: function() {
+			var queryString = 'SELECT FORMAT(STD(current_iq_score),2) AS standardDeviation, '
+		 	   + 'AVG(current_iq_score) AS averageScore FROM ' + genericConstants.USER_TABLE;
+		  return connection.query(queryString);
+		},
+		gatherGenderStatistics: function() {
+		  	var queryString = 'SELECT gender, count(*) AS count FROM ' + genericConstants.USER_TABLE
+			   + ' GROUP BY gender';
+			return connection.query(queryString);	   
 		},
 		setUserProfile: function(userId, profile) {
 			var map = 'username="'  + profile.username + '",' +

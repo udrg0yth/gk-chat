@@ -10,8 +10,9 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
   		 personalityService
   		.getNextQuestion(user.id, res)
   		.catch(function(error) {
-  			res.status(genericConstants.UNAUTHORIZED).json({
-  				error: error.message
+  			res.status(genericConstants.INTERNAL_ERROR).json({
+  				message: error.message,
+          trace: 'P-SRV-NQ'
   			});
   		});
   });
@@ -22,8 +23,9 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
       personalityService
       .getPersonality(user.id, res)
       .catch(function(error) {
-        res.status(genericConstants.UNAUTHORIZED).json({
-          error: error.message
+        res.status(genericConstants.INTERNAL_ERROR).json({
+          message: error.message,
+          trace: 'P-SRV-P'
         });
       });
   });
@@ -35,7 +37,7 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
 
       if(!question.answer
       || !question.negativelyAffectedType) {
-        return res.status(genericConstants.UNAUTHORIZED).json({
+        return res.status(genericConstants.INTERNAL_ERROR).json({
             error: genericConstants.INCOMPLETE_DATA.message
         });
       }
@@ -43,8 +45,9 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
       personalityService.
       answerQuestion(user.id, question, res)
       .catch(function(error) {
-        res.status(genericConstants.UNAUTHORIZED).json({
-          error: error.message
+        res.status(genericConstants.INTERNAL_ERROR).json({
+          message: error.message,
+          trace: 'P-SRV-AQ'
         });
       });
   });

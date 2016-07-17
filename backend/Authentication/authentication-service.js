@@ -2,9 +2,60 @@ module.exports = function(application, authenticationConstants, genericConstants
 	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants),
 		profileTools  			 =  require('./profile-tools')(authenticationConstants);
 
+	var schedule = require('node-schedule'),
+		statistics = {};
+
+	var gatherStatistics = function() {
+			authMysqlHandler
+		  .gatherPersonalityStatistics()
+		  .then(function(rows) {
+		  	statistics.personalityStatistics = rows[0];
+		  })
+		  .catch(function(error) {
+		  	console.log('Error while gathering personality statistics!', error.message);
+		  });
+
+		    authMysqlHandler
+		  .gatherGeneralKnowledgeStatistics()
+		  .then(function(rows) {
+		 	statistics.generalKnowledgeStatistics = rows[0];
+		  })
+		  .catch(function(error) {
+			console.log('Error while gathering general knowledge statistics!', error.message);
+		  });
+
+		  	authMysqlHandler
+		  .gatherIQStatistics()
+		  .then(function(rows) {
+		  	statistics.iqStatistics = rows[0];
+		  })
+		  .catch(function(error) {
+		  	console.log('Error while gathering IQ statistics!', error.message);
+		  });
+
+		  	authMysqlHandler
+		  .gatherGenderStatistics()
+		  .then(function(rows) {
+		    statistics.genderStatistics = rows[0];
+		  })
+		  .catch(function(error) {
+		    console.log('Error while gathering gender statistics!', error.message);
+		  });
+	};
+
+
+	if( Object.keys(statistics).length === 0) {
+		  gatherStatistics();
+	}
+
+	//should run every day!
+	schedule.scheduleJob('1 * * * *', function(){
+		  gatherStatistics();
+	});
+
 	return {
 		getStatistics: function(res) {
-			res.status(genericConstants.OK).json(authMysqlHandler.getStatistics());
+			res.status(genericConstants.OK).json(statistics);
 		},
 		verifyToken: function(token) {
 			return tokenHandler.verifyToken(token);
@@ -28,7 +79,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 					authenticationTools.sendActivationLink(email, message);
 				} else {
 					res.status(genericConstants.UNAUTHORIZED).json({
-						error: authenticationConstants.BAD_CREDENTIALS.message
+						message: authenticationConstants.BAD_CREDENTIALS.message
 					});
 				}
 			});
@@ -40,13 +91,19 @@ module.exports = function(application, authenticationConstants, genericConstants
 					.then(function(rows) {
 						if(rows[0].account_status === 'ACTIVE') {
 							res.status(genericConstants.UNAUTHORIZED).json({
-								error: authenticationConstants.ACCOUNT_ALREADY_ACTIVE.message
+								message: authenticationConstants.ACCOUNT_ALREADY_ACTIVE.message
 							});
 						} else {
 							authMysqlHandler
 						    .activateAccount(userId)
 						    .then(function(rows) {
 						    	res.status(genericConstants.OK).json({});
+							})
+							.catch(function(error) {
+								res.status(genericConstants.INTERNAL_ERROR).json({
+									message: error.message,
+									trace: 'A-SCE-AA'
+								});
 							});
 						}
 					});
@@ -59,24 +116,24 @@ module.exports = function(application, authenticationConstants, genericConstants
 				.then(function(rows) {
 					if(rows.length === 0) {
 						return res.status(genericConstants.UNAUTHORIZED).json({
-							error: authenticationConstants.BAD_CREDENTIALS.message
+							message: authenticationConstants.BAD_CREDENTIALS.message
 						});
 					}
 					if(rows[0].account_status === 'INACTIVE') {
 						return res.status(genericConstants.UNAUTHORIZED).json({
-							error: authenticationConstants.INACTIVE_ACCOUNT.message
+							message: authenticationConstants.INACTIVE_ACCOUNT.message
 						});
 					} else {
 						if(!rows[0].username) {
 							return res.status(genericConstants.UNAUTHORIZED).json({
-								error: authenticationConstants.INCOMPLETE_PROFILE.message
+								message: authenticationConstants.INCOMPLETE_PROFILE.message
 							});
 						} 
 					}
 
 					if(!authenticationTools.checkPasswords(credentials[1], rows[0].password)) {
 						return res.status(genericConstants.UNAUTHORIZED).json({
-							error: authenticationConstants.BAD_CREDENTIALS.message
+							message: authenticationConstants.BAD_CREDENTIALS.message
 						});
 					} 
 					var token = tokenHandler.generateToken({id: rows[0].user_id});
@@ -96,17 +153,21 @@ module.exports = function(application, authenticationConstants, genericConstants
 			return authMysqlHandler
 				.registerUser(data)
 				.then(function(data) {
-					authMysqlHandler
+					 authMysqlHandler
 					.retrieveUserById(data.insertId)
 					.then(function(user) {
 						var encryptedId = authenticationTools.encrypt(data.insertId.toString()),
 							message = 
 								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', encryptedId);
-						console.log(authenticationTools.encrypt(data.insertId.toString()));
 						authenticationTools.sendActivationLink(user[0].email, message);
-						
+						res.status(genericConstants.OK).json({});
+					})
+					.catch(function(error) {
+						return res.status(genericConstants.INTERNAL_ERROR).json({
+							message: error.message,
+							trace: 'A-SCE-R'
+						});
 					});
-					res.status(genericConstants.OK).json({});
 				});
 		},
 		setUserProfile: function(data, res) {

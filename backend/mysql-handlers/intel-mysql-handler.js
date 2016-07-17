@@ -1,22 +1,9 @@
 module.exports = function(genericConstants, connection) {
-	var schedule = require('node-schedule'),
-		count = 0;
-
-	//should run every day!
-	schedule.scheduleJob('10 * * * *', function(){
-		  var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.IQ_QUESTION_TABLE;
-		  console.log(queryString);
-		  connection
-		  .query(queryString)
-		  .then(function(rows) {
-		  	count = rows[0].questionCount;
-		  })
-		  .catch(function(error) {
-		  	console.lor('Error while counting iq questions!', error.message);
-		  });
-	});
-
 	return  {
+		countQuestions: function() {
+		  var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.IQ_QUESTION_TABLE;
+		   connection.query(queryString);
+		}, 
 		getQuestionForUser: function(userId) {
 			var queryString = genericConstants
 							.SELECT_TEMPLATE
@@ -52,6 +39,23 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'iq_question_id="' + questionId + '"');
 			return connection.query(queryString);
 		},
+		setTimeout: function(userId, questionId) {
+			var values = '"' + userId + '",' +
+ 					 	 '"' + questionId +'"',
+				queryString = genericConstants
+							.INSERT_TEMPLATE
+							.replace('$table', genericConstants.IQ_QUESTION_USER_TABLE)
+							.replace('$columns', genericConstants.IQ_QUESTION_USER_COLUMNS)
+							.replace('$values', values);
+			return connection.query(queryString);
+		},
+		removeTimeout: function(userId) {
+			var quryString = 'DELETE FROM ' + genericConstants.IQ_QUESTION_USER_TABLE + ' ' +
+							+ genericConstants.
+							CRITERIA_TEMPLATE
+							.replace('$criteria', 'user_id="' + userId + '"');
+			return connection.query(queryString);
+		},
 		updateUserScore: function(userId, difficulty, isCorrect) {
 			var map = '';
 			switch(difficulty) {
@@ -74,23 +78,6 @@ module.exports = function(genericConstants, connection) {
 							.CRITERIA_TEMPLATE
 							.replace('$criteria', 'userId="' + userId + '"');
 			return connection.query(queryString);
-		},
-		saveQuestion: function(quiz) {
-			/*var queryString = genericConstants.
-							INSERT_TEMPLATE
-							.replace('$table', )
-			var values = '"' + question.question + '",' +
-						 '"' + question.answer1 + '",' +
-						 '"' + question.answer2 + '",' +
-						 '"' + question.answer3 + '",' +
-						 '"' + question.answer4 + '",' +
-						 '"' + question.category + '"',
-				queryString = genericConstants
-							.INSERT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_TABLE)
-							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS)
-							.replace('$values', values);
-			return connection.query(queryString);			 */
 		}
 	};
 };

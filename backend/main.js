@@ -19,6 +19,7 @@ mysql.createConnection(genericConstants.MYSQL_SOURCE)
 	    require('./authentication/authentication-server')(application, 
 			genericConstants, tokenHandler, authMysqlHandler);
 		require('./personality/personality-server')(application, genericConstants, tokenHandler, persMysqlHandler);
+		require('./general_knowledge/gk-server')(application, genericConstants, tokenHandler, gkMysqlHandler);
 });
 
 application.use(bodyParser.json());

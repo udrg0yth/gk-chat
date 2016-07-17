@@ -11,27 +11,37 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
   	application.post(genericConstants.VERIFY_TOKEN_URL, function(req, res) {
 		var data = req.body;
 		if(!authenticationService.verifyToken(data.token)) {
-			return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.BAD_CREDENTIALS.message});
+			return res.status(genericConstants.UNAUTHORIZED).json({
+				message : authenticationConstants.BAD_CREDENTIALS.message
+			});
 		}
-		res.status(genericConstants.OK).json({success: true});
+		res.status(genericConstants.OK).json({});
   	});
 
     application.post(genericConstants.USERNAME_CHECK_URL, function(req, res) {
     	var data = req.body;
     	if(!data.username){
-    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
     	}
-    	authenticationService
+
+    	 authenticationService
     	.checkUsernameExistence(data.username)
 		.then(function(rows) {
 			if(rows.length > 0) {
-				res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.USERNAME_IN_USE.message});
+				res.status(genericConstants.UNAUTHORIZED).json({
+					message : authenticationConstants.USERNAME_IN_USE.message
+				});
 			} else {
-				res.status(genericConstants.OK).json({success : true});
+				res.status(genericConstants.OK).json({});
 			}
 		})
     	.catch(function(error) {
-    		res.status(genericConstants.UNAUTHORIZED).json({error : error});
+    		res.status(genericConstants.UNAUTHORIZED).json({
+    			message : error.message,
+    			trace: 'A-SRV-UC'
+    		});
     	});
     	
     });
@@ -39,45 +49,63 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
     application.post(genericConstants.EMAIL_CHECK_URL, function(req, res) {
     	var data = req.body;
     	if(!data.email){
-    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
     	}
 
-    	authenticationService
+    	 authenticationService
     	.checkEmailExistence(data.email)
     	.then(function(rows) {
 			if(rows.length > 0) {
-		   		res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.EMAIL_IN_USE.message});
+		   		res.status(genericConstants.UNAUTHORIZED).json({
+		   			message : authenticationConstants.EMAIL_IN_USE.message
+		   		});
 			} else {
-    			res.status(genericConstants.OK).json({success : true});
+    			res.status(genericConstants.OK).json({});
 			}
 		})
     	.catch(function(error) {
-	    	res.status(genericConstants.UNAUTHORIZED).json({error : error});
+	    	res.status(genericConstants.INTERNAL_ERROR).json({
+	    		message : error.message,
+    			trace: 'A-SRV-EC'
+	    	});
     	});
     });
 
 	application.get(genericConstants.LOGIN_URL, function(req, res) {
 		var header = req.headers.authorization;
 		if(!header) {
-			return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.BAD_CREDENTIALS.message});
+			return res.status(genericConstants.UNAUTHORIZED).json({
+				message : authenticationConstants.BAD_CREDENTIALS.message
+			});
 		}
-		authenticationService
+
+		 authenticationService
 		.loginUser(header, res)
 		.catch(function(error){
-			res.status(genericConstants.UNAUTHORIZED).json({error : error});
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-L'
+			});
 		});
 	});
 
 	application.post(genericConstants.ACTIVATE_ACCOUNT_URL, function(req,res) {
 		var data = req.body;
 		if(!data.hash){
-    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
     	}
 
     	authenticationService
 		.activateAccount(data.hash, res)
 		.catch(function(error){
-			res.status(genericConstants.UNAUTHORIZED).json({error : error});
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-AA'
+			});
 		});
 	});
 
@@ -86,15 +114,17 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 
 		if(!header){
 			return res.status(genericConstants.UNAUTHORIZED).json({
-				error : authenticationConstants.BAD_CREDENTIALS.message
+				message : authenticationConstants.BAD_CREDENTIALS.message
 			});
 		}
 		
 		authenticationService
 		.registerUser(header, res)
 		.catch(function(error){
-			console.log(error.message);
-			res.status(genericConstants.INTERNAL_ERROR).json({error : error});
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-R'
+			});
 		});
 	});
 
@@ -105,32 +135,40 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 		|| !data.birthdate
 		|| !data.gender) {
 			return res.status(genericConstants.UNAUTHORIZED).json({
-				error: genericConstants.INCOMPLETE_DATA.message
+				message: genericConstants.INCOMPLETE_DATA.message
 			});
 		}
 
 		authenticationService
 		.setUserProfile(data, res)
 		.catch(function(error){
-			res.status(genericConstants.INTERNAL_ERROR).json({error : error});
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-SP'
+			});
 		});
 	});
 
 	application.post(genericConstants.RESEND_EMAIL_URL, function(req, res) {
 		var data = req.body;
 		if(!data.email){
-    		return res.status(genericConstants.UNAUTHORIZED).json({error : authenticationConstants.INCOMPLETE_DATA.message});
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
     	}
 
     	authenticationService
 		.resendEmail(data.email, res)
 		.catch(function(error){
-			res.status(genericConstants.UNAUTHORIZED).json({error : error});
+			res.status(genericConstants.UNAUTHORIZED).json({
+				message : error.message,
+    			trace: 'A-SRV-RE'
+			});
 		});
 	});
 
 	application.get(genericConstants.LOGOUT_URL, function(req, res) {
-		res.status(authConst.OK).json({});
+		res.status(genericConstants.OK).json({});
 	});
     
 };
