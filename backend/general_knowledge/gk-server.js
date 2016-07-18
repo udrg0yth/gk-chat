@@ -5,6 +5,7 @@ module.exports = function(application, genericConstants, tokenHandler, gkMysqlHa
 	application.get(genericConstants.RANDOM_GK_QUESTION_URL, function(req, res) {
 		 var token = req.headers['x-auth-token'],
          	 user = tokenHandler.decodeToken(token);
+          console.log(token);
 
           gkService
          .getRandomQuestion(user.id, res)

@@ -104,7 +104,7 @@ module.exports = function() {
 		INCOMPLETE_DATA: new Error('INCOMPLETE_DATA'),
 
 		GENERATE_RANDOM: function(max) {
-			return Math.floor(Math.rand() * max);
+			return Math.floor(Math.random() * max);
 		},
 		SHUFFLE_ARRAY: function (array) {
 		    var counter = array.length;

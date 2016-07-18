@@ -11,7 +11,7 @@ module.exports = function(genericConstants, connection) {
 							 + ' USING (gk_question_id)')
 							.replace('$columns', 'current_timestamp - timestamp as diftime, ' + genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
 							+ genericConstants.CRITERIA_TEMPLATE
-							.replace('$criteria', 'userId="' + userId + '"');
+							.replace('$criteria', 'user_id="' + userId + '"');
 			return connection.query(queryString);
 		},
 		setTimeout: function(userId, questionId) {
@@ -75,6 +75,7 @@ module.exports = function(genericConstants, connection) {
 							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS)
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 'gk_question_id="' + questionId + '"');
+			console.log(queryString);
 			return connection.query(queryString);
 		},
 		updateUserScore: function(userId, isCorrect) {

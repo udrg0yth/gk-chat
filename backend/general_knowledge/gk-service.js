@@ -1,6 +1,6 @@
 module.exports = function(application, gkConstants, genericConstants, gkMysqlHandler) {
 	var schedule = require('node-schedule'),
-		count = 0;
+		questionCount = 0;
 
 	var removeTimedOutQuestions = function() {
 		 gkMysqlHandler
@@ -19,16 +19,16 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 		gkMysqlHandler
 		.countQuestions()
 		.then(function(rows) {
-		  	count = rows[0].questionCount;
+		  	questionCount = rows[0].questionCount;
+			console.log("GK question count: ",questionCount);
 		 })
 		.catch(function(error) {
 		  	console.log('Error while counting gk questions!', error.message);
 		 });
 	};
 
-	if(!count) {
+	if(!questionCount) {
 		count();
-		console.log("GK question count: ",count);
 	}
 
 	//should run every day!
@@ -47,7 +47,7 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 			.getQuestionForUser(userId)
 			.then(function(rows) {
 				if(rows.length>0 
-				&& parseInt(rows[0].diftime) > gkConstants.TIME_LIMIT) {
+				&& parseInt(rows[0].diftime) < gkConstants.TIME_LIMIT) {
 						 gkMysqlHandler
 						.getQuestionById(rows[0].gk_question_id)
 						.then(function(rows) {
@@ -55,7 +55,7 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 								timeLeft: rows[0].diftime,
 								questionId: rows[0].gk_question_id,
 								question: rows[0].gk_question,
-								answers: gnericConstants.SHUFFLE_ARRAY(
+								answers: genericConstants.SHUFFLE_ARRAY(
 									[rows[0].gk_answer1,
 									rows[0].gk_answer2,rows[0].gk_answer3,
 									rows[0].gk_answer4])
@@ -68,9 +68,12 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 							});
 						});
 				} else {
+					var random  = genericConstants.GENERATE_RANDOM(questionCount);
+					console.log(random, questionCount);
 					 gkMysqlHandler
-					.getQuestionById(genericConstants.GENERATE_RANDOM(count))
+					.getQuestionById(random)
 					.then(function(rows) {
+						  console.log(rows);
 						 gkMysqlHandler
 					    .setTimeout(userId, rows[0].gk_question_id)
 					    .then(function() {
