@@ -20,15 +20,6 @@ module.exports = function(application, personalityConstants, genericConstants, p
 						}
 					});
 			},
-			getPersonality: function(userId, res) {
-				return persMysqlHandler
-					.getCurrentPersonalityRaw(userId)
-					.then(function(rows) {
-						res.status(genericConstants.OK).json(
-							personalityTools.formatPersonality(rows[0].current_personality_raw)
-						);
-					});
-			},
 			answerQuestion: function(userId, question, res) {
 				return persMysqlHandler
 					.getCurrentPersonalityRaw(userId)

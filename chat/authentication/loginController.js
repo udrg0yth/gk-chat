@@ -1,8 +1,6 @@
-angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage', '$stateParams', '$rootScope', 'WizardHandler',
-function($scope, $state, loginService, tokenService, $localStorage, $stateParams, $rootScope, WizardHandler) {
-	$scope.user = {
-		gender: 'male'
-	};
+angular.module('loginModule').controller('loginController', ['$scope', '$state', 'loginService', 'tokenService', '$localStorage','$rootScope', '$window', 'facebookService',
+function($scope, $state, loginService, tokenService, $localStorage, $rootScope, $window, facebookService) {
+	
 	$scope.errorMessage = '';
 	$scope.passwordsMatch = true;
 	$scope.submittedRegistration = false;
@@ -17,17 +15,29 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 	$scope.showPasswordMismatch = false;
 	$scope.showResendMail = false;
 
-	
+	$window.fbAsyncInit = function() {
+    FB.init({ 
+	      appId: '567955236725308',
+	      status: true, 
+	      cookie: true, 
+	      xfbml: true,
+	      version: 'v2.4'
+	    });
+	};
+	(function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "http://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 
-	if($stateParams.userHash) {
-		loginService
-		.activateAccount($stateParams.userHash)
-		.success(function() {
-		})
-		.error(function(error) {
-			// $state.go('login');
-		});
-	}
+
+	$scope.loginWithFacebook = function() {
+		facebookService
+	   .loginOrRegisterFacebook();
+	};
+
 
 	$scope.login = function() {
 		$scope.submittedLogin = true;
@@ -96,7 +106,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		}
 
 		$scope.submittedRegistration = false;
-		loginService.register($scope.user)
+		loginService.register($scope.user, true)
 		.success(function(data) {
 			$rootScope.email = $scope.user.email;
 			$state.go('mailSent');
@@ -107,45 +117,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		});
 	};
 
-	$scope.firstStep = function() {
-		$scope.showInvalidDate = false;
-		if(!(moment($scope.user.birthdate, "YYYY-MM-DD", true).isValid())) {
-			$scope.errorMessage = 'Invalid date format! Expecting yyyy-MM-dd.';
-			$scope.showInvalidDate = true;
-			return;
-		} else {
-			WizardHandler.wizard().next();
-		}
-	};
-
-	$scope.checkUsername = function(registrationForm) {
-		$scope.showErrorMessage = false;
-		if(registrationForm.username.$invalid) {
-			$scope.errorMessage = 'Username must have between 3 and 15 alphanumeric characaters!'
-			$scope.showErrorMessage = true;
-			return;
-		} 
-
-		if($scope.usernameAlreadyCheckedPositive) {
-			return;
-		}
-		$scope.showUsernameSpinner = true;
-		loginService
-		.checkUsername($scope.user.username)
-		.success(function(data) {
-			$scope.showUsernameSpinner = false;
-			$scope.usernameAlreadyCheckedPositive = true;
-		})
-		.error(function(error) {
-			$scope.errorMessage = 'Username in use! Please choose another.'
-			$scope.showErrorMessage = true;
-			$scope.showUsernameSpinner = false;
-		});
-	};
-
-	$scope.onUsernameInputChange = function() {
-		$scope.usernameAlreadyCheckedPositive = false;
-	};
+	
 
 	$scope.checkEmail = function() {
 		if(!$scope.user.email 
@@ -173,7 +145,5 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		$scope.emailAlreadyCheckedPositive = false;
 	};
 
-	$scope.showPersonalityQuestionModal = function() {
-		$('#personalityQuestionModal').modal('show');
-	};
+	
 }]);

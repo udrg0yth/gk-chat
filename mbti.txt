@@ -1,0 +1,41 @@
+According to Carl Jung there are 4 polar dimensions:
+	Extraverted  (E) vs. (I) Introverted
+	Sensing	     (S) vs. (N) Intuition
+	Feeling      (F) vs. (T) Thinking
+	Judging      (J) vs. (P) Perceiving
+
+1. E vs. I
+	Extraverts project their energy on the external world. They are more socially active and grow
+	through interaction.
+ 	Introverts have as source of energy their internal world. Usualy quiet and reserved, they analyse in 
+	depth their actions.
+2. S vs. N
+	Sensitive people are pragmatic. They pay more attention to physical reality, are concerned with the present and look for practical applications of what they're learning.
+	Intuitive people are theoretical. Tehy pay attention to patterns, look for meaning in the information they learn and are more concerned about the past and the future.
+3. F vs. T
+	People who use Feeling when deciding, usually base their decisions on personal preferences and on the
+points-of-view of other persons involved in the situation.
+	Thinkers are logical. They base their decisions on truth and principles dettached from any specific setting. 
+4. J vs. P
+	Judgers like things to be organized and planned in advance. They feel most comfortable when everything is secured and under control and are usually reticent to new experiences.
+	Perceivers are flexible and spontaneous. They prefer to understand and adapt rather than organize and are open to new experiences.
+
+Best match for:
+INFP: ENFJ,ENTJ
+ENFP: INFJ,INTJ
+INFJ: ENFP,ENTP
+ENFJ: INFP,ISFP
+INTJ: ENFP,ENTP
+ENTJ: INFP,INTP
+INTP: ENTJ,ESTJ
+ENTP: INFJ,INTJ
+ISFP: ENFJ,ESFJ,ESTJ
+ESFP: ISFJ,ISTJ
+ISTP: ESFJ,ESTJ
+ESTP: ISFJ,ISTJ
+ISFJ: ESFP,ESTP
+ESFJ: ISFP,ISTP
+ISTJ: ESFP,ESTP
+ESTJ: INTP,ISFP,ISTP
+
+Pie chart - repartitions of the 16 personalities

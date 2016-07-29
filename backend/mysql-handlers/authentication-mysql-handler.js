@@ -49,6 +49,28 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'user_id="' + userId + '"');
 			return connection.query(queryString);
 		},
+		getIdFromEmail: function(email) {
+			var queryString = genericConstants
+							.SELECT_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$columns', 'user_id')
+							+ genericConstants
+							.CRITERIA_TEMPLATE
+							.replace('$criteria', 'email="' + email + '"');
+			console.log(queryString);
+			return connection.query(queryString);
+		},
+		checkProfileCompletionById: function(id) {
+			var queryString = genericConstants
+							.SELECT_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$columns', 'username')
+							+ genericConstants
+							.CRITERIA_TEMPLATE
+							.replace('$criteria', 'user_id="' + id + '"');
+			console.log(queryString);
+			return connection.query(queryString);
+		},
 		registerUser: function(user) {
 			var values = '"' + user.email + '",' +
 			             '"' + user.password + '",' +

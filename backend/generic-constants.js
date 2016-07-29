@@ -18,12 +18,13 @@ module.exports = function() {
 		RESEND_EMAIL_URL: 		'/auth/resendEmail',
 		SET_PROFILE_URL:        '/auth/setProfile',
 		STATISTICS_URL: 		'/auth/statistics',
+		GET_HASH_URL: 			'/auth/getHash',
+		CHECK_HASH_URL: 		'/auth/checkHash',
 
 		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
 
 		NEXT_PERSONALITY_QUESTION_URL: 		'/personality/nextQuestion',
 		ANSWER_PERSONALITY_QUESTION_URL: 	'/personality/answerQuestion',
-		CURRENT_PERSONALITY_URL: 			'/personality',
 
 		RANDOM_GK_QUESTION_URL: '/gk/randomQuestion',
 		ANSWER_GK_QUESTION_URL: '/gk/answerQuestion',
@@ -102,6 +103,11 @@ module.exports = function() {
 		INVALID_TOKEN: new Error('INVALID_TOKEN'),
 		UNKNOWN_USER: new Error('UNKNOWN_USER'),
 		INCOMPLETE_DATA: new Error('INCOMPLETE_DATA'),
+		BAD_DATA: new Error('BAD_DATA'),
+
+		//crypto
+		CRYPTO_ALGORITHM: 'aes-256-ctr',
+		CRYPTO_SECRET: 'd6F3Efeq',
 
 		GENERATE_RANDOM: function(max) {
 			return Math.floor(Math.random() * max);

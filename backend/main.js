@@ -14,11 +14,12 @@ mysql.createConnection(genericConstants.MYSQL_SOURCE)
 	var authMysqlHandler    = require('./mysql-handlers/authentication-mysql-handler')(genericConstants, connection),
 		persMysqlHandler    = require('./mysql-handlers/personality-mysql-handler')(genericConstants, connection),
 		gkMysqlHandler		= require('./mysql-handlers/gk-mysql-handler')(genericConstants, connection),
-		intelMysqlHandler	= require('./mysql-handlers/intel-mysql-handler')(genericConstants, connection);
+		intelMysqlHandler	= require('./mysql-handlers/intel-mysql-handler')(genericConstants, connection),
+		genericTools 		= require('./generic-tools')(genericConstants);
 		
 	    require('./authentication/authentication-server')(application, 
-			genericConstants, tokenHandler, authMysqlHandler);
-		require('./personality/personality-server')(application, genericConstants, tokenHandler, persMysqlHandler);
+			genericConstants, tokenHandler, authMysqlHandler, genericTools);
+		require('./personality/personality-server')(application, genericConstants, tokenHandler, persMysqlHandler, genericTools);
 		require('./general_knowledge/gk-server')(application, genericConstants, tokenHandler, gkMysqlHandler);
 });
 

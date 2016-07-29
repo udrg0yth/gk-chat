@@ -1,11 +1,20 @@
-module.exports = function(application, genericConstants, tokenHandler, persMysqlHandler) {
+module.exports = function(application, genericConstants, tokenHandler, persMysqlHandler, genericTools) {
 	var personalityConstants		 	  	=  require('./personality-constants')(),
 		  personalityService  		  	  =  require('./personality-service')(application, personalityConstants, genericConstants, persMysqlHandler);
 
-	application.get(genericConstants.NEXT_PERSONALITY_QUESTION_URL, function(req, res) {
+	application.post(genericConstants.NEXT_PERSONALITY_QUESTION_URL, function(req, res) {
   		var data = req.body,
   			  token = req.headers['x-auth-token'],
-			    user = tokenHandler.decodeToken(token);
+			    user = token? tokenHandler.decodeToken(token): 
+          (data.hash?{id: genericTools.decrypt(data.hash)}:null);
+
+      console.log(user);
+
+      if(!user) {
+        return res.status(genericConstants.UNAUTHORIZED).json({
+            error: genericConstants.INCOMPLETE_DATA.message
+        });
+      }
 
   		 personalityService
   		.getNextQuestion(user.id, res)
@@ -17,19 +26,6 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
   		});
   });
 
-  application.get(genericConstants.CURRENT_PERSONALITY_URL, function(req, res){
-      var token = req.headers['x-auth-token'],
-          user = tokenHandler.decodeToken(token);
-      personalityService
-      .getPersonality(user.id, res)
-      .catch(function(error) {
-        res.status(genericConstants.INTERNAL_ERROR).json({
-          message: error.message,
-          trace: 'P-SRV-P'
-        });
-      });
-  });
-
   application.post(genericConstants.ANSWER_PERSONALITY_QUESTION_URL, function(req, res) {
       var question = req.body;
       var token = req.headers['x-auth-token'],
@@ -37,7 +33,7 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
 
       if(!question.answer
       || !question.negativelyAffectedType) {
-        return res.status(genericConstants.INTERNAL_ERROR).json({
+        return res.status(genericConstants.UNAUTHORIZED).json({
             error: genericConstants.INCOMPLETE_DATA.message
         });
       }

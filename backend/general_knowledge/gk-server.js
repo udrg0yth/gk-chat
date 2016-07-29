@@ -2,13 +2,14 @@ module.exports = function(application, genericConstants, tokenHandler, gkMysqlHa
 	var gkConstants		 	  	=  require('./gk-constants')(),
 		gkService               =  require('./gk-service')(application, gkConstants, genericConstants, gkMysqlHandler);
 
-	application.get(genericConstants.RANDOM_GK_QUESTION_URL, function(req, res) {
-		 var token = req.headers['x-auth-token'],
+	application.post(genericConstants.RANDOM_GK_QUESTION_URL, function(req, res) {
+		 var data = req.body,
+             token = req.headers['x-auth-token'],
          	 user = tokenHandler.decodeToken(token);
           console.log(token);
 
           gkService
-         .getRandomQuestion(user.id, res)
+         .getRandomQuestion(user.id, data.requestTime, data.responseTime, res)
          .catch(function(error) {
          	res.status(genericConstants.INTERNAL_ERROR).json({
          		message: error.message,

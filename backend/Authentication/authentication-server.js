@@ -1,8 +1,8 @@
-module.exports = function(application, genericConstants, tokenHandler, authMysqlHandler) {
+module.exports = function(application, genericConstants, tokenHandler, authMysqlHandler, genericTools) {
 	var authenticationConstants 	  	=  require('./authentication-constants')(),
 		corsFilter    					=  require('./cors-filter')(application, authenticationConstants),
 		authenticationService  		  	=  require('./authentication-service')(application, 
-			authenticationConstants, genericConstants, tokenHandler, authMysqlHandler);
+			authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, genericTools);
   
   	application.get(genericConstants.STATISTICS_URL, function(req, res) {
   		authenticationService.getStatistics(res);
@@ -109,8 +109,45 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 		});
 	});
 
+	application.post(genericConstants.GET_HASH_URL, function(req, res) {
+		var data = req.body;
+		if(!data.email){
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
+    	}
+
+    	 authenticationService
+    	.getHash(data.email, res)
+    	.catch(function(error){
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-GHSH'
+			});
+		});
+	});
+
+	application.post(genericConstants.CHECK_HASH_URL, function(req, res) {
+		var data = req.body;
+		if(!data.hash){
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
+    	}
+
+    	 authenticationService
+    	.checkHash(data.hash, res)
+    	.catch(function(error){
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-CHSH'
+			});
+		});
+	});
+
 	application.post(genericConstants.REGISTRATION_URL, function(req, res) {
-		var header = req.headers['authorization'];
+		var data = req.body,
+			header = req.headers['authorization'];
 
 		if(!header){
 			return res.status(genericConstants.UNAUTHORIZED).json({
@@ -119,7 +156,7 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 		}
 		
 		authenticationService
-		.registerUser(header, res)
+		.registerUser(header, data.sendEmail, res)
 		.catch(function(error){
 			res.status(genericConstants.INTERNAL_ERROR).json({
 				message : error.message,

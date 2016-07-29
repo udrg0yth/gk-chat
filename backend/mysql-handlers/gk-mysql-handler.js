@@ -72,7 +72,7 @@ module.exports = function(genericConstants, connection) {
 			var queryString = genericConstants
 							.SELECT_TEMPLATE
 							.replace('$table', genericConstants.GK_QUESTION_TABLE)
-							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS)
+							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 'gk_question_id="' + questionId + '"');
 			console.log(queryString);

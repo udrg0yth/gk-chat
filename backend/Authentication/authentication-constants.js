@@ -1,9 +1,5 @@
 module.exports = function() {
 	return {
-		//crypto
-		CRYPTO_ALGORITHM: 'aes-256-ctr',
-		CRYPTO_SECRET: 'd6F3Efeq',
-
 		//email
 		EMAIL_TEMPLATE: '<a href="http://localhost:9000/#/main/complete/$hash">Activate account</a>',
 

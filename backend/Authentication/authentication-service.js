@@ -1,4 +1,4 @@
-module.exports = function(application, authenticationConstants, genericConstants, tokenHandler, authMysqlHandler) {
+module.exports = function(application, authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, genericTools) {
 	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants),
 		profileTools  			 =  require('./profile-tools')(authenticationConstants);
 
@@ -75,7 +75,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 		    .then(function(rows) {
 				if(rows.length > 0) {
 					var message = 
-								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', authenticationTools.encrypt(rows[0].user_id.toString()));
+								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', genericTools.encrypt(rows[0].user_id.toString()));
 					authenticationTools.sendActivationLink(email, message);
 				} else {
 					res.status(genericConstants.UNAUTHORIZED).json({
@@ -85,7 +85,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 			});
 		},
 		activateAccount: function(hash, res) {
-			var userId = authenticationTools.decrypt(hash);
+			var userId = genericTools.decrypt(hash);
 			return authMysqlHandler
 					.retrieveUserById(userId)
 					.then(function(rows) {
@@ -136,13 +136,12 @@ module.exports = function(application, authenticationConstants, genericConstants
 							message: authenticationConstants.BAD_CREDENTIALS.message
 						});
 					} 
-					var token = tokenHandler.generateToken({id: rows[0].user_id});
-
+					var token = tokenHandler.generateToken(rows[0]);
 					res.writeHead(genericConstants.OK, {'X-Auth-Token': token});
 					res.end();
 				});
 		},
-		registerUser: function(header, res) {
+		registerUser: function(header, sendEmail, res) {
 			var credentials = authenticationTools.getCredentials(header),
 			data = {
 				email: credentials[0],
@@ -156,11 +155,17 @@ module.exports = function(application, authenticationConstants, genericConstants
 					 authMysqlHandler
 					.retrieveUserById(data.insertId)
 					.then(function(user) {
-						var encryptedId = authenticationTools.encrypt(data.insertId.toString()),
+						var encryptedId = genericTools.encrypt(data.insertId.toString()),
 							message = 
 								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', encryptedId);
-						authenticationTools.sendActivationLink(user[0].email, message);
-						res.status(genericConstants.OK).json({});
+						if(sendEmail) {
+							authenticationTools.sendActivationLink(user[0].email, message);
+							res.status(genericConstants.OK).json({});
+						} else {
+							res.status(genericConstants.OK).json({
+								hash: encryptedId
+							});
+						}
 					})
 					.catch(function(error) {
 						return res.status(genericConstants.INTERNAL_ERROR).json({
@@ -171,13 +176,44 @@ module.exports = function(application, authenticationConstants, genericConstants
 				});
 		},
 		setUserProfile: function(data, res) {
-				var userId = authenticationTools.decrypt(data.hash);
+				var userId = genericTools.decrypt(data.hash);
 				delete data.hash;
 				return authMysqlHandler
 					.setUserProfile(userId, data)
-					.then(function() {
-						res.status(genericConstants.OK).json({});
+					.then(function(rows) {
+						var token = tokenHandler.generateToken(rows[0]);
+						res.writeHead(genericConstants.OK, {'X-Auth-Token': token});
+						res.end();
 					});
+		},
+		getHash: function(email, res) {
+			return authMysqlHandler
+			.getIdFromEmail(email)
+			.then(function(rows) {
+				if(rows.length === 0) {
+					return res.status(genericConstants.UNAUTHORIZED).json({
+						message: authenticationConstants.BAD_CREDENTIALS.message
+					});
+				}
+
+				res.status(genericConstants.OK).json({
+					hash: genericTools.encrypt(rows[0].user_id.toString())
+				});
+			});
+		},
+		checkHash: function(hash, res) {
+			var userId = genericTools.decrypt(hash);
+			return authMysqlHandler
+			.checkProfileCompletionById(userId)
+			.then(function(rows) {
+				if(rows.length === 0 || (rows.length > 0 && rows[0].username)) {
+					return res.status(genericConstants.UNAUTHORIZED).json({
+						message: genericConstants.BAD_DATA.message
+					});
+				} 
+
+				res.status(genericConstants.OK).json({});
+			});
 		},
 		logoutUser: function() {
 		}

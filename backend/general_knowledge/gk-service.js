@@ -4,10 +4,10 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 
 	var removeTimedOutQuestions = function() {
 		 gkMysqlHandler
-		.updateUserScoreGlobal(gkConstants.GK_TIMEOUT)
+		.updateUserScoreGlobal(gkConstants.GK_TIME_LIMIT+2)
 		.then(function() {
 			gkMysqlHandler
-		   .removeTimedOutQuestions(gkConstants.GK_TIMEOUT)
+		   .removeTimedOutQuestions(gkConstants.GK_TIME_LIMIT)
 		   .catch(function(error) {
 		   		console.log('Error while cleaning gk_question_user from timed out questions!', error.message);
 		   });
@@ -42,23 +42,26 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 
 
 	return {
-		getRandomQuestion: function(userId, res) {
+		getRandomQuestion: function(userId, requestTime, responseTime, res) {
 			return gkMysqlHandler
 			.getQuestionForUser(userId)
 			.then(function(rows) {
-				if(rows.length>0 
-				&& parseInt(rows[0].diftime) < gkConstants.TIME_LIMIT) {
+				if(requestTime && responseTime && rows.length>0 
+				&& parseInt(rows[0].diftime) < (gkConstants.GK_TIME_LIMIT 
+					+ (parseInt(requestTime) + (Date.now()-responseTime))/1000)) {
 						 gkMysqlHandler
 						.getQuestionById(rows[0].gk_question_id)
-						.then(function(rows) {
+						.then(function(rows2) {
+							console.log(rows[0].diftime);
 							res.status(genericConstants.OK).json({
-								timeLeft: rows[0].diftime,
-								questionId: rows[0].gk_question_id,
-								question: rows[0].gk_question,
+								timeLeft: rows[0].diftime + (Date.now()-responseTime)/1000,
+								timestamp: Date.now(),
+								questionId: rows2[0].gk_question_id,
+								question: rows2[0].gk_question,
 								answers: genericConstants.SHUFFLE_ARRAY(
-									[rows[0].gk_answer1,
-									rows[0].gk_answer2,rows[0].gk_answer3,
-									rows[0].gk_answer4])
+									[rows2[0].gk_answer1,
+									rows2[0].gk_answer2,rows2[0].gk_answer3,
+									rows2[0].gk_answer4])
 							});
 						})
 						.catch(function(error) {
@@ -68,17 +71,24 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 							});
 						});
 				} else {
-					var random  = genericConstants.GENERATE_RANDOM(questionCount);
-					console.log(random, questionCount);
+					console.log(gkConstants);
+					var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
 					 gkMysqlHandler
 					.getQuestionById(random)
 					.then(function(rows) {
-						  console.log(rows);
 						 gkMysqlHandler
 					    .setTimeout(userId, rows[0].gk_question_id)
 					    .then(function() {
+					    	console.log(gkConstants.GK_TIME_LIMIT);
 					    	res.status(genericConstants.OK).json({
-
+					    		timeLeft: gkConstants.GK_TIME_LIMIT,
+								timestamp: Date.now(),
+								questionId: rows[0].gk_question_id,
+								question: rows[0].gk_question,
+								answers: genericConstants.SHUFFLE_ARRAY(
+									[rows[0].gk_answer1,
+									rows[0].gk_answer2,rows[0].gk_answer3,
+									rows[0].gk_answer4])
 					    	});
 					    })
 					    .catch(function(error) {
@@ -97,12 +107,13 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 				}
 			});
 		},
-		answerQuestion: function(userId, answer) {
+		answerQuestion: function(userId, requestTime, responseTime, answer) {
 			return gkMysqlHandler
 			.getQuestionForUser(userId)
 			.then(function(rows) {
 				if(rows.length>0 
-				&& parseInt(rows[0].diftime) > gkConstants.TIME_LIMIT) {
+				&& parseInt(rows[0].diftime) > (gkConstants.TIME_LIMIT 
+				+ (parseInt(requestTime) + (Date.now()-responseTime)))) {
 					if(rows[0].answer4 === answer) {
 						 gkMysqlHandler
 						.updateUserScore(userId, true)

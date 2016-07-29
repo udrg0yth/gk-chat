@@ -2,11 +2,19 @@
 <html>
 <head>
 
+	<link rel="stylesheet" type="text/css" href="bower_components/angular-chart.js/dist/angular-chart.min.css"/>
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/components-font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap-simple-chat/src/css/style.css">
+	<link rel="stylesheet" type="text/css" href="styles/custom.css">
+	<link rel="stylesheet" type="text/css" href="styles/font.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/angular-wizard/dist/angular-wizard.min.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/angularjs-slider/dist/rzslider.min.css">
 	
+	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
 	<script src="bower_components/angular-route/angular-route.min.js"></script>
 	<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -17,35 +25,38 @@
 	<script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 	<script src="bower_components/moment/min/moment.min.js"></script>
+	<script src="bower_components/Chart.js/Chart.js"></script>
+	<script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
+	<script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-svg-round-progressbar/0.4.4/roundProgress.min.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-	<link rel="stylesheet" type="text/css" href="bower_components/components-font-awesome/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap-simple-chat/src/css/style.css">
-	<link rel="stylesheet" type="text/css" href="styles/custom.css">
-	<link rel="stylesheet" type="text/css" href="styles/font.css">
-	<link rel="stylesheet" type="text/css" href="bower_components/angular-wizard/dist/angular-wizard.min.css">
-	<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
 
+	<script src="mainModule.js"></script>
 	<!-- start login component -->
 	<script src="authentication/loginModule.js"></script>
-	<script src="authentication/loginConstant.js"></script>
+	<script src="authentication/loginConstants.js"></script>
 	<script src="authentication/loginService.js"></script>
+	<script src="authentication/facebookService.js"></script>
 	<script src="authentication/tokenService.js"></script>
 	<script src="authentication/loginController.js"></script>
+	<script src="authentication/profileController.js"></script>
+	<script src="authentication/personalityService.js"></script>
+	<script src="authentication/iqService.js"></script>
+	<script src="authentication/gkService.js"></script>
+	<script src="authentication/personalityConstants.js"></script>
+	<script src="genericConstants.js"></script>
+	<script src="chat/modalDirective.js"></script>
 	<!-- end login component -->
 
 	<!-- start chat component -->
 	<script src="chat/chatModule.js"></script>
 	<script src="chat/chatController.js"></script>
-	<script src="chat/modalDirective.js"></script>
 	<!-- end chat component -->
 
-	<script src="mainModule.js"></script>
 
 </head>
 <body ng-app="mainModule" style="background-image:url('/assets/background.jpg');background-size:cover;">
-	
+	<div id="fb-root"></div>
 	<div ui-view="mainView"></div>
 	<!--end login form -->
 

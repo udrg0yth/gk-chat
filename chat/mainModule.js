@@ -1,6 +1,6 @@
 angular
 .module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard', 'ui.bootstrap'])
-.config(['$stateProvider', '$urlRouterProvider',  function ($stateProvider, $urlRouterProvider) {
+.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 	$stateProvider
 	.state('main', {
 		url: '/main',
@@ -9,6 +9,11 @@ angular
       			templateUrl: 'main.html'
       		}
      	 }
+	})
+	.state('authentication', {
+     url: '/auth',
+     parent: 'main',
+     templateUrl: 'authentication/authentication.html'
 	})
 	.state('login', {
      url: '/login',
@@ -26,7 +31,7 @@ angular
 		url: '/complete/:userHash',
 		parent: 'main',
 		templateUrl: 'authentication/profile.html',
-		controller: 'loginController'
+		controller: 'profileController'
 	})
 	.state('registration', {
 	 url: '/registration',
@@ -44,5 +49,5 @@ angular
 	      }
 	});
 
-	$urlRouterProvider.otherwise('/main/login');
+	$urlRouterProvider.otherwise('/main/auth');
 }]);

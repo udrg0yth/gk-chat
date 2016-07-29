@@ -1,10 +1,19 @@
-module.exports = function(application, genericConstants, tokenHandler, iqMysqlHandler) {
+module.exports = function(application, genericConstants, tokenHandler, iqMysqlHandler, genericTools) {
 	var iqConstants		 	  	=  require('./iq-constants')(),
 		iqService               =  require('./iq-service')(application, iqConstants, genericConstants, iqMysqlHandler);
 
-	application.get(genericConstants.RANDOM_IQ_QUESTION_URL, function(req, res) {
-		 var token = req.headers['x-auth-token'],
-         	 user = tokenHandler.decodeToken(token);
+
+	application.post(genericConstants.RANDOM_IQ_QUESTION_URL, function(req, res) {
+		 var data = req.body,
+             token = req.headers['x-auth-token'],
+         	 user = token?tokenHandler.decodeToken(token):
+                (data.hash?genericTools.decrypt(data.hash):null);
+
+          if(!user) {
+            return res.status(genericConstants.UNAUTHORIZED).json({
+                error: genericConstants.INCOMPLETE_DATA.message
+            });
+          }
 
           iqService
          .getRandomQuestion(user.id, res)

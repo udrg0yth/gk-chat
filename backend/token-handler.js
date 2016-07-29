@@ -30,8 +30,17 @@ module.exports = function(application,
 	application.use(tokenInterceptor);
 
 	return {
-		generateToken: function(claims) {
-			return jwt.sign(claims, secretKey);
+		generateToken: function(user) {
+			return jwt.sign({
+							id: user.user_id,
+							username: user.username,
+							birthdate: user.birthdate,
+							gender: user.gender,
+							iqScore: user.current_iq_score,
+							gkScore: user.current_gk_score,
+							personality: user.current_personality,
+							credits: user.credits
+						}, secretKey);
 		},
 		verifyToken: function(token) {
 			if(!token) {

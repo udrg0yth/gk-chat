@@ -16,7 +16,19 @@ a:hover {
 	color: #FFFFFF;
 }
 
-.fa {
+.progress-wrapper{
+    position: relative;
+    margin:20px auto;
+    font-size: 40px;
+}
+.progress{
+    position: absolute;
+    color: #bbb;
+    font-weight: 100;
+    line-height: 1;
+}
+
+/*.fa {
   color:#fff;
 }
 
@@ -61,12 +73,10 @@ a:hover {
 .subscript
 {
     font-size: 25px;
-}
+}*/
 
-/* CSS-only ribbon styles    */
 .cnrflash
 {
-    /*Position correctly within container*/
     position: absolute;
     top: -9px;
     right: 4px;
@@ -78,7 +88,6 @@ a:hover {
 }
 .cnrflash-inner
 {
-    /*Set position, make larger then      container and rotate 45 degrees*/
     position: absolute;
     bottom: 0;
     right: 0;
@@ -97,9 +106,8 @@ a:hover {
     background-color: #aa0101;
     box-shadow: 0 3px 3px 0 rgba(1,1,1,.5), 0 1px 0 0 rgba(1,1,1,.5), inset 0 -1px 8px 0 rgba(255,255,255,.3), inset 0 -1px 0 0 rgba(255,255,255,.2);
 }
-.cnrflash-inner:before, .cnrflash-inner:after
+/*.cnrflash-inner:before, .cnrflash-inner:after
 {
-    /*Use the border triangle trick to make         it look like the ribbon wraps round it's        container*/
     content: " ";
     display: block;
     position: absolute;
@@ -122,7 +130,6 @@ a:hover {
 }
 .cnrflash-label
 {
-    /*Make the label look nice*/
     position: absolute;
     bottom: 0;
     left: 0;
@@ -134,4 +141,4 @@ a:hover {
     font-size: 0.95em;
     font-weight: bold;
     text-align: center;
-}
+}*/

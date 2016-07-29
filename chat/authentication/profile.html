@@ -1,5 +1,6 @@
 <wizard on-finish="finishedWizard()"> 
     <wz-step wz-title="Basic info">
+
         <div class="form-group text-center" ng-form="registrationForm" style="margin-top:15%;">
 			<div class="input-group">
 			  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -8,9 +9,9 @@
 			<div ng-if="showErrorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
 			<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i><br>
 
-			<div id="datepick" class="input-group date-pick">
-				<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-				<input type="text" data-date-format="yyyy-mm-dd" placeholder="Your date of birth" name="birthdate" ng-model="user.birthdate" class="form-control input-lg" required/>
+			<div class="input-group">
+				  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+		          <input type="text" class="form-control input-lg" placeholder="Your date of birth" uib-datepicker-popup="{{format}}" ng-model="user.birthdate" ng-focus="open($event)" is-open="datepicker.opened" datepicker-options="datepicker.options" close-text="Close" required/>
 			</div><br>
 			<div ng-if="showInvalidDate" class="alert alert-danger" role="alert">{{errorMessage}}</div>
 			<div class="btn-group">
@@ -18,28 +19,168 @@
 		        <label class="btn btn-success" ng-model="user.gender" uib-btn-radio="'female'">Female</label>
 		    </div>
 		</div>
-		<script>
-			$('#datepick input').datepicker({
-				format : 'yyyy-mm-dd',
-				startView: "years",
-				autoclose : true
-			});
-		</script>
         <button class="btn btn-primary" ng-click="firstStep()">Continue</button>
     </wz-step>
     <wz-step wz-title="Personality questions">
-    	<p style="color:white;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
+    	<p style="color:white;margin-top:15%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
     	   personality questions. 
     	</p>
-        <button class="btn btn-warning" ng-click="showPersonalityQuestionModal()">Answer question</button>
+        <button class="btn btn-warning" ng-click="showPersonalityQuestionModal()">More</button>
+    	<modal id="personalityQuestionModal" title="Personality Question">
+			<div class="container" ng-cloak>
+				<div class="row" style="width:50vw;">
+					<div class="col-xs-4 col-md-4 col-lg-4">
+						<div class="list-group" style="margin-top:60%;">
+							<button type="button" ng-disabled="true" class="list-group-item"><p>Basic info</p></button>
+						  <button type="button" class="list-group-item" ng-click="loadPolarChart()"><p>Personality</p></button>
+						  <button type="button"  ng-disabled="true" class="list-group-item"><p>Logic</p></button>
+						  <button type="button"  ng-disabled="true" class="list-group-item"><p>General knowledge</p></button>
+						</div>
+					</div>
+					<div class="col-xs-8 col-md-8 col-lg-8">
+						<div class="animate-hide" ng-show="firstPersonalityPage">
+							<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage"><p>Next</p></button>
+							<p>
+								According to Carl Jung there are 4 polar dimensions:
+							</p>
+							<p>
+								Extraverted  (E) vs. (I) Introverted
+								Sensing	     (S) vs. (N) Intuition
+								Feeling      (F) vs. (T) Thinking
+								Judging      (J) vs. (P) Perceiving
+							</p>
+							<p>
+							1. E vs. I
+								Extraverts project their energy on the external world. They are more socially active and grow
+								through interaction.
+							 	Introverts have as source of energy their internal world. Usualy quiet and reserved, they analyse in 
+								depth their actions.
+							</p>
+							<p>
+							2. S vs. N
+								Sensitive people are pragmatic. They pay more attention to physical reality, are concerned with the present and look for practical applications of what they're learning.
+								Intuitive people are theoretical. Tehy pay attention to patterns, look for meaning in the information they learn and are more concerned about the past and the future.
+							</p>
+							<p>
+							3. F vs. T
+								People who use Feeling when deciding, usually base their decisions on personal preferences and on the
+							points-of-view of other persons involved in the situation.
+								Thinkers are logical. They base their decisions on truth and principles dettached from any specific setting. 
+							</p>
+							<p>
+							4. J vs. P
+								Judgers like things to be organized and planned in advance. They feel most comfortable when everything is secured and under control and are usually reticent to new experiences.
+								Perceivers are flexible and spontaneous. They prefer to understand and adapt rather than organize and are open to new experiences.
+							</p>
+							<button class="btn btn-lg btn-primary">Next</button>
+						</div>
+						<div class="animate-hide" ng-show="!firstPersonalityPage">
+							<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage"><p>Back</p></button>
+							<div class ="row text-center" style="margin-top:5%; color:#FF4040;">
+								<h2>Your current personality:</h2><h1>INTP</h1>
+							</div>
+							<div class="row text-center" style="margin-top: 10%;">
+								<div class="col-lg-6 col-md-6">
+									<canvas id="polar" class="chart chart-polar-area" chart-data="data" chart-labels="labels" chart-options="options" chart-click="onClick"></canvas>
+								</div>
+								<div class="col-lg-6 col-md-6">
+									<canvas id="pie" class="chart chart-pie" chart-data="globalData" chart-labels="globalLabels" chart-options="globalOptions"></canvas> 
+								</div> 
+							</div>
+							<div>
+						    	<span class="badge">{{personalityQuestion.questionId}}</span>
+						    	<span>{{personalityQuestion.question}}</span>
+						    </div>
+						    <rzslider style="margin-bottom: 60px;" rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
+						    <div class="text-center">
+						        <button class="btn-primary btn-lg" ng-click="setPersonalityAnswer()">Answer</button>
+						    </div>
+						 </div>
+					</div>
+				</div>
+			</div>
+		</modal>
     </wz-step>
     <wz-step wz-title="Logic questions">
-        <p ng-click="showTutorialModal()">Logic question!</p>
-        <input type="submit" wz-next value="Go on" />
+    <p style="color:white;margin-top:15%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
+    	   personality questions. 
+    	</p>
+        <button ng-click="showIQQuestionModal()">Logic question!</button>
+        <modal id="iqQuestionModal" title="IQ Question">
+			<div class="container" ng-cloak>
+				<div class="row" style="width:50vw;">
+					<div class="col-xs-4 col-md-4 col-lg-4">
+						<div class="list-group" style="margin-top:60%;">
+							<button type="button" ng-disabled="true" class="list-group-item"><p>Basic info</p></button>
+						  <button type="button" class="list-group-item" ng-click="loadPolarChart()"><p>Personality</p></button>
+						  <button type="button"  ng-disabled="true" class="list-group-item"><p>Logic</p></button>
+						  <button type="button"  ng-disabled="true" class="list-group-item"><p>General knowledge</p></button>
+						</div>
+					</div>
+					<div class="col-xs-8 col-md-8 col-lg-8">
+							<div class ="row text-center" style="margin-top:5%; color:#FF4040;">
+								<h2>Your current iq:</h2><h1>120</h1>
+							</div>
+							<!-- <canvas id="c" height="400" width="500">Your browser does not support the HTML5 canvas tag.</canvas> -->
+							<div class="row">
+
+								<div class="progress-wrapper text-center col-lg-4 col-md-4" style="font-size: 3rem;">
+									<div class="progress ng-cloak" ng-style="getStyle()" style="height:30% !important; width: 35% !important;">{{ max-current }}</div>
+									<round-progress
+								    max="max"
+								    current="current"
+								    color="#45ccce"
+								    bgcolor="#eaeaea"
+								    radius="100"
+								    stroke="20"
+								    semi="false"
+								    rounded="true"
+								    clockwise="true"
+								    responsive="true"
+								    duration="50"
+								    animation="easeInOutQuart"
+								    animation-delay="0"></round-progress>
+								 </div>
+							</div>
+					</div>
+					<script>
+					var a = 100;
+					var b = 25;
+					var c = 10;
+
+					var cv = document.getElementById('c');
+					var ctx = cv.getContext("2d");
+					ctx.font = "10px Arial";
+					
+					for (var j=0; j< 150; j++){
+						var y = a/Math.pow(Math.E, (Math.pow(j-b, 2))/(2*c*c));
+						ctx.rect(j*10, cv.height/2-y, 10, y);
+						if(j<30){
+							ctx.fillStyle = "red";
+							ctx.fill();
+							ctx.lineWidth = 1;
+							ctx.strokeStyle = "black";
+						}
+					}
+					ctx.fillStyle = "black";
+					for(var j=62.5;j<500;j+=62.5) {
+						ctx.moveTo(j,cv.height/2);
+						ctx.arc(j,cv.height/2, 2, 0, 2 * Math.PI, false);
+						ctx.fillText((j/62.5)*25,j,cv.height/2+20);
+					}
+					ctx.moveTo(300,0);
+					ctx.lineTo(300,cv.height/2+50);
+					
+					ctx.moveTo(310,50);
+					ctx.font = "15px Arial";
+					ctx.fillText("You: 120", 310,50);
+				    ctx.stroke();
+					</script>
+				</div>
+		</modal>
     </wz-step>
     <wz-step wz-title="General knowledge questions">
         <p>General knowledge!</p>
-        <input type="submit" wz-next value="Finish now" />
     </wz-step>
 </wizard>
 
