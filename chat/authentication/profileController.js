@@ -6,10 +6,10 @@ function($scope, $state, loginService, tokenService, $localStorage, $stateParams
 		loginService
 		.checkHash($stateParams.userHash)
 		.error(function(err) {
-			$state.go('auth');
+			$state.go('authentication');
 		});
 	} else {
-		$state.go('auth');
+		$state.go('authentication');
 	}
 
 	$scope.user = {
@@ -155,17 +155,17 @@ $scope.datepicker = {
 	};
 
 	$scope.showIQQuestionModal = function() {
-			$('#iqQuestionModal').modal('show');
-			$interval(function(){$scope.current++;console.log($scope.current);},1000);
-		/*iqService
-		.getRandomQuestion()
+		iqService
+		.getRandomQuestionForProfile($stateParams.userHash)
 		.success(function(data) {
+			console.log(data);
 			$scope.iqQuestion = data;
 			$('#iqQuestionModal').modal('show');
+			$interval(function(){$scope.current++;console.log($scope.current);},1000);
 		})
 		.error(function(error) {
 			console.log(error);
-		});*/
+		});
 	};
 
 	$scope.showGKQuestionModal = function() {

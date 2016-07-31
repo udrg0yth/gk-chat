@@ -1,5 +1,5 @@
-angular.module('loginModule').service('gkService', ['$http','personalityConstant', 'genericConstant',
- function ( $http, personalityConstant, genericConstant) {
+angular.module('loginModule').service('gkService', ['$http','personalityConstant', 'genericConstant', '$localStorage',
+ function ( $http, personalityConstant, genericConstant, $localStorage) {
  	return {
  		getPersonalityQuestionForRegistration: function(hash) {
  			return $http.post(genericConstant.BASE_URL + personalityConstant.NEXT_PERSONALITY_QUESTION_URL, {

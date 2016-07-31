@@ -1,6 +1,6 @@
 module.exports = function(application, genericConstants, tokenHandler, iqMysqlHandler, genericTools) {
-	var iqConstants		 	  	=  require('./iq-constants')(),
-		iqService               =  require('./iq-service')(application, iqConstants, genericConstants, iqMysqlHandler);
+	var iqConstants		 	  	=  require('./intel-constants')(),
+		iqService               =  require('./intel-service')(application, iqConstants, genericConstants, iqMysqlHandler);
 
 
 	application.post(genericConstants.RANDOM_IQ_QUESTION_URL, function(req, res) {
@@ -8,7 +8,7 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
              token = req.headers['x-auth-token'],
          	 user = token?tokenHandler.decodeToken(token):
                 (data.hash?genericTools.decrypt(data.hash):null);
-
+          console.log(data);
           if(!user) {
             return res.status(genericConstants.UNAUTHORIZED).json({
                 error: genericConstants.INCOMPLETE_DATA.message
@@ -33,7 +33,7 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
          if(!quiz.questionId
          || !quiz.answer) {
          	res.status(genericConstants.UNAUTHORIZED).json({
-         		message: genericConstants: INCOMPLETE_DATA.message
+         		message: genericConstants.INCOMPLETE_DATA.message
          	});
          }
           gkService
@@ -44,4 +44,5 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
                 trace: 'IQ-SRV-AQ'
             });
          });
+    });
 };

@@ -20,6 +20,7 @@ mysql.createConnection(genericConstants.MYSQL_SOURCE)
 	    require('./authentication/authentication-server')(application, 
 			genericConstants, tokenHandler, authMysqlHandler, genericTools);
 		require('./personality/personality-server')(application, genericConstants, tokenHandler, persMysqlHandler, genericTools);
+		require('./intelligence/intel-server')(application, genericConstants, tokenHandler, intelMysqlHandler, genericTools);
 		require('./general_knowledge/gk-server')(application, genericConstants, tokenHandler, gkMysqlHandler);
 });
 
