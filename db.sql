@@ -56,7 +56,7 @@ CREATE TABLE `gk_question_user` (
   KEY `gk_question_id` (`gk_question_id`),
   CONSTRAINT `gk_question_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `gk_question_user_ibfk_2` FOREIGN KEY (`gk_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `gk_question_user` (
 
 LOCK TABLES `gk_question_user` WRITE;
 /*!40000 ALTER TABLE `gk_question_user` DISABLE KEYS */;
-INSERT INTO `gk_question_user` VALUES (1,9,36,'2016-07-15 13:55:28');
+INSERT INTO `gk_question_user` VALUES (2,9,14,'2016-07-19 12:03:12'),(3,9,4,'2016-07-19 12:06:13'),(4,9,13,'2016-07-19 12:06:32'),(5,9,31,'2016-07-19 12:06:46'),(6,9,31,'2016-07-19 12:07:04'),(7,9,24,'2016-07-19 12:07:08'),(8,9,5,'2016-07-19 12:07:10'),(9,9,8,'2016-07-19 12:07:13'),(10,9,30,'2016-07-19 12:07:16'),(11,9,16,'2016-07-19 12:08:14'),(12,9,18,'2016-07-19 12:18:42'),(13,9,4,'2016-07-19 12:19:25'),(14,9,10,'2016-07-22 09:01:19'),(15,9,5,'2016-07-22 09:01:27'),(16,9,17,'2016-07-22 09:01:33'),(17,9,8,'2016-07-22 09:01:38'),(18,9,12,'2016-07-22 09:02:10'),(19,9,24,'2016-07-22 09:02:47'),(20,9,9,'2016-07-22 09:02:55'),(21,9,27,'2016-07-22 09:07:18'),(22,9,12,'2016-07-22 09:07:22'),(23,9,28,'2016-07-22 09:07:26');
 /*!40000 ALTER TABLE `gk_question_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,7 +111,7 @@ CREATE TABLE `iq_links` (
   `iq_links_id` int(11) NOT NULL AUTO_INCREMENT,
   `link` text NOT NULL,
   PRIMARY KEY (`iq_links_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,6 +120,7 @@ CREATE TABLE `iq_links` (
 
 LOCK TABLES `iq_links` WRITE;
 /*!40000 ALTER TABLE `iq_links` DISABLE KEYS */;
+INSERT INTO `iq_links` VALUES (3,'http://localhost:9001/0.jpg'),(4,'http://localhost:9001/1.jpg'),(5,'http://localhost:9001/2.jpg'),(6,'http://localhost:9001/3.jpg'),(7,'http://localhost:9001/4.jpg'),(8,'http://localhost:9001/5.jpg'),(9,'http://localhost:9001/6.jpg'),(10,'http://localhost:9001/puzzle.jpg');
 /*!40000 ALTER TABLE `iq_links` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +187,7 @@ CREATE TABLE `iq_questions` (
   CONSTRAINT `iq_questions_ibfk_5` FOREIGN KEY (`iq_answer5`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_6` FOREIGN KEY (`iq_answer6`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_7` FOREIGN KEY (`iq_correct_answer`) REFERENCES `iq_links` (`iq_links_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -195,6 +196,7 @@ CREATE TABLE `iq_questions` (
 
 LOCK TABLES `iq_questions` WRITE;
 /*!40000 ALTER TABLE `iq_questions` DISABLE KEYS */;
+INSERT INTO `iq_questions` VALUES (2,10,3,4,5,6,7,8,3,0);
 /*!40000 ALTER TABLE `iq_questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -255,7 +257,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`),
   KEY `current_personality_question_id` (`current_personality_question_id`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`current_personality_question_id`) REFERENCES `personality_questions` (`personality_question_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,7 +266,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (9,'vlad','sha1$6cba172d$1$75d7e2b98ec5af643a192ab60a0fb62e48e070f9','vladradu97150@hotmail.com','2011-11-01 00:00:00','ACTIVE',150,0,0,0,0,0,0,0,0,0,0,0.00,2,'ISFJ','-20.0.0.0');
+INSERT INTO `user` VALUES (9,'vlad','sha1$6cba172d$1$75d7e2b98ec5af643a192ab60a0fb62e48e070f9','vladradu97150@hotmail.com','2011-11-01 00:00:00','ACTIVE',150,0,0,0,0,0,0,36,0,0,0,0.00,2,'ISFJ','-20.0.0.0'),(10,NULL,'sha1$0b1d4128$1$dec06a20aa2b96e5ff4bc98d38a7272dd9956ce2','silver_iii_bullet@yahoo.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0'),(11,NULL,'sha1$239b6ebe$1$23f25d87b37b8096035b75bff137b9d94ab3d2df','m9.arsenie.toderas@gmail.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -277,4 +279,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-17  9:51:37
+-- Dump completed on 2016-08-03 14:34:30
