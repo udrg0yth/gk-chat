@@ -16,8 +16,10 @@ module.exports = function(genericConstants, connection) {
 								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l5 ON (t2.iq_answer4 = l5.iq_links_id) ' +
 								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l6 ON (t2.iq_answer5 = l6.iq_links_id) ' +
 								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l7 ON (t2.iq_answer6 = l7.iq_links_id)')
-							.replace('$columns', 't1.timestamp, t1.iq_question_id, l1.link as question,l2.link as answer1, l3.link as answer2,'
-								+'l4.link as answer3, l5.link as answer4, l6.link as answer5, l7.link as answer6')
+							.replace('$columns', 'current_timestamp - t1.timestamp as diftime, t1.iq_question_id, l1.link as question, ' +
+								't2.iq_answer1 as iq_answer1Id, l2.link as answer1, t2.iq_answer2 as iq_answer2Id, l3.link as answer2, ' + 
+								't2.iq_answer3 as iq_answer3Id, l4.link as answer3, t2.iq_answer4 as iq_answer4Id, l5.link as answer4, ' +
+								't2.iq_answer5 as iq_answer5Id, l6.link as answer5, t2.iq_answer6 as iq_answer6Id, l7.link as answer6')
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 't1.user_id="' + userId + '"');
 			console.log(queryString);
@@ -34,8 +36,10 @@ module.exports = function(genericConstants, connection) {
 								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l5 ON (i.iq_answer4 = l5.iq_links_id) ' +
 								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l6 ON (i.iq_answer5 = l6.iq_links_id) ' +
 								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l7 ON (i.iq_answer6 = l7.iq_links_id)')
-							.replace('$columns', 'i.iq_question_id, l1.link as question,l2.link as answer1, l3.link as answer2,' +
-								+'l4.link as answer3, l5.link as answer4, l6.link as answer5, l7.link as answer6')
+							.replace('$columns', 'i.iq_question_id, l1.link as question,t2.iq_answer1 as iq_answer1Id, l2.link as answer1, ' + 
+								't2.iq_answer2 as iq_answer2Id, l3.link as answer2, t2.iq_answer3 as iq_answer3Id, l4.link as answer3, ' +
+								't2.iq_answer4 as iq_answer4Id, l5.link as answer4, t2.iq_answer5 as iq_answer5Id, l6.link as answer5, ' + 
+								't2.iq_answer6 as iq_answer6Id, l7.link as answer6')
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 'i.iq_question_id="' + questionId + '"');
 			return connection.query(queryString);
