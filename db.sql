@@ -134,14 +134,14 @@ DROP TABLE IF EXISTS `iq_question_user`;
 CREATE TABLE `iq_question_user` (
   `iq_question_user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `gk_question_id` int(11) NOT NULL,
+  `iq_question_id` int(11) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `difficulty` tinyint(4) NOT NULL,
   PRIMARY KEY (`iq_question_user_id`),
   KEY `user_id` (`user_id`),
-  KEY `gk_question_id` (`gk_question_id`),
+  KEY `gk_question_id` (`iq_question_id`),
   CONSTRAINT `iq_question_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `iq_question_user_ibfk_2` FOREIGN KEY (`gk_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
+  CONSTRAINT `iq_question_user_ibfk_2` FOREIGN KEY (`iq_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,7 +162,7 @@ DROP TABLE IF EXISTS `iq_questions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `iq_questions` (
-  `iq_questions_id` int(11) NOT NULL AUTO_INCREMENT,
+  `iq_question_id` int(11) NOT NULL AUTO_INCREMENT,
   `iq_question` int(11) NOT NULL,
   `iq_answer1` int(11) NOT NULL,
   `iq_answer2` int(11) NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE `iq_questions` (
   `iq_answer6` int(11) NOT NULL,
   `iq_correct_answer` int(11) DEFAULT NULL,
   `difficulty` tinyint(4) NOT NULL,
-  PRIMARY KEY (`iq_questions_id`),
+  PRIMARY KEY (`iq_question_id`),
   KEY `iq_answer1` (`iq_answer1`),
   KEY `iq_answer2` (`iq_answer2`),
   KEY `iq_answer3` (`iq_answer3`),
@@ -279,4 +279,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-03 14:34:30
+-- Dump completed on 2016-08-03 15:04:48

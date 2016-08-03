@@ -71,9 +71,9 @@ module.exports = function() {
 		IQ_QUESTION_TABLE: 'iq_questions',
 
 		//iq question links
-		IQ_QUESTION_LINK_COLUMNS: 'link',
-		IQ_QUESTION_LINK_COLUMNS_WITH_ID: 'iq_link_id, link',
-		IQ_QUESTION_TABLE: 'iq_links',
+		IQ_LINK_COLUMNS: 'link',
+		IQ_LINK_COLUMNS_WITH_ID: 'iq_link_id, link',
+		IQ_LINK_TABLE: 'iq_links',
 
 		//gk question user
 		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id',

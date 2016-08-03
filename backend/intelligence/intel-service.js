@@ -45,8 +45,8 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			return iqMysqlHandler
 			.getQuestionForUser(userId)
 			.then(function(rows) {
+				console.log(rows);
 				res.status(genericConstants.OK).json({
-
 				});
 			});
 		}

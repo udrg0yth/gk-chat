@@ -6,8 +6,9 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
 	application.post(genericConstants.RANDOM_IQ_QUESTION_URL, function(req, res) {
 		 var data = req.body,
              token = req.headers['x-auth-token'],
-         	 user = token?tokenHandler.decodeToken(token):
-                (data.hash?genericTools.decrypt(data.hash):null);
+         	 user = token?tokenHandler.decodeToken(token):(data.hash?{
+                id: genericTools.decrypt(data.hash)
+            }:null);
           console.log(data);
           if(!user) {
             return res.status(genericConstants.UNAUTHORIZED).json({
