@@ -72,6 +72,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			return iqMysqlHandler
 			.getQuestionForUser(userId)
 			.then(function(rows) {
+				if(rows.length>0)
 				var timelimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
 					 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
 					  iqConstants.IQ_TIME_LIMIT_HARD);
@@ -82,10 +83,11 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 								getIqExchangeModel(rows[0].diftime + (Date.now()-responseTime)/1000, rows));
 				} else {
 					var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
+					console.log(random);
 					 iqMysqlHandler
 					.getQuestionById(random)
 					.then(function(rows) {
-						var timelimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
+						var timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
 							 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
 							  iqConstants.IQ_TIME_LIMIT_HARD);
 						 iqMysqlHandler

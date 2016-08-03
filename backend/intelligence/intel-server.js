@@ -9,7 +9,7 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
          	 user = token?tokenHandler.decodeToken(token):(data.hash?{
                 id: genericTools.decrypt(data.hash)
             }:null);
-          console.log(data);
+
           if(!user) {
             return res.status(genericConstants.UNAUTHORIZED).json({
                 error: genericConstants.INCOMPLETE_DATA.message
@@ -17,7 +17,7 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
           }
 
           iqService
-         .getRandomQuestion(user.id, res)
+         .getRandomQuestion(user.id, data.requestTime, data.responseTime, res)
          .catch(function(error) {
          	res.status(genericConstants.INTERNAL_ERROR).json({
          		message: error.message,

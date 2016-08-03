@@ -81,8 +81,8 @@ module.exports = function() {
 		GK_QUESTION_USER_TABLE: 'gk_question_user',
 
 		//iq question user
-		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id, difficulty',
-		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id, difficulty',
+		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id',
+		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id',
 		IQ_QUESTION_USER_TABLE: 'iq_question_user',
 
 		//categories

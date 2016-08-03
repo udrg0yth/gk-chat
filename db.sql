@@ -136,13 +136,12 @@ CREATE TABLE `iq_question_user` (
   `user_id` int(11) NOT NULL,
   `iq_question_id` int(11) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `difficulty` tinyint(4) NOT NULL,
   PRIMARY KEY (`iq_question_user_id`),
-  KEY `user_id` (`user_id`),
-  KEY `gk_question_id` (`iq_question_id`),
-  CONSTRAINT `iq_question_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `iq_question_user_ibfk_2` FOREIGN KEY (`iq_question_id`) REFERENCES `gk_questions` (`gk_question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `fk_user` (`user_id`),
+  KEY `fk_question` (`iq_question_id`),
+  CONSTRAINT `fk_question` FOREIGN KEY (`iq_question_id`) REFERENCES `iq_questions` (`iq_question_id`),
+  CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +195,7 @@ CREATE TABLE `iq_questions` (
 
 LOCK TABLES `iq_questions` WRITE;
 /*!40000 ALTER TABLE `iq_questions` DISABLE KEYS */;
-INSERT INTO `iq_questions` VALUES (2,10,3,4,5,6,7,8,3,0);
+INSERT INTO `iq_questions` VALUES (1,10,3,4,5,6,7,8,3,0);
 /*!40000 ALTER TABLE `iq_questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,4 +278,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-03 15:04:48
+-- Dump completed on 2016-08-03 17:53:04
