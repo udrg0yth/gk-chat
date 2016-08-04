@@ -141,7 +141,7 @@ CREATE TABLE `iq_question_user` (
   KEY `fk_question` (`iq_question_id`),
   CONSTRAINT `fk_question` FOREIGN KEY (`iq_question_id`) REFERENCES `iq_questions` (`iq_question_id`),
   CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,6 +150,7 @@ CREATE TABLE `iq_question_user` (
 
 LOCK TABLES `iq_question_user` WRITE;
 /*!40000 ALTER TABLE `iq_question_user` DISABLE KEYS */;
+INSERT INTO `iq_question_user` VALUES (55,10,1,'2016-08-04 14:22:07');
 /*!40000 ALTER TABLE `iq_question_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +187,7 @@ CREATE TABLE `iq_questions` (
   CONSTRAINT `iq_questions_ibfk_5` FOREIGN KEY (`iq_answer5`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_6` FOREIGN KEY (`iq_answer6`) REFERENCES `iq_links` (`iq_links_id`),
   CONSTRAINT `iq_questions_ibfk_7` FOREIGN KEY (`iq_correct_answer`) REFERENCES `iq_links` (`iq_links_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +266,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (9,'vlad','sha1$6cba172d$1$75d7e2b98ec5af643a192ab60a0fb62e48e070f9','vladradu97150@hotmail.com','2011-11-01 00:00:00','ACTIVE',150,0,0,0,0,0,0,36,0,0,0,0.00,2,'ISFJ','-20.0.0.0'),(10,NULL,'sha1$0b1d4128$1$dec06a20aa2b96e5ff4bc98d38a7272dd9956ce2','silver_iii_bullet@yahoo.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0'),(11,NULL,'sha1$239b6ebe$1$23f25d87b37b8096035b75bff137b9d94ab3d2df','m9.arsenie.toderas@gmail.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0');
+INSERT INTO `user` VALUES (9,'vlad','sha1$6cba172d$1$75d7e2b98ec5af643a192ab60a0fb62e48e070f9','vladradu97150@hotmail.com','2011-11-01 00:00:00','ACTIVE',150,0,0,0,0,0,0,37,0,0,0,0.00,2,'ISFJ','-20.0.0.0'),(10,NULL,'sha1$0b1d4128$1$dec06a20aa2b96e5ff4bc98d38a7272dd9956ce2','silver_iii_bullet@yahoo.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0'),(11,NULL,'sha1$239b6ebe$1$23f25d87b37b8096035b75bff137b9d94ab3d2df','m9.arsenie.toderas@gmail.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -278,4 +279,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-03 17:53:04
+-- Dump completed on 2016-08-04 19:19:30
