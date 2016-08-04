@@ -2,7 +2,7 @@ module.exports = function(genericConstants, connection) {
 	return  {
 		countQuestions: function() {
 		  var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.IQ_QUESTION_TABLE;
-		   connection.query(queryString);
+		  return connection.query(queryString);
 		}, 
 		getQuestionForUser: function(userId) {
 			var queryString = genericConstants
@@ -19,10 +19,10 @@ module.exports = function(genericConstants, connection) {
 							.replace('$columns', 'current_timestamp - t1.timestamp as diftime, t2.difficulty, t1.iq_question_id, l1.link as question, ' +
 								't2.iq_answer1 as iq_answer1Id, l2.link as answer1, t2.iq_answer2 as iq_answer2Id, l3.link as answer2, ' + 
 								't2.iq_answer3 as iq_answer3Id, l4.link as answer3, t2.iq_answer4 as iq_answer4Id, l5.link as answer4, ' +
-								't2.iq_answer5 as iq_answer5Id, l6.link as answer5, t2.iq_answer6 as iq_answer6Id, l7.link as answer6')
+								't2.iq_answer5 as iq_answer5Id, l6.link as answer5, t2.iq_answer6 as iq_answer6Id, l7.link as answer6, ' +
+								't2.iq_correct_answer as correctAnswerId')
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 't1.user_id="' + userId + '"');
-			console.log(queryString);
 			return connection.query(queryString);
 		},
 		getQuestionById: function(questionId) {
@@ -39,7 +39,7 @@ module.exports = function(genericConstants, connection) {
 							.replace('$columns', 'i.iq_question_id, i.difficulty, l1.link as question,i.iq_answer1 as iq_answer1Id, l2.link as answer1, ' + 
 								'i.iq_answer2 as iq_answer2Id, l3.link as answer2, i.iq_answer3 as iq_answer3Id, l4.link as answer3, ' +
 								'i.iq_answer4 as iq_answer4Id, l5.link as answer4, i.iq_answer5 as iq_answer5Id, l6.link as answer5, ' + 
-								'i.iq_answer6 as iq_answer6Id, l7.link as answer6')
+								'i.iq_answer6 as iq_answer6Id, l7.link as answer6, i.iq_correct_answer as correctAnswerId')
 							+ genericConstants.CRITERIA_TEMPLATE
 							.replace('$criteria', 'i.iq_question_id="' + questionId + '"');
 			return connection.query(queryString);
@@ -52,26 +52,28 @@ module.exports = function(genericConstants, connection) {
 							.replace('$table', genericConstants.IQ_QUESTION_USER_TABLE)
 							.replace('$columns', genericConstants.IQ_QUESTION_USER_COLUMNS)
 							.replace('$values', values);
+			console.log(queryString);
 			return connection.query(queryString);
 		},
 		removeTimeout: function(userId) {
-			var quryString = 'DELETE FROM ' + genericConstants.IQ_QUESTION_USER_TABLE + ' ' +
-							+ genericConstants.
+			var queryString = 'DELETE FROM ' + genericConstants.IQ_QUESTION_USER_TABLE + ' ' +
+						     genericConstants.
 							CRITERIA_TEMPLATE
 							.replace('$criteria', 'user_id="' + userId + '"');
+							console.log(queryString);
 			return connection.query(queryString);
 		},
 		updateUserScore: function(userId, difficulty, isCorrect) {
 			var map = '';
 			switch(difficulty) {
 				case 0:
-					map += 'correct_easy_iq_answers = correct_easy_iq_answers + ' + isCorrect?'1':'0' + ', ';
+					map = map + 'correct_easy_iq_answers = correct_easy_iq_answers + ' + (isCorrect?'1':'0') + ' ';
 				break;
 				case 1:
-					map += 'correct_medium_iq_answers = correct_medium_iq_answers + ' + isCorrect?'1':'0' + ', ';
+					map = map +'correct_medium_iq_answers = correct_medium_iq_answers + ' + (isCorrect?'1':'0') + ' ';
 				break;
 				case 2:
-					map += 'correct_hard_iq_answers = correct_hard_iq_answers + ' + isCorrect?'1':'0' + ', ';
+					map = map + 'correct_hard_iq_answers = correct_hard_iq_answers + ' + (isCorrect?'1':'0') + ' ';
 				break;
 			};
 			
@@ -81,7 +83,8 @@ module.exports = function(genericConstants, connection) {
 							.replace('$map', map)
 							+ genericConstants
 							.CRITERIA_TEMPLATE
-							.replace('$criteria', 'userId="' + userId + '"');
+							.replace('$criteria', 'user_id="' + userId + '"');
+			console.log(queryString);
 			return connection.query(queryString);
 		}
 	};

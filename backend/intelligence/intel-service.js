@@ -27,7 +27,6 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 	}, getIqExchangeModel = function(timeLimit, rows) {
 		return {
 			timeLeft: timeLimit,
-			timestamp: Date.now(),
 			questionId: rows[0].iq_question_id,
 			question: rows[0].question,
 			answers: genericConstants.SHUFFLE_ARRAY(
@@ -67,47 +66,123 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		removeTimedOutQuestions();
 	});
 
+	var sendNewQuestion = function (userId, res) {
+		var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
+		 iqMysqlHandler
+		.getQuestionById(random)
+		.then(function(rows) {
+			    var timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
+				 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
+				  iqConstants.IQ_TIME_LIMIT_HARD);
+			 iqMysqlHandler
+		    .setTimeout(userId, rows[0].iq_question_id)
+		    .then(function() {
+		    	res.status(genericConstants.OK).json(getIqExchangeModel(timeLimit, rows));
+		    })
+		    .catch(function(error) {
+		    	res.status(genericConstants.INTERNAL_ERROR).json({
+					message: error.message,
+					trace: 'IQ-SCE-GRQ'
+				});
+		    });
+		})
+		.catch(function(error) {
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message: error.message,
+				trace: 'IQ-SCE-GRQ'
+			});
+		});
+	};
+
 	return {
-		getRandomQuestion: function(userId, requestTime, responseTime, res) {
+		getRandomQuestion: function(userId, requestTime, res) {
 			return iqMysqlHandler
 			.getQuestionForUser(userId)
 			.then(function(rows) {
-				if(rows.length>0)
-				var timelimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
+				var timeLimit = 0;
+				if(rows.length>0) {
+					 timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
 					 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
 					  iqConstants.IQ_TIME_LIMIT_HARD);
-				if(requestTime && responseTime && rows.length>0 
-				&& parseInt(rows[0].diftime) < (timelimit
-					+ (parseInt(requestTime) + (Date.now()-responseTime))/1000)) {
+				}
+				if(rows.length>0 
+				&& parseInt(rows[0].diftime) < (timeLimit + 2*requestTime)) {
 							res.status(genericConstants.OK).json(
-								getIqExchangeModel(rows[0].diftime + (Date.now()-responseTime)/1000, rows));
+								getIqExchangeModel(timeLimit-(rows[0].diftime + requestTime), rows));
 				} else {
-					var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
-					console.log(random);
-					 iqMysqlHandler
-					.getQuestionById(random)
-					.then(function(rows) {
-						var timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
-							 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
-							  iqConstants.IQ_TIME_LIMIT_HARD);
+					if(rows.length > 0) {
+						console.log('here');
 						 iqMysqlHandler
-					    .setTimeout(userId, rows[0].iq_question_id)
-					    .then(function() {
-					    	res.status(genericConstants.OK).json(getIqExchangeModel(timeLimit, rows));
-					    })
-					    .catch(function(error) {
-					    	res.status(genericConstants.INTERNAL_ERROR).json({
-								message: error.message,
-								trace: 'IQ-SCE-GRQ'
+						.updateUserScore(userId, parseInt(rows[0].difficulty), false)
+						.then(function() {
+							 iqMysqlHandler
+							.removeTimeout(userId)
+							.then(function() {
+								 sendNewQuestion(userId, res);
 							});
-					    });
-					})
-					.catch(function(error) {
-						res.status(genericConstants.INTERNAL_ERROR).json({
-							message: error.message,
-							trace: 'IQ-SCE-GRQ'
+						})
+						.catch(function(error) {
+							res.status(genericConstants.INTERNAL_ERROR).json({
+								message: error.message,
+								trace: 'GK-SCE-AQ'
+							});
 						});
-					})
+					} else {
+						sendNewQuestion(userId, res);
+					}
+					
+				}
+			});
+		},
+		answerQuestion: function(userId, requestTime, question) {
+			return iqMysqlHandler
+			.getQuestionForUser(userId)
+			.then(function(rows) {
+				if(rows.length > 0) {
+					var timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
+					 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
+					  iqConstants.IQ_TIME_LIMIT_HARD);
+				}
+				if(rows.length>0 
+				&& parseInt(rows[0].diftime) > (timeLimit 
+				+ 2*requestTime)) {
+					  if(question.answerId === rows[0].correctAnswerId) {
+						 iqMysqlHandler
+						.updateUserScore(userId, parseInt(rows[0].difficulty), true)
+						.then(function() {
+							iqMysqlHandler
+							.removeTimeout()
+							.then(function() {
+								res.status(genericConstants.OK).json({});
+							});
+						})
+						.catch(function(error) {
+							res.status(genericConstants.INTERNAL_ERROR).json({
+								message: error.message,
+								trace: 'GK-SCE-AQ'
+							});
+						});
+					} else {
+						 iqMysqlHandler
+						.updateUserScore(userId, parseInt(rows[0].difficulty), false)
+						.then(function() {
+							gkMysqlHandler
+							.removeTimeout()
+							.then(function() {
+								res.status(genericConstants.OK).json({});
+							})
+						})
+						.catch(function(error) {
+							res.status(genericConstants.INTERNAL_ERROR).json({
+								message: error.message,
+								trace: 'GK-SCE-AQ'
+							});
+						});
+					}
+				} else {
+					res.status(genericConstants.UNAUTHORIZED).json({
+						message: iqConstants.IQ_TIMEOUT.message
+					});
 				}
 			});
 		}

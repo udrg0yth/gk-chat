@@ -121,9 +121,8 @@
 							<div class ="row text-center" style="margin-top:5%; color:#FF4040;">
 								<h2>Your current iq:</h2><h1>120</h1>
 							</div>
-							<!-- <canvas id="c" height="400" width="500">Your browser does not support the HTML5 canvas tag.</canvas> -->
+							 <canvas id="c" height="400" width="500">Your browser does not support the HTML5 canvas tag.</canvas>
 							<div class="row">
-
 								<div class="progress-wrapper text-center col-lg-4 col-md-4" style="font-size: 3rem;">
 									<div class="progress ng-cloak" ng-style="getStyle()" style="height:30% !important; width: 35% !important;">{{ max-current }}</div>
 									<round-progress
@@ -141,41 +140,35 @@
 								    animation="easeInOutQuart"
 								    animation-delay="0"></round-progress>
 								 </div>
+								 <div class="row">
+								 	<img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.question}}"/>
+								 </div>
+								 <div class="row">
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[0].link}}"/></a>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[1].link}}"/>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[2].link}}"/>
+								 	</div>
+								  </div>
+								  <div class="row">
+								  	<div class="col-lg-4 col-md-4">
+								  		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[3].link}}"/>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[4].link}}"/>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[5].link}}"/>
+								 	</div>
+								  </div>
 							</div>
-					</div>
-					<script>
-					var a = 100;
-					var b = 25;
-					var c = 10;
 
-					var cv = document.getElementById('c');
-					var ctx = cv.getContext("2d");
-					ctx.font = "10px Arial";
-					
-					for (var j=0; j< 150; j++){
-						var y = a/Math.pow(Math.E, (Math.pow(j-b, 2))/(2*c*c));
-						ctx.rect(j*10, cv.height/2-y, 10, y);
-						if(j<30){
-							ctx.fillStyle = "red";
-							ctx.fill();
-							ctx.lineWidth = 1;
-							ctx.strokeStyle = "black";
-						}
-					}
-					ctx.fillStyle = "black";
-					for(var j=62.5;j<500;j+=62.5) {
-						ctx.moveTo(j,cv.height/2);
-						ctx.arc(j,cv.height/2, 2, 0, 2 * Math.PI, false);
-						ctx.fillText((j/62.5)*25,j,cv.height/2+20);
-					}
-					ctx.moveTo(300,0);
-					ctx.lineTo(300,cv.height/2+50);
-					
-					ctx.moveTo(310,50);
-					ctx.font = "15px Arial";
-					ctx.fillText("You: 120", 310,50);
-				    ctx.stroke();
-					</script>
+					</div>
+
 				</div>
 		</modal>
     </wz-step>

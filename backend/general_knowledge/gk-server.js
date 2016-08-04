@@ -24,13 +24,16 @@ module.exports = function(application, genericConstants, tokenHandler, gkMysqlHa
          	 user = tokenHandler.decodeToken(token);
 
          if(!quiz.questionId
-         || !quiz.answer) {
+         || !quiz.answer
+         || !quiz.requestTime
+         || !quiz.responseTime) {
          	res.status(genericConstants.UNAUTHORIZED).json({
          		message: genericConstants.INCOMPLETE_DATA.message
          	});
          }
+         
           gkService
-         .answerQuestion(user.id, question)
+         .answerQuestion(user.id, quiz)
          .catch(function(error) {
             res.status(genericConstants.INTERNAL_ERROR).json({
                 message: error.message,

@@ -30,8 +30,10 @@ $scope.datepicker = {
     $scope.datepicker.opened = true;
   };
 
+  $scope.iqTimer = null;
   $scope.current = 0;
-  $scope.max = 120;
+  $scope.max = 0;
+
   $scope.getStyle = function(){
         var transform = ($scope.isSemi ? '' : 'translateY(-50%) ') + 'translateX(-50%)';
         return {
@@ -155,13 +157,55 @@ $scope.datepicker = {
 	};
 
 	$scope.showIQQuestionModal = function() {
-		iqService
+		 iqService
 		.getRandomQuestionForProfile($stateParams.userHash)
 		.success(function(data) {
 			console.log(data);
 			$scope.iqQuestion = data;
+			$scope.current = 0;
+			$scope.max = parseInt(data.timeLeft);
+
+			var a = 100;
+			var b = 25;
+			var c = 10;
+
+			var cv = document.getElementById('c');
+			var ctx = cv.getContext("2d");
+			ctx.font = "10px Arial";
+			
+			for (var j=0; j< 150; j++){
+				var y = a/Math.pow(Math.E, (Math.pow(j-b, 2))/(2*c*c));
+				ctx.rect(j*10, cv.height/2-y, 10, y);
+				if(j<30){
+					ctx.fillStyle = "red";
+					ctx.fill();
+					ctx.lineWidth = 1;
+					ctx.strokeStyle = "black";
+				}
+			}
+			ctx.fillStyle = "black";
+			for(var j=62.5;j<500;j+=62.5) {
+				ctx.moveTo(j,cv.height/2);
+				ctx.arc(j,cv.height/2, 2, 0, 2 * Math.PI, false);
+				ctx.fillText((j/62.5)*25,j,cv.height/2+20);
+			}
+			ctx.moveTo(300,0);
+			ctx.lineTo(300,cv.height/2+50);
+			
+			ctx.moveTo(310,50);
+			ctx.font = "15px Arial";
+			ctx.fillText("You: 120", 310,50);
+		    ctx.stroke();
+
+
 			$('#iqQuestionModal').modal('show');
-			$interval(function(){$scope.current++;console.log($scope.current);},1000);
+			if($scope.iqTimer) {
+				$interval.cancel($scope.iqTimer);
+			}
+			 $scope.iqTimer = 
+			$interval(function(){
+				$scope.current++;
+			},1000);
 		})
 		.error(function(error) {
 			console.log(error);
@@ -186,7 +230,11 @@ $scope.datepicker = {
 		WizardHandler.wizard().next();
 	};
 
-	$scope.setIQAnswer = function() {
+	$scope.setIQAnswer = function(answerId) {
+		if($scope.iqTimer) {
+			$interval.cancel($scope.iqTimer);
+		}
+		$scope.iqQuestion.answerId = answerId;
 		WizardHandler.wizard().next();
 	};
 

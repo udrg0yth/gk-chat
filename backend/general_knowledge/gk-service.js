@@ -107,14 +107,14 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 				}
 			});
 		},
-		answerQuestion: function(userId, requestTime, responseTime, answer) {
+		answerQuestion: function(userId, quiz) {
 			return gkMysqlHandler
 			.getQuestionForUser(userId)
 			.then(function(rows) {
 				if(rows.length>0 
 				&& parseInt(rows[0].diftime) > (gkConstants.TIME_LIMIT 
-				+ (parseInt(requestTime) + (Date.now()-responseTime)))) {
-					if(rows[0].answer4 === answer) {
+				+ (parseInt(quiz.requestTime) + (Date.now()-quiz.responseTime)))) {
+					if(rows[0].answer4 === quiz.answer) {
 						 gkMysqlHandler
 						.updateUserScore(userId, true)
 						.then(function() {

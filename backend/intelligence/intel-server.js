@@ -10,14 +10,17 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
                 id: genericTools.decrypt(data.hash)
             }:null);
 
-          if(!user) {
+          if(!user
+          || !data.reqtimestamp) {
             return res.status(genericConstants.UNAUTHORIZED).json({
                 error: genericConstants.INCOMPLETE_DATA.message
             });
           }
 
+          var requestTime = (Date.now() - data.reqtimestamp)/1000;
+
           iqService
-         .getRandomQuestion(user.id, data.requestTime, data.responseTime, res)
+         .getRandomQuestion(user.id, requestTime, res)
          .catch(function(error) {
          	res.status(genericConstants.INTERNAL_ERROR).json({
          		message: error.message,
@@ -37,7 +40,7 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
          		message: genericConstants.INCOMPLETE_DATA.message
          	});
          }
-          gkService
+          iqService
          .answerQuestion(user.id, question)
          .catch(function(error) {
             res.status(genericConstants.INTERNAL_ERROR).json({
