@@ -1,23 +1,30 @@
-
-<div class="row" style="margin-top:15%;">
-	<div class="form-group" ng-form name="loginForm">
-		<div class="input-group">
-		  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-		  <input type="text" name="email" ng-model="user.email" class="form-control input-lg" placeholder="Email" required>
+<div class="row">
+	<div class="col-sm-2 col-xs-2 hidden-md hidden-lg">
+	</div>
+	<div class="col-sm-8 col-xs-8 col-lg-12 col-md-12">
+		<div class="row" style="margin-top:5%;">
+			<div class="form-group" ng-form name="loginForm">
+				<div class="input-group">
+				  <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+				  <input type="text" name="email" ng-model="user.email" class="form-control input-lg" placeholder="Email" required>
+				</div>
+				<div class="input-group">
+				  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+				  <input type="password" name="password" ng-model="user.password" class="form-control input-lg" placeholder="Password" required>
+				</div>
+				<!-- <div class="alert alert-danger" role="alert">
+				  <strong>Failure!</strong> Wrong username or password.
+				</div> -->
+				<button type="button" class="btn btn-primary btn-lg btn-block" style="font-family: 'kongtext';" ng-click="getMyLastName()">Login</button>
+			</div>
 		</div>
-		<div class="input-group">
-		  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-		  <input type="password" name="password" ng-model="user.password" class="form-control input-lg" placeholder="Password" required>
+		<div class="row text-center" style="margin-top:2%;" style="margin-top:5%;">
+			<p style="color:white;font-size:30px;">OR</p>
 		</div>
-		<!-- <div class="alert alert-danger" role="alert">
-		  <strong>Failure!</strong> Wrong username or password.
-		</div> -->
-		<button type="button" class="btn btn-primary btn-lg btn-block" style="font-family: 'kongtext';" ng-click="getMyLastName()">Login</button>
+		<div class="row" style="margin-top:5%;">
+			<a ng-click = "loginWithFacebook()"><img src="assets/facebook.png" style="width:100%; height:70px;"></a>
+		</div> 
+	</div>
+	<div class="col-sm-2 col-xs-2 hidden-md hidden-lg">
 	</div>
 </div>
-<div class="row text-center" style="margin-top:2%;" style="margin-top:5%;">
-	<p style="color:white;font-size:30px;">OR</p>
-</div>
-<div class="row" style="margin-top:5%;">
-	<a ng-click = "loginWithFacebook()"><img src="assets/facebook.png" style="width:100%; height:70px;"></a>
-</div> 

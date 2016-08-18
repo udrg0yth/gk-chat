@@ -42,6 +42,23 @@ module.exports = function(application, gkConstants, genericConstants, gkMysqlHan
 
 
 	return {
+		getRandomQuestionForProfile: function(res) {
+			 var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
+			 gkMysqlHandler
+			.getQuestionById(random)
+			.then(function(rows) {
+				res.status(genericConstants.OK).json(getIqExchangeModel(null, rows));
+			})
+			.catch(function(error) {
+				res.status(genericConstants.INTERNAL_ERROR).json({
+					message: error.message,
+					trace: 'GK-SCE-GRQ'
+				});
+			});
+		},
+		answerQuestionForProfile: function(question, res) {
+
+		},
 		getRandomQuestion: function(userId, requestTime, responseTime, res) {
 			return gkMysqlHandler
 			.getQuestionForUser(userId)

@@ -141,7 +141,7 @@ CREATE TABLE `iq_question_user` (
   KEY `fk_question` (`iq_question_id`),
   CONSTRAINT `fk_question` FOREIGN KEY (`iq_question_id`) REFERENCES `iq_questions` (`iq_question_id`),
   CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +150,7 @@ CREATE TABLE `iq_question_user` (
 
 LOCK TABLES `iq_question_user` WRITE;
 /*!40000 ALTER TABLE `iq_question_user` DISABLE KEYS */;
-INSERT INTO `iq_question_user` VALUES (55,10,1,'2016-08-04 14:22:07');
+INSERT INTO `iq_question_user` VALUES (69,10,1,'2016-08-09 07:25:44');
 /*!40000 ALTER TABLE `iq_question_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +239,6 @@ CREATE TABLE `user` (
   `email` varchar(64) NOT NULL,
   `birthdate` datetime DEFAULT NULL,
   `account_status` varchar(16) NOT NULL,
-  `credits` int(11) NOT NULL,
   `total_easy_iq_answers` int(11) NOT NULL,
   `correct_medium_iq_answers` int(11) NOT NULL,
   `total_medium_iq_answers` int(11) NOT NULL,
@@ -254,6 +253,10 @@ CREATE TABLE `user` (
   `current_personality_question_id` int(11) NOT NULL,
   `current_personality` varchar(4) NOT NULL,
   `current_personality_raw` varchar(20) NOT NULL,
+  `membership_expiration` date DEFAULT NULL,
+  `remaining_iq_questions` int(11) DEFAULT NULL,
+  `remaining_gk_questions` int(11) DEFAULT NULL,
+  `last_login_date` date DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `current_personality_question_id` (`current_personality_question_id`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`current_personality_question_id`) REFERENCES `personality_questions` (`personality_question_id`)
@@ -266,7 +269,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (9,'vlad','sha1$6cba172d$1$75d7e2b98ec5af643a192ab60a0fb62e48e070f9','vladradu97150@hotmail.com','2011-11-01 00:00:00','ACTIVE',150,0,0,0,0,0,0,37,0,0,0,0.00,2,'ISFJ','-20.0.0.0'),(10,NULL,'sha1$0b1d4128$1$dec06a20aa2b96e5ff4bc98d38a7272dd9956ce2','silver_iii_bullet@yahoo.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0'),(11,NULL,'sha1$239b6ebe$1$23f25d87b37b8096035b75bff137b9d94ab3d2df','m9.arsenie.toderas@gmail.com',NULL,'ACTIVE',150,0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0');
+INSERT INTO `user` VALUES (9,'vlad','sha1$6cba172d$1$75d7e2b98ec5af643a192ab60a0fb62e48e070f9','vladradu97150@hotmail.com','2011-11-01 00:00:00','ACTIVE',0,0,0,0,0,0,45,0,0,0,0.00,2,'ISFJ','-20.0.0.0',NULL,NULL,NULL,NULL),(10,NULL,'sha1$0b1d4128$1$dec06a20aa2b96e5ff4bc98d38a7272dd9956ce2','silver_iii_bullet@yahoo.com',NULL,'ACTIVE',0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0',NULL,NULL,NULL,NULL),(11,NULL,'sha1$239b6ebe$1$23f25d87b37b8096035b75bff137b9d94ab3d2df','m9.arsenie.toderas@gmail.com',NULL,'ACTIVE',0,0,0,0,0,0,0,NULL,0,0,0.00,1,'ESFJ','0.0.0.0',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -279,4 +282,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-04 19:19:30
+-- Dump completed on 2016-08-18 17:35:44

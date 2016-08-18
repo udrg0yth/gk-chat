@@ -136,8 +136,13 @@ module.exports = function(application, authenticationConstants, genericConstants
 							message: authenticationConstants.BAD_CREDENTIALS.message
 						});
 					} 
-					var token = tokenHandler.generateToken(rows[0]);
-					res.writeHead(genericConstants.OK, {'X-Auth-Token': token});
+					var user = rows[0];
+						user.isMember = new Date(user.membership_expiration) <= new Date();
+						user.iqQuestionsRemaining = parseInt(user.remaining_iq_questions) > 0;
+						user.gkQuestionsRemaining = parseInt(user.remaining_gk_questions) > 0;
+						user.matchTrialsRemaining = parseInt(user.remaining_match_trials) > 0;
+
+					res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
 					res.end();
 				});
 		},
@@ -181,8 +186,13 @@ module.exports = function(application, authenticationConstants, genericConstants
 				return authMysqlHandler
 					.setUserProfile(userId, data)
 					.then(function(rows) {
-						var token = tokenHandler.generateToken(rows[0]);
-						res.writeHead(genericConstants.OK, {'X-Auth-Token': token});
+						var user = rows[0];
+							user.isMember = new Date(user.membership_expiration) <= new Date();
+							user.iqQuestionsRemaining = parseInt(user.remaining_iq_questions) > 0;
+							user.gkQuestionsRemaining = parseInt(user.remaining_gk_questions) > 0;
+							user.matchTrialsRemaining = parseInt(user.remaining_match_trials) > 0;
+							
+						res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
 						res.end();
 					});
 		},

@@ -9,7 +9,7 @@ module.exports = function(application,
 		|| req.url === genericConstants.REGISTRATION_URL) {
 			return next();
 		}
-		return next();
+
 		
 		var data = req.body;
 		if(!data.token){
@@ -19,11 +19,28 @@ module.exports = function(application,
 		}
 		try {
 			jwt.verify(data.token, secretKey);
-			next();
 		} catch(ex) {
 			res.status(genericConstants.UNAUTHORIZED).json({
 				error: genericConstants.INVALID_TOKEN.message
 			});
+		}
+
+		if(req.url === genericConstants.RANDOM_GK_QUESTION_URL) {
+			var token = jwt.decode(token);
+			if(!token.gkr) {
+				res.status(genericConstants.UNAUTHORIZED).json({
+					error: genericConstants.NO_MORE_GK_QUESTIONS.message
+				});
+			}
+		}
+
+		if(req.url === genericConstants.RANDOM_IQ_QUESTION_URL) {
+			var token = jwt.decode(token);
+			if(!token.gkr) {
+				res.status(genericConstants.UNAUTHORIZED).json({
+					error: genericConstants.NO_MORE_IQ_QUESTIONS.message
+				});
+			}
 		}
 	}
 
@@ -32,14 +49,17 @@ module.exports = function(application,
 	return {
 		generateToken: function(user) {
 			return jwt.sign({
-							id: user.user_id,
-							username: user.username,
-							birthdate: user.birthdate,
-							gender: user.gender,
-							iqScore: user.current_iq_score,
-							gkScore: user.current_gk_score,
-							personality: user.current_personality,
-							credits: user.credits
+							ky: user.user_id,
+							usr: user.username,
+							bd: user.birthdate,
+							g: user.gender,
+							iq: user.current_iq_score,
+							gk: user.current_gk_score,
+							p: user.current_personality,
+							m: user.isMember,
+							iqr: user.iqQuestionsRemaining,
+							gkr: user.gkQuestionsRemaining,
+							mtr: user.matchTrialsRemaining
 						}, secretKey);
 		},
 		verifyToken: function(token) {

@@ -2,6 +2,22 @@ module.exports = function(application, genericConstants, tokenHandler, gkMysqlHa
 	var gkConstants		 	  	=  require('./gk-constants')(),
 		gkService               =  require('./gk-service')(application, gkConstants, genericConstants, gkMysqlHandler);
 
+
+    application.get(genericConstants.RANDOM_GK_QUESTION_FOR_PROFILE_URL, function(req, res) {
+         gkService
+        .getRandomQuestionForProfile(res)
+        .catch(function(error) {
+            res.status(genericConstants.INTERNAL_ERROR).json({
+                message: error.message,
+                trace: 'GK-SRV-GRQFP'
+            });
+        });
+    });
+
+    application.post(genericConstants.ANSWER_GK_QUESTION_FOR_PROFILE_URL, function(req, res) {
+
+    });
+
 	application.post(genericConstants.RANDOM_GK_QUESTION_URL, function(req, res) {
 		 var data = req.body,
              token = req.headers['x-auth-token'],

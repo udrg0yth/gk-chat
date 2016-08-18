@@ -1,7 +1,22 @@
 module.exports = function(application, genericConstants, tokenHandler, iqMysqlHandler, genericTools) {
 	var iqConstants		 	  	=  require('./intel-constants')(),
-		iqService               =  require('./intel-service')(application, iqConstants, genericConstants, iqMysqlHandler);
+		iqService               =  require('./intel-service')(application, iqConstants, genericConstants, iqMysqlHandler, tokenHandler);
 
+
+    application.get(genericConstants.RANDOM_IQ_QUESTION_FOR_PROFILE_URL, function(req, res) {
+         iqService
+        .getRandomQuestionForProfile(res)
+        .catch(function(error) {
+            res.status(genericConstants.INTERNAL_ERROR).json({
+                message: error.message,
+                trace: 'IQ-SRV-GRQFP'
+            });
+        });
+    });
+
+    application.post(genericConstants.ANSWER_IQ_QUESTION_FOR_PROFILE_URL, function(req, res) {
+
+    });
 
 	application.post(genericConstants.RANDOM_IQ_QUESTION_URL, function(req, res) {
 		 var data = req.body,

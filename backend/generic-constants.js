@@ -21,16 +21,18 @@ module.exports = function() {
 		GET_HASH_URL: 			'/auth/getHash',
 		CHECK_HASH_URL: 		'/auth/checkHash',
 
-		SUBTRACT_CREDITS_URL: 	'/match/subtractCredits',
-
 		NEXT_PERSONALITY_QUESTION_URL: 		'/personality/nextQuestion',
 		ANSWER_PERSONALITY_QUESTION_URL: 	'/personality/answerQuestion',
 
 		RANDOM_GK_QUESTION_URL: '/gk/randomQuestion',
+		RANDOM_GK_QUESTION_FOR_PROFILE_URL: '/gk/randomProfileQuestion',
 		ANSWER_GK_QUESTION_URL: '/gk/answerQuestion',
+		ANSWER_GK_QUESTION_FOR_PROFILE_URL: '/gk/answerProfileQuestion',
 
 		RANDOM_IQ_QUESTION_URL: '/iq/randomQuestion',
+		RANDOM_IQ_QUESTION_FOR_PROFILE_URL: '/iq/randomProfileQuestion',
 		ANSWER_IQ_QUESTION_URL: '/iq/answerQuestion',
+		ANSWER_IQ_QUESTION_FOR_PROFILE_URL: '/iq/answerProfileQuestion',
 
 		MYSQL_SOURCE: {
 		    host: 		'localhost',
@@ -45,18 +47,21 @@ module.exports = function() {
 		CRITERIA_TEMPLATE:  'WHERE $criteria ',
 
 		//users
-		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
+		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status,current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
-		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, credits, current_personality_question_id,'
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration,'
+					+ ' last_login_date, remaining_iq_questions, remaining_gk_questions, remaining_match_trials',
+		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
-		REGISTRATION_COLUMNS: 'email, password, account_status, credits, current_personality_question_id,'
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration,'
+					+ ' last_login_date, remaining_iq_questions, remaining_gk_questions, remaining_match_trials',
+		REGISTRATION_COLUMNS: 'email, password, account_status, current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
 					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score',
+					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration,'
+					+ ' remaining_iq_questions, remaining_gk_questions, remaining_match_trials',
 		PROFILE_COLUMNS: 'username, birthdate, gender',
 		USER_TABLE: 'user',
 
@@ -100,10 +105,16 @@ module.exports = function() {
 		CONVERSATION_HISTORY_COLUMNS_WITH_ID: 'conversation_history_id, first_user_id, second_user_id, engage_date',
 		CONVERSATION_HISTORY_TABLE: 'conversation_history',
 
+		IQ_MAX_QUESTIONS_FOR_NON_MEMBERS: 5,
+		GK_MAX_QUESTIONS_FOR_NON_MEMBERS: 10,
+		MATCH_MAX_TRIALS_FOR_NON_MEMBERS: 10,
+
 		INVALID_TOKEN: new Error('INVALID_TOKEN'),
 		UNKNOWN_USER: new Error('UNKNOWN_USER'),
 		INCOMPLETE_DATA: new Error('INCOMPLETE_DATA'),
 		BAD_DATA: new Error('BAD_DATA'),
+		NO_MORE_GK_QUESTIONS: new Error('NO_MORE_GK_QUESTIONS'),
+		NO_MORE_IQ_QUESTIONS: new Error('NO_MORE_IQ_QUESTIONS'),
 
 		//crypto
 		CRYPTO_ALGORITHM: 'aes-256-ctr',

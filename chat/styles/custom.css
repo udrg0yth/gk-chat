@@ -3,6 +3,10 @@ p {
     font-size: 15px;
 }
 
+.pixelated {
+    font-family: 'kongtext';
+}
+
 a {
 	cursor:pointer;
 	cursor:hand;

@@ -1,100 +1,230 @@
 <wizard on-finish="finishedWizard()"> 
     <wz-step wz-title="Basic info">
+    	<div class="row">
+			<div class="hidden-lg hidden-md col-xs-2 col-sm-2">
+			</div>
+			<div class="col-sm-8 col-xs-8 col-lg-12 col-md-12"  style="margin-top:5%;">
+		        <div class="form-group text-center" ng-form="registrationForm">
+					<div class="input-group">
+					  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+					  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername(registrationForm)" ng-change="onUsernameInputChange()" class="form-control input-lg" placeholder="Chose a username" required>
+					</div><br>
+					<div ng-if="showErrorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+					<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i><br>
 
-        <div class="form-group text-center" ng-form="registrationForm" style="margin-top:15%;">
-			<div class="input-group">
-			  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-			  <input type="text" name="username" ng-pattern="/^[a-zA-Z0-9]{3,15}$/" ng-model="user.username" ng-blur="checkUsername(registrationForm)" ng-change="onUsernameInputChange()" class="form-control input-lg" placeholder="Chose a username" required>
-			</div><br>
-			<div ng-if="showErrorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
-			<i ng-if="showUsernameSpinner" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="color:green;"></i><br>
-
-			<div class="input-group">
-				  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-		          <input type="text" class="form-control input-lg" placeholder="Your date of birth" uib-datepicker-popup="{{format}}" ng-model="user.birthdate" ng-focus="open($event)" is-open="datepicker.opened" datepicker-options="datepicker.options" close-text="Close" required/>
-			</div><br>
-			<div ng-if="showInvalidDate" class="alert alert-danger" role="alert">{{errorMessage}}</div>
-			<div class="btn-group">
-		        <label class="btn btn-success" ng-model="user.gender" uib-btn-radio="'male'">Male</label>
-		        <label class="btn btn-success" ng-model="user.gender" uib-btn-radio="'female'">Female</label>
-		    </div>
+					<div class="input-group">
+						  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				          <input type="text" class="form-control input-lg" placeholder="Your date of birth" uib-datepicker-popup="{{format}}" ng-model="user.birthdate" ng-focus="open($event)" is-open="datepicker.opened" datepicker-options="datepicker.options" close-text="Close" required/>
+					</div><br>
+					<div ng-if="showInvalidDate" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+					<div class="btn-group">
+				        <label class="btn btn-success pixelated" ng-model="user.gender" uib-btn-radio="'male'">Male</label>
+				        <label class="btn btn-success pixelated" ng-model="user.gender" uib-btn-radio="'female'">Female</label>
+				    </div>
+				</div>
+				<button class="btn btn-warning" ng-click="firstStep()">Continue</button>
+	        </div>
+	        <div class="hidden-lg hidden-md col-xs-2 col-sm-2">
+			</div>
 		</div>
-        <button class="btn btn-primary" ng-click="firstStep()">Continue</button>
     </wz-step>
     <wz-step wz-title="Personality questions">
-    	<p style="color:white;margin-top:15%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
-    	   personality questions. 
-    	</p>
-        <button class="btn btn-warning" ng-click="showPersonalityQuestionModal()">More</button>
+    	<div class="row">
+    		<div class="col" style="margin-top:5%;">
+		    	<p class="pixelated" style="color: #FFBF00;font-size:20px;"> Personality</p>
+		    	<p style="color:white;margin-top:5%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
+		    	   personality questions. 
+		    	</p>
+		    	</div>
+	       		<button class="btn btn-warning btn-lg" style="margin-top:5%;" ng-click="showPersonalityQuestionModal()">More</button>
+	       	</div>
+	    </div>
     	<modal id="personalityQuestionModal" title="Personality Question">
 			<div class="container" ng-cloak>
 				<div class="row" style="width:50vw;">
 					<div class="col-xs-4 col-md-4 col-lg-4">
-						<div class="list-group" style="margin-top:60%;">
+						<div class="list-group">
 							<button type="button" ng-disabled="true" class="list-group-item"><p>Basic info</p></button>
-						  <button type="button" class="list-group-item" ng-click="loadPolarChart()"><p>Personality</p></button>
-						  <button type="button"  ng-disabled="true" class="list-group-item"><p>Logic</p></button>
-						  <button type="button"  ng-disabled="true" class="list-group-item"><p>General knowledge</p></button>
+						  	<button type="button" class="list-group-item" ng-click="loadPolarChart()"><p>Personality</p></button>
+						  	<button type="button"  ng-disabled="true" class="list-group-item"><p>Logic</p></button>
+						 	<button type="button"  ng-disabled="true" class="list-group-item"><p>General knowledge</p></button>
+						 	<button type="button"  ng-disabled="true" class="list-group-item"><p>Statistics</p></button>
+						 	<button type="button"  ng-disabled="true" class="list-group-item"><p>Settings</p></button>
 						</div>
 					</div>
-					<div class="col-xs-8 col-md-8 col-lg-8">
-						<div class="animate-hide" ng-show="firstPersonalityPage">
-							<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage"><p>Next</p></button>
-							<p>
-								According to Carl Jung there are 4 polar dimensions:
-							</p>
-							<p>
-								Extraverted  (E) vs. (I) Introverted
-								Sensing	     (S) vs. (N) Intuition
-								Feeling      (F) vs. (T) Thinking
-								Judging      (J) vs. (P) Perceiving
-							</p>
-							<p>
-							1. E vs. I
-								Extraverts project their energy on the external world. They are more socially active and grow
-								through interaction.
-							 	Introverts have as source of energy their internal world. Usualy quiet and reserved, they analyse in 
-								depth their actions.
-							</p>
-							<p>
-							2. S vs. N
+					<div class="col-md-8 col-lg-8">
+						<div class="pixelated" ng-show="firstPersonalityPage">
+							<div class="row">
+								<div class="col-md-2 col-lg-2">
+								</div>
+								<div class="col-md-8 col-lg-8 center-block">
+									 <img src = "assets/personality.png" class="img-responsive" style="width:60%;" alt="Responsive image"><br>
+								</div>
+								<div class="col-md-2 col-lg-2">
+									<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage">Skip</button>
+								</div>
+							</div>
+							<div class="row" style="padding:5%;">
+								<span>According to Carl Jung there are 4 polar dimensions:</span>
+							</div>
+							<div class="row" style="font-size:12px;padding:5%;">
+								<div class="col-md-1 col-lg-1">
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div class="row">
+										<div class="col-lg-4 col-md-4">
+											<span style="color:#31B404;">Extraverted</span> 
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:31B404;">E</span>)
+										</div>
+										<div class="col-lg-2 col-md-2">
+											<span>vs. </span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:FFBF00;">I</span>)
+										</div>
+										<div class="col-lg-4 col-md-4">
+											 <span style="color:FFBF00;">Introverted</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-4 col-md-4">
+											<span style="color:#31B404;">Sensing</span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:31B404;">S</span>)
+										</div>
+										<div class="col-lg-2 col-md-2">
+											<span>vs. </span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:FFBF00;">N</span>)
+										</div>
+										<div class="col-lg-4 col-md-4">
+											<span style="color:FFBF00;">Intuition</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-4 col-md-4">
+											<span style="color:#31B404;">Feeling</span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:31B404;">F</span>)
+										</div>
+										<div class="col-lg-2 col-md-2">
+											<span>vs. </span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:FFBF00;">T</span>)
+										</div>
+										<div class="col-lg-4 col-md-4">
+											<span style="color:FFBF00;">Thinking</span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-4 col-md-4">
+											<span style="color:#31B404;">Judging</span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:31B404;">J</span>)
+										</div>
+										<div class="col-lg-2 col-md-2">
+											<span>vs. </span>
+										</div>
+										<div class="col-lg-1 col-md-1">
+											(<span style="color:FFBF00;">P</span>)
+										</div>
+										<div class="col-lg-4 col-md-4">
+											<span style="color:FFBF00;">Perceiving</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-1 col-lg-1">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-4 col-md-4">
+									1. <span style="color:#31B404;">E</span> vs. <span style="color:FFBF00;">I</span>
+								</div>
+							</div>
+							<div class="row">
+									Extraverts project their energy on the external world. They are more socially active and grow
+									through interaction.
+								 	Introverts have as source of energy their internal world. Usualy quiet and reserved, they analyse in 
+									depth their actions.
+							</div>
+							<div class="row">
+								<div class="col-lg-4 col-md-4">
+									2. <span style="color:#31B404;">S</span> vs. <span style="color:FFBF00;">N</span>
+								</div>
+							</div>
+							<div class="row">
 								Sensitive people are pragmatic. They pay more attention to physical reality, are concerned with the present and look for practical applications of what they're learning.
 								Intuitive people are theoretical. Tehy pay attention to patterns, look for meaning in the information they learn and are more concerned about the past and the future.
-							</p>
-							<p>
-							3. F vs. T
+							</div>
+							<div class="row">
+								<div class="col-lg-4 col-md-4">
+									3. <span style="color:#31B404;">F</span> vs. <span style="color:FFBF00;">T</span>
+								</div>
+							</div>
+							<div class="row">
 								People who use Feeling when deciding, usually base their decisions on personal preferences and on the
 							points-of-view of other persons involved in the situation.
 								Thinkers are logical. They base their decisions on truth and principles dettached from any specific setting. 
-							</p>
-							<p>
-							4. J vs. P
+							</div>
+							<div class="row">
+								<div class="col-lg-4 col-md-4">
+									4. <span style="color:#31B404;">J</span> vs. <span style="color:FFBF00;">P</span>
+								</div>
+							</div>
+							<div class="row">
 								Judgers like things to be organized and planned in advance. They feel most comfortable when everything is secured and under control and are usually reticent to new experiences.
 								Perceivers are flexible and spontaneous. They prefer to understand and adapt rather than organize and are open to new experiences.
-							</p>
-							<button class="btn btn-lg btn-primary">Next</button>
+							</div>
+							<div class="row" style="margin-top:5%;">
+								<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage">Next</button>
+							</div>
 						</div>
-						<div class="animate-hide" ng-show="!firstPersonalityPage">
-							<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage"><p>Back</p></button>
+						<div class="pixelated" ng-show="!firstPersonalityPage">
+							<div class="row">
+								<button class="btn btn-lg btn-primary" ng-click="firstPersonalityPage = !firstPersonalityPage"><p>Back</p></button>
+							</div>
 							<div class ="row text-center" style="margin-top:5%; color:#FF4040;">
 								<h2>Your current personality:</h2><h1>INTP</h1>
 							</div>
 							<div class="row text-center" style="margin-top: 10%;">
-								<div class="col-lg-6 col-md-6">
 									<canvas id="polar" class="chart chart-polar-area" chart-data="data" chart-labels="labels" chart-options="options" chart-click="onClick"></canvas>
-								</div>
-								<div class="col-lg-6 col-md-6">
-									<canvas id="pie" class="chart chart-pie" chart-data="globalData" chart-labels="globalLabels" chart-options="globalOptions"></canvas> 
-								</div> 
 							</div>
-							<div>
-						    	<span class="badge">{{personalityQuestion.questionId}}</span>
-						    	<span>{{personalityQuestion.question}}</span>
-						    </div>
-						    <rzslider style="margin-bottom: 60px;" rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
-						    <div class="text-center">
-						        <button class="btn-primary btn-lg" ng-click="setPersonalityAnswer()">Answer</button>
-						    </div>
+							<div class="row" style="margin-top:5%;">
+								<span style="font-size:12px;">Application statistics on personality types:</span>
+							</div>
+							<div class="row" style="margin-top:5%;">
+								<canvas id="pie" class="chart chart-pie" chart-data="globalData" chart-labels="globalLabels" chart-options="globalOptions"></canvas> 
+							</div>
+							<div class="row" style="margin-top:5%;">
+								<span style="font-size:12px;">Please provide your agreement with the following statement:</span>
+							</div>
+							<div class="panel panel-info">
+								<div class="panel-heading">
+									<span class="badge">{{personalityQuestion.questionId}}</span>
+								    <span>{{personalityQuestion.question}}</span>
+								</div>
+								<div class="panel-body">
+								    <div class="row">
+								    	<div class="col-md-1 col-lg-1">
+								    	</div>
+								    	<div class="col-md-10 col-lg-10">
+								    		<rzslider style="margin-bottom: 60px;" rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
+								    	</div>
+								    	<div class="col-md-1 col-lg-1">
+								    	</div>
+								    </div>
+								    <div class="row text-center">
+								        <button class="btn-primary btn-lg" ng-click="setPersonalityAnswer()">Answer</button>
+								    </div>
+								</div>
+							</div>
 						 </div>
 					</div>
 				</div>
@@ -102,7 +232,7 @@
 		</modal>
     </wz-step>
     <wz-step wz-title="Logic questions">
-    <p style="color:white;margin-top:15%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
+    	<p style="color:white;margin-top:15%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
     	   personality questions. 
     	</p>
         <button ng-click="showIQQuestionModal()">Logic question!</button>
@@ -145,35 +275,101 @@
 								 </div>
 								 <div class="row">
 								 	<div class="col-lg-4 col-md-4">
-								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[0].link}}"/></a>
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[0].link}}"/></a>
 								 	</div>
 								 	<div class="col-lg-4 col-md-4">
-								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[1].link}}"/>
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[1].link}}"/>
 								 	</div>
 								 	<div class="col-lg-4 col-md-4">
-								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[2].link}}"/>
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[2].link}}"/>
 								 	</div>
 								  </div>
 								  <div class="row">
 								  	<div class="col-lg-4 col-md-4">
-								  		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[3].link}}"/>
+								  		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[3].link}}"/>
 								 	</div>
 								 	<div class="col-lg-4 col-md-4">
-								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[4].link}}"/>
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[4].link}}"/>
 								 	</div>
 								 	<div class="col-lg-4 col-md-4">
-								 		<a ng-click=""><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[5].link}}"/>
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[5].link}}"/>
 								 	</div>
 								  </div>
 							</div>
-
 					</div>
 
 				</div>
 		</modal>
     </wz-step>
     <wz-step wz-title="General knowledge questions">
-        <p>General knowledge!</p>
+        <p style="color:white;margin-top:15%;">Obtain your 4-letter type formula according to Carl Jung's and Isabel Briggs Myers' typology by answering
+    	   personality questions. 
+    	</p>
+        <button ng-click="showGKQuestionModal()">Logic question!</button>
+        <modal id="iqQuestionModal" title="IQ Question">
+			<div class="container" ng-cloak>
+				<div class="row" style="width:50vw;">
+					<div class="col-xs-4 col-md-4 col-lg-4">
+						<div class="list-group" style="margin-top:60%;">
+							<button type="button" ng-disabled="true" class="list-group-item"><p>Basic info</p></button>
+						  <button type="button" class="list-group-item" ng-click="loadPolarChart()"><p>Personality</p></button>
+						  <button type="button"  ng-disabled="true" class="list-group-item"><p>Logic</p></button>
+						  <button type="button"  ng-disabled="true" class="list-group-item"><p>General knowledge</p></button>
+						</div>
+					</div>
+					<div class="col-xs-8 col-md-8 col-lg-8">
+							<div class ="row text-center" style="margin-top:5%; color:#FF4040;">
+								<h2>Your current gk index:</h2><h1>0.5</h1>
+							</div>
+							 <canvas id="c" height="400" width="500">Your browser does not support the HTML5 canvas tag.</canvas>
+							<div class="row">
+								<div class="progress-wrapper text-center col-lg-4 col-md-4" style="font-size: 3rem;">
+									<div class="progress ng-cloak" ng-style="getStyle()" style="height:30% !important; width: 35% !important;">{{ max-current }}</div>
+									<round-progress
+								    max="max"
+								    current="current"
+								    color="#45ccce"
+								    bgcolor="#eaeaea"
+								    radius="100"
+								    stroke="20"
+								    semi="false"
+								    rounded="true"
+								    clockwise="true"
+								    responsive="true"
+								    duration="50"
+								    animation="easeInOutQuart"
+								    animation-delay="0"></round-progress>
+								 </div>
+								 <div class="row">
+								 	<img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.question}}"/>
+								 </div>
+								 <div class="row">
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[0].link}}"/></a>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[1].link}}"/>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[2].link}}"/>
+								 	</div>
+								  </div>
+								  <div class="row">
+								  	<div class="col-lg-4 col-md-4">
+								  		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[3].link}}"/>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[4].link}}"/>
+								 	</div>
+								 	<div class="col-lg-4 col-md-4">
+								 		<a ng-click="setIQAnswer()"><img ng-if="iqQuestion" class="img-responsive" ng-src="{{iqQuestion.answers[5].link}}"/>
+								 	</div>
+								  </div>
+							</div>
+					</div>
+
+				</div>
+		</modal>
     </wz-step>
 </wizard>
 

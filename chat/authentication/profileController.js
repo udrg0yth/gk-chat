@@ -160,7 +160,6 @@ $scope.datepicker = {
 		 iqService
 		.getRandomQuestionForProfile($stateParams.userHash)
 		.success(function(data) {
-			console.log(data);
 			$scope.iqQuestion = data;
 			$scope.current = 0;
 			$scope.max = parseInt(data.timeLeft);
@@ -171,17 +170,24 @@ $scope.datepicker = {
 
 			var cv = document.getElementById('c');
 			var ctx = cv.getContext("2d");
+			ctx.clearRect(0, 0, cv.width, cv.height);
 			ctx.font = "10px Arial";
 			
 			for (var j=0; j< 150; j++){
 				var y = a/Math.pow(Math.E, (Math.pow(j-b, 2))/(2*c*c));
-				ctx.rect(j*10, cv.height/2-y, 10, y);
+
 				if(j<30){
 					ctx.fillStyle = "red";
-					ctx.fill();
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = "black";
+				} else {
+					ctx.fillStyle = "white";
 				}
+				ctx.beginPath();
+				ctx.rect(j*10, cv.height/2-y, 10, y);
+				ctx.closePath();
+				ctx.fill();
+				ctx.lineWidth = 1;
+				ctx.strokeStyle = "black";
+				ctx.stroke();
 			}
 			ctx.fillStyle = "black";
 			for(var j=62.5;j<500;j+=62.5) {
@@ -213,7 +219,7 @@ $scope.datepicker = {
 	};
 
 	$scope.showGKQuestionModal = function() {
-		iqService
+		 iqService
 		.getRandomQuestion()
 		.success(function(data) {
 			$scope.gkQuestion = data;
@@ -234,6 +240,7 @@ $scope.datepicker = {
 		if($scope.iqTimer) {
 			$interval.cancel($scope.iqTimer);
 		}
+		$('#iqQuestionModal').modal('hide');
 		$scope.iqQuestion.answerId = answerId;
 		WizardHandler.wizard().next();
 	};

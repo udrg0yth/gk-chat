@@ -67,15 +67,19 @@ module.exports = function(genericConstants, connection) {
 			var map = '';
 			switch(difficulty) {
 				case 0:
-					map = map + 'correct_easy_iq_answers = correct_easy_iq_answers + ' + (isCorrect?'1':'0') + ' ';
+					map = map + 'correct_easy_iq_answers = correct_easy_iq_answers + ' + (isCorrect?'1':'0') + ', ';
 				break;
 				case 1:
-					map = map +'correct_medium_iq_answers = correct_medium_iq_answers + ' + (isCorrect?'1':'0') + ' ';
+					map = map +'correct_medium_iq_answers = correct_medium_iq_answers + ' + (isCorrect?'1':'0') + ', ';
 				break;
 				case 2:
-					map = map + 'correct_hard_iq_answers = correct_hard_iq_answers + ' + (isCorrect?'1':'0') + ' ';
+					map = map + 'correct_hard_iq_answers = correct_hard_iq_answers + ' + (isCorrect?'1':'0') + ', ';
 				break;
+				default:
+					map = '';
 			};
+
+			map += 'remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0)';
 			
 			var queryString = genericConstants
 							.UPDATE_TEMPLATE
@@ -86,6 +90,46 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'user_id="' + userId + '"');
 			console.log(queryString);
 			return connection.query(queryString);
-		}
+		},
+		updateUserScoreGlobal: function(difficulty, timeout) {
+			var map = (difficulty == 0?'total_easy_iq_answers = total_easy_iq_answers + 1, current_iq_score = current_iq_score - ((correct_easy_iq_answers/(total_easy_iq_answers*(total_easy_iq_answers+1)))*60),': '') +
+					  (difficulty == 1?'total_medium_iq_answers = total_medium_iq_answers + 1, current_iq_score = current_iq_score - ((correct_medium_iq_answers/(total_medium_iq_answers*(total_medium_iq_answers+1)))*30),': '') +
+					  (difficulty == 2?'total_hard_iq_answers = total_hard_iq_answers + 1, current_iq_score = current_iq_score - ((correct_hard_iq_answers/(total_hard_iq_answers*(total_hard_iq_answers+1)))*30),': '') +
+					  'remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0)';
+			var queryString = genericConstants
+							.UPDATE_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$map', map)
+							+ genericConstants
+							.CRITERIA_TEMPLATE
+							.replace('$criteria', 'user_id IN ( ')
+						    + genericConstants
+						    .SELECT_TEMPLATE
+						    .replace('$table', genericConstants.GK_QUESTION_USER_TABLE)
+						    .replace('$columns', 'user_id')
+						    + genericConstants.
+							CRITERIA_TEMPLATE
+							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout)
+							+ ')';
+			console.log(queryString);
+			return connection.query(queryString);
+		},
+		removeTimedOutQuestions: function(timeout) {
+			var quryString = 'DELETE FROM ' + genericConstants.GK_QUESTION_USER_TABLE + ' ' +
+							+ genericConstants.
+							CRITERIA_TEMPLATE
+							.replace('$criteria', 'user_id IN (')
+							+ genericConstants
+							.SELECT_TEMPLATE
+							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE + ' JOIN ' + genericConstants.GK_QUESTION_TABLE
+							 + ' USING (gk_question_id)')
+							.replace('$columns', 'user_id')
+							+ genericConstants.
+							CRITERIA_TEMPLATE
+							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout)
+							+ ')';
+			console.log(queryString);
+			return connection.query(queryString);
+		},
 	};
 };

@@ -35,11 +35,11 @@ module.exports = function(genericConstants, connection) {
 			return connection.query(queryString);	   
 		},
 		setUserProfile: function(userId, profile) {
-			var map = 'username="'  + profile.username + '",' +
-			          'birthdate="' + profile.birthdate + '",' +
-			          'gender="'    + profile.gender + '"';
-
-			var queryString = genericConstants
+			var map = 'username="'  + profile.username + '", ' +
+			          'birthdate="' + profile.birthdate + '", ' +
+			          'gender="'    + profile.gender + '", ' +
+			          'last_login_date=NOW() ',
+				queryString = genericConstants
 							.UPDATE_TEMPLATE
 							.replace('$table', genericConstants.USER_TABLE)
 							.replace('$columns', genericConstants.PROFILE_COLUMNS)
@@ -75,7 +75,6 @@ module.exports = function(genericConstants, connection) {
 			var values = '"' + user.email + '",' +
 			             '"' + user.password + '",' +
 			             '"' + user.accountStatus + '",' +
-			             '"' + 150 + '",' +
 			             '"' + 1 + '",' +
 			             '"0.0.0.0",' +
 			             '"ESFJ",' +
@@ -88,7 +87,11 @@ module.exports = function(genericConstants, connection) {
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
 			             '"' + 0 + '",' +
-			             '"' + 0 + '"';
+			             '"' + 0 + '",' +
+			             'NOW() + INTERVAL 1 MONTH,' +
+			             '"' + genericConsntants.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS + '"' +
+			             '"' + genericConsntants.GK_MAX_QUESTIONS_FOR_NON_MEMBERS + '"' +
+						 '"' + genericConsntants.MATCH_MAX_TRIALS_FOR_NON_MEMBERS + '"';
 			var queryString = genericConstants
 							.INSERT_TEMPLATE
 							.replace('$table', genericConstants.USER_TABLE)
