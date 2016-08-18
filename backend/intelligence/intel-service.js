@@ -114,12 +114,44 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			.catch(function(error) {
 				return res.status(genericConstants.INTERNAL_ERROR).json({
 					message: error.message,
-					trace: 'IQ-SCE-GRQ'
+					trace: 'IQ-SRV-GRQPRF'
 				});
 			});
 		},
-		answerQuestionForProfile: function(question, res) {
-
+		answerQuestionForProfile: function(userId, question, res) {
+			 iqMysqlHandler
+			.getQuestionById(question.questionId)
+			.then(function(rows) {
+				 if(question.answerId === rows[0].correctAnswerId) {
+					 iqMysqlHandler
+					.updateUserScore(userId, parseInt(rows[0].difficulty), true)
+					.then(function() {
+					})
+					.catch(function(error) {
+						res.status(genericConstants.INTERNAL_ERROR).json({
+							message: error.message,
+							trace: 'IQ-SRV-AQPRF'
+						});
+					});
+				} else {
+					 iqMysqlHandler
+					.updateUserScore(userId, parseInt(rows[0].difficulty), false)
+					.then(function() {
+					})
+					.catch(function(error) {
+						res.status(genericConstants.INTERNAL_ERROR).json({
+							message: error.message,
+							trace: 'IQ-SRV-AQPRF'
+						});
+					});
+				}
+			})
+			.catch(function(error) {
+				return res.status(genericConstants.INTERNAL_ERROR).json({
+					message: error.message,
+					trace: 'IQ-SRV-AQPRF'
+				});
+			});
 		},
 		getRandomQuestion: function(userId, requestTime, res) {
 			return iqMysqlHandler
@@ -149,7 +181,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 							.catch(function(error) {
 								res.status(genericConstants.INTERNAL_ERROR).json({
 									message: error.message,
-									trace: 'GK-SCE-AQ'
+									trace: 'IQ-SRV-GRQ'
 								});
 							});
 					} else {
@@ -187,7 +219,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 						.catch(function(error) {
 							res.status(genericConstants.INTERNAL_ERROR).json({
 								message: error.message,
-								trace: 'GK-SCE-AQ'
+								trace: 'IQ-SRV-AQ'
 							});
 						});
 					} else {
@@ -206,7 +238,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 						.catch(function(error) {
 							res.status(genericConstants.INTERNAL_ERROR).json({
 								message: error.message,
-								trace: 'GK-SCE-AQ'
+								trace: 'IQ-SRV-AQ'
 							});
 						});
 					}
