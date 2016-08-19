@@ -2,7 +2,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 	var schedule = require('node-schedule'),
 		questionCount = 0;
 
-	var removeEasyTimedOutQuestions = function(difficulty, timeout) {
+	var removeTimedOutQuestions = function(difficulty, timeout) {
 		 iqMysqlHandler
 		.updateUserScoreGlobal(difficulty, timeout)
 		.then(function() {
@@ -15,6 +15,10 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		.catch(function(error) {
 	   		console.log('Error while updating score for timed out questions!', error.message);
 	   });
+	}, removeAllDifficultiesTimedOutQuestions = function() {
+		removeTimedOutQuestions(0, iqConstants.IQ_TIME_LIMIT_EASY);
+		removeTimedOutQuestions(1, iqConstants.IQ_TIME_LIMIT_MEDIUM);
+  		removeTimedOutQuestions(2, iqConstants.IQ_TIME_LIMIT_HARD);
 	},  count = function() {
 		 iqMysqlHandler
 		.countQuestions()
@@ -51,14 +55,18 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		    }])
 		};
 	}, updateRemainingIqQuestions = function() {
-
+		 iqMysqlHandler
+		.updateRemainingIqQuestions()
+		.catch(function(error) {
+			console.log('Error while updating global remaining IQ questions', error.message);
+		});
 	};
 
 	if(!count) {
 		count();
 		console.log("IQ question count: ",count);
 	}
-	removeTimedOutQuestions();
+	removeAllDifficultiesTimedOutQuestions();
 	updateRemainingIqQuestions();
 
 	//should run every day!
@@ -71,8 +79,9 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		updateRemainingIqQuestions();
 	});
 
-	schedule.scheduleJob('10 * * * *', function(){
-		removeTimedOutQuestions();
+	//should run every hour!
+	schedule.scheduleJob('* * 1 * *', function(){
+		removeAllDifficultiesTimedOutQuestions();
 	});
 
 	var sendNewQuestion = function (userId, res) {
@@ -101,6 +110,31 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				trace: 'IQ-SCE-GRQ'
 			});
 		});
+	}, updateScore = function(forProfile, answer, claims, difficulty, correct, trace, res, remaining) {
+		 iqMysqlHandler
+		.updateUserScore(claims, parseInt(difficulty), true)
+		.then(function() {
+			if(!forProfile) {
+				 iqMysqlHandler
+				.removeTimeout(claims)
+				.then(function() {
+					if(!answer) {
+					 sendNewQuestion(claims, res);
+					} else {
+						claims.iqQuestionsRemaining = remaining > 0;
+
+						res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
+						res.end();
+					}
+				});
+			}
+		})
+		.catch(function(error) {
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message: error.message,
+				trace: trace
+			});
+		});
 	};
 
 	return {
@@ -123,27 +157,9 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			.getQuestionById(question.questionId)
 			.then(function(rows) {
 				 if(question.answerId === rows[0].correctAnswerId) {
-					 iqMysqlHandler
-					.updateUserScore(userId, parseInt(rows[0].difficulty), true)
-					.then(function() {
-					})
-					.catch(function(error) {
-						res.status(genericConstants.INTERNAL_ERROR).json({
-							message: error.message,
-							trace: 'IQ-SRV-AQPRF'
-						});
-					});
+					updateScore(true, true, userId, rows[0].difficulty, true, 'IQ-SRV-AQPRF', res);
 				} else {
-					 iqMysqlHandler
-					.updateUserScore(userId, parseInt(rows[0].difficulty), false)
-					.then(function() {
-					})
-					.catch(function(error) {
-						res.status(genericConstants.INTERNAL_ERROR).json({
-							message: error.message,
-							trace: 'IQ-SRV-AQPRF'
-						});
-					});
+					updateScore(true, true, userId, rows[0].difficulty, false, 'IQ-SRV-AQPRF', res);
 				}
 			})
 			.catch(function(error) {
@@ -169,21 +185,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 								getIqExchangeModel(timeLimit-(rows[0].diftime + requestTime), rows));
 				} else {
 					if(rows.length > 0) {
-							 iqMysqlHandler
-							.updateUserScore(userId, parseInt(rows[0].difficulty), false)
-							.then(function() {
-								 iqMysqlHandler
-								.removeTimeout(userId)
-								.then(function() {
-									 sendNewQuestion(userId, res);
-								});
-							})
-							.catch(function(error) {
-								res.status(genericConstants.INTERNAL_ERROR).json({
-									message: error.message,
-									trace: 'IQ-SRV-GRQ'
-								});
-							});
+						updateScore(false, false, userId, rows[0].difficulty, false, 'IQ-SRV-GRQ', res);
 					} else {
 						sendNewQuestion(userId, res);
 					}
@@ -191,7 +193,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				}
 			});
 		},
-		answerQuestion: function(claims, requestTime, question) {
+		answerQuestion: function(claims, requestTime, question, res) {
 			return iqMysqlHandler
 			.getQuestionForUser(claims.ky)
 			.then(function(rows) {
@@ -204,43 +206,9 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				&& parseInt(rows[0].diftime) > (timeLimit 
 				+ 2*requestTime)) {
 					  if(question.answerId === rows[0].correctAnswerId) {
-						 iqMysqlHandler
-						.updateUserScore(claims.ky, parseInt(rows[0].difficulty), true)
-						.then(function(updatedScoreRows) {
-							iqMysqlHandler
-							.removeTimeout()
-							.then(function() {
-								claims.iqQuestionsRemaining = updatedScoreRows.iq_questions_remaining > 0;
-
-								res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
-								res.end();
-							});
-						})
-						.catch(function(error) {
-							res.status(genericConstants.INTERNAL_ERROR).json({
-								message: error.message,
-								trace: 'IQ-SRV-AQ'
-							});
-						});
+							updateScore(false, true, claims, rows[0].difficulty, true, 'IQ-SRV-AQ', res, updatedScoreRows.iq_questions_remaining);
 					} else {
-						 iqMysqlHandler
-						.updateUserScore(claims.userId, parseInt(rows[0].difficulty), false)
-						.then(function() {
-							iqMysqlHandler
-							.removeTimeout()
-							.then(function(updatedScoreRows) {
-								claims.iqQuestionsRemaining = updatedScoreRows.iq_questions_remaining > 0;
-
-								res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
-								res.end();
-							})
-						})
-						.catch(function(error) {
-							res.status(genericConstants.INTERNAL_ERROR).json({
-								message: error.message,
-								trace: 'IQ-SRV-AQ'
-							});
-						});
+						    updateScore(false, true, claims, rows[0].difficulty, false, 'IQ-SRV-AQ', res, updatedScoreRows.iq_questions_remaining);
 					}
 				} else {
 					res.status(genericConstants.UNAUTHORIZED).json({

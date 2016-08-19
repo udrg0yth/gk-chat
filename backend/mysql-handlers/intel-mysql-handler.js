@@ -3,7 +3,14 @@ module.exports = function(genericConstants, connection) {
 		countQuestions: function() {
 		  var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.IQ_QUESTION_TABLE;
 		  return connection.query(queryString);
-		}, 
+		},
+		updateRemainingIqQuestions: function() {
+		  var queryString = genericConstants
+		  				.UPDATE_TEMPLATE
+		  				.replace('$table', genericConstants.USER_TABLE)
+		  				.replace('$map', 'remaining_iq_questions="' + genericConstants.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS + '"');
+		  return connection.query(queryString);
+		},
 		getQuestionForUser: function(userId) {
 			var queryString = genericConstants
 							.SELECT_TEMPLATE
@@ -105,7 +112,7 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'user_id IN ( ')
 						    + genericConstants
 						    .SELECT_TEMPLATE
-						    .replace('$table', genericConstants.GK_QUESTION_USER_TABLE)
+						    .replace('$table', genericConstants.IQ_QUESTION_USER_TABLE)
 						    .replace('$columns', 'user_id')
 						    + genericConstants.
 							CRITERIA_TEMPLATE
@@ -114,22 +121,13 @@ module.exports = function(genericConstants, connection) {
 			console.log(queryString);
 			return connection.query(queryString);
 		},
-		removeTimedOutQuestions: function(timeout) {
-			var quryString = 'DELETE FROM ' + genericConstants.GK_QUESTION_USER_TABLE + ' ' +
+		removeTimedOutQuestions: function(difficulty, timeout) {
+			var queryString = 'DELETE FROM ' + genericConstants.IQ_QUESTION_USER_TABLE + ' '
 							+ genericConstants.
 							CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id IN (')
-							+ genericConstants
-							.SELECT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE + ' JOIN ' + genericConstants.GK_QUESTION_TABLE
-							 + ' USING (gk_question_id)')
-							.replace('$columns', 'user_id')
-							+ genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout)
-							+ ')';
+							.replace('$criteria','current_timestamp - timestamp > ' + timeout);
 			console.log(queryString);
 			return connection.query(queryString);
-		},
+		}
 	};
 };

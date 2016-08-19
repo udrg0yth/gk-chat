@@ -52,19 +52,10 @@ module.exports = function(genericConstants, connection) {
 			return connection.query(queryString);
 		},
 		removeTimedOutQuestions: function(timeout) {
-			var quryString = 'DELETE FROM ' + genericConstants.GK_QUESTION_USER_TABLE + ' ' +
+			var queyString = 'DELETE FROM ' + genericConstants.GK_QUESTION_USER_TABLE + ' ' +
 							+ genericConstants.
 							CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id IN (')
-							+ genericConstants
-							.SELECT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE + ' JOIN ' + genericConstants.GK_QUESTION_TABLE
-							 + ' USING (gk_question_id)')
-							.replace('$columns', 'user_id')
-							+ genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout)
-							+ ')';
+							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout);
 			console.log(queryString);
 			return connection.query(queryString);
 		},
