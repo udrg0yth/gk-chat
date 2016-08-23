@@ -1,15 +1,25 @@
 module.exports = function(genericConstants, connection) {
 	return  {
 		countQuestions: function() {
-		  var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.IQ_QUESTION_TABLE;
-		  return connection.query(queryString);
+		  	var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.IQ_QUESTION_TABLE;
+		  	return connection.query(queryString);
 		},
 		updateRemainingIqQuestions: function() {
-		  var queryString = genericConstants
+		  	var queryString = genericConstants
 		  				.UPDATE_TEMPLATE
 		  				.replace('$table', genericConstants.USER_TABLE)
 		  				.replace('$map', 'remaining_iq_questions="' + genericConstants.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS + '"');
-		  return connection.query(queryString);
+		  	return connection.query(queryString);
+		},
+		getRemainingIqQuestion: function(userId) {
+			var queryString = genericConstants
+							.SELECT_TEMPLATE
+							.replace('$table', genericConstants.USER_TABLE)
+							.replace('$columns', 'remaining_iq_questions')
+							+ genericConstants
+							.CRITERIA_TEMPLATE
+							.replace('$criteria', 'user_id="' + userId + '"');
+			return connection.query(queryString);
 		},
 		getQuestionForUser: function(userId) {
 			var queryString = genericConstants
@@ -28,7 +38,8 @@ module.exports = function(genericConstants, connection) {
 								't2.iq_answer3 as iq_answer3Id, l4.link as answer3, t2.iq_answer4 as iq_answer4Id, l5.link as answer4, ' +
 								't2.iq_answer5 as iq_answer5Id, l6.link as answer5, t2.iq_answer6 as iq_answer6Id, l7.link as answer6, ' +
 								't2.iq_correct_answer as correctAnswerId')
-							+ genericConstants.CRITERIA_TEMPLATE
+							+ genericConstants
+							.CRITERIA_TEMPLATE
 							.replace('$criteria', 't1.user_id="' + userId + '"');
 			return connection.query(queryString);
 		},

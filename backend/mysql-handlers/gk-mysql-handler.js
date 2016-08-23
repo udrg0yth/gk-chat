@@ -14,6 +14,13 @@ module.exports = function(genericConstants, connection) {
 							.replace('$criteria', 'user_id="' + userId + '"');
 			return connection.query(queryString);
 		},
+		updateRemainingGKQuestions: function() {
+			var queryString = genericConstants
+		  				.UPDATE_TEMPLATE
+		  				.replace('$table', genericConstants.USER_TABLE)
+		  				.replace('$map', 'remaining_gk_questions="' + genericConstants.GK_MAX_QUESTIONS_FOR_NON_MEMBERS + '"');
+		  	return connection.query(queryString);
+		},
 		setTimeout: function(userId, questionId) {
 			var values = '"' + userId + '",' +
 					 	 '"' + questionId +'"';

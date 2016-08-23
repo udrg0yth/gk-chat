@@ -62,12 +62,12 @@ module.exports = function(application, authenticationConstants, genericConstants
 		},
 		checkEmailExistence: function(email){
 			return authMysqlHandler
-			.retrieveUserByEmail(email);
+			.checkEmailExistence(email);
 
 		},
 		checkUsernameExistence: function(username) {
 		    return authMysqlHandler
-			.retrieveUserByUsername(username);
+			.checkUsernameExistence(username);
 		},
 		resendEmail: function(email, res) {
 			return authMysqlHandler
@@ -136,11 +136,16 @@ module.exports = function(application, authenticationConstants, genericConstants
 							message: authenticationConstants.BAD_CREDENTIALS.message
 						});
 					} 
-					var user = rows[0];
+					var user = {};
 						user.isMember = new Date(user.membership_expiration) <= new Date();
-						user.iqQuestionsRemaining = parseInt(user.remaining_iq_questions) > 0;
-						user.gkQuestionsRemaining = parseInt(user.remaining_gk_questions) > 0;
-						user.matchTrialsRemaining = parseInt(user.remaining_match_trials) > 0;
+						if(!user.isMember) {
+							user.iqQuestionsRemaining = parseInt(rows[0].remaining_iq_questions) > 0;
+							user.gkQuestionsRemaining = parseInt(rows[0].remaining_gk_questions) > 0;
+							user.matchTrialsRemaining = parseInt(rows[0].remaining_match_trials) > 0;
+						}
+						user.iqScore = rows[0].current_iq_score;
+						user.gkScore = rows[0].current_gk_score;
+						user.personality = rows[0].current_personality;
 
 					res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
 					res.end();
@@ -186,11 +191,16 @@ module.exports = function(application, authenticationConstants, genericConstants
 				return authMysqlHandler
 					.setUserProfile(userId, data)
 					.then(function(rows) {
-						var user = rows[0];
+						var user = {};
 							user.isMember = new Date(user.membership_expiration) <= new Date();
-							user.iqQuestionsRemaining = parseInt(user.remaining_iq_questions) > 0;
-							user.gkQuestionsRemaining = parseInt(user.remaining_gk_questions) > 0;
-							user.matchTrialsRemaining = parseInt(user.remaining_match_trials) > 0;
+							if(!user.isMember) {
+								user.iqQuestionsRemaining = parseInt(rows[0].remaining_iq_questions) > 0;
+								user.gkQuestionsRemaining = parseInt(rows[0].remaining_gk_questions) > 0;
+								user.matchTrialsRemaining = parseInt(rows[0].remaining_match_trials) > 0;
+							}
+							user.iqScore = rows[0].current_iq_score;
+							user.gkScore = rows[0].current_gk_score;
+							user.personality = rows[0].current_personality;
 							
 						res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
 						res.end();

@@ -46,6 +46,10 @@ module.exports = function() {
 		UPDATE_TEMPLATE: 	'UPDATE $table SET $map ',
 		CRITERIA_TEMPLATE:  'WHERE $criteria ',
 
+		PERONALITY_STATISTICS_QUERY: 'SELECT current_personality as personality, count(*) AS count FROM user GROUP BY current_personality',
+		GENERAL_KNOWLEDGE_STATISTICS_QUERY: 'SELECT FORMAT(STD(current_gk_score),2) AS standardDeviation, AVG(current_gk_score) AS averageScore FROM user',
+		IQ_STATISTICS_QUERY: 'SELECT FORMAT(STD(current_iq_score),2) AS standardDeviation, AVG(current_iq_score) AS averageScore FROM user',
+
 		//users
 		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status,current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
@@ -115,6 +119,7 @@ module.exports = function() {
 		BAD_DATA: new Error('BAD_DATA'),
 		NO_MORE_GK_QUESTIONS: new Error('NO_MORE_GK_QUESTIONS'),
 		NO_MORE_IQ_QUESTIONS: new Error('NO_MORE_IQ_QUESTIONS'),
+		NO_MORE_MATCHES: new Error('NO_MORE_MATCHES'),
 
 		//crypto
 		CRYPTO_ALGORITHM: 'aes-256-ctr',

@@ -84,7 +84,7 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		removeAllDifficultiesTimedOutQuestions();
 	});
 
-	var sendNewQuestion = function (userId, res) {
+	var  sendNewQuestion = function (userId, res) {
 		var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
 		 iqMysqlHandler
 		.getQuestionById(random)
@@ -95,7 +95,8 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			 iqMysqlHandler
 		    .setTimeout(userId, rows[0].iq_question_id)
 		    .then(function() {
-		    	res.status(genericConstants.OK).json(getIqExchangeModel(timeLimit, rows));
+		    	res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
+				res.end(JSON.stringify(getIqExchangeModel(timeLimit, rows)));
 		    })
 		    .catch(function(error) {
 		    	res.status(genericConstants.INTERNAL_ERROR).json({
@@ -110,22 +111,24 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				trace: 'IQ-SCE-GRQ'
 			});
 		});
-	}, updateScore = function(forProfile, answer, claims, difficulty, correct, trace, res, remaining) {
+	}, updateScore = function(forProfile, answer, claims, difficulty, correct, trace, res) {
 		 iqMysqlHandler
-		.updateUserScore(claims, parseInt(difficulty), true)
-		.then(function() {
+		.updateUserScore(forProfile?claims:claims.ky, parseInt(difficulty), correct)
+		.then(function(rows) {
 			if(!forProfile) {
 				 iqMysqlHandler
 				.removeTimeout(claims)
 				.then(function() {
 					if(!answer) {
-					 sendNewQuestion(claims, res);
+						claims.iqScore = rows[0].current_iq_score;
+					 	sendNewQuestion(claims, res);
 					} else {
-						claims.iqQuestionsRemaining = remaining > 0;
-
+						claims.iqQuestionsRemaining = parseInt(rows[0].remaining_iq_questions) > 0;
 						res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
 						res.end();
 					}
+				})
+				.catch(function(err) {
 				});
 			}
 		})
@@ -169,9 +172,9 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				});
 			});
 		},
-		getRandomQuestion: function(userId, requestTime, res) {
+		getRandomQuestion: function(claims, requestTime, res) {
 			return iqMysqlHandler
-			.getQuestionForUser(userId)
+			.getQuestionForUser(claims.ky)
 			.then(function(rows) {
 				var timeLimit = 0;
 				if(rows.length>0) {
@@ -185,9 +188,9 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 								getIqExchangeModel(timeLimit-(rows[0].diftime + requestTime), rows));
 				} else {
 					if(rows.length > 0) {
-						updateScore(false, false, userId, rows[0].difficulty, false, 'IQ-SRV-GRQ', res);
+						updateScore(false, false, claims, rows[0].difficulty, false, 'IQ-SRV-GRQ', res);
 					} else {
-						sendNewQuestion(userId, res);
+						sendNewQuestion(claims, res);
 					}
 					
 				}

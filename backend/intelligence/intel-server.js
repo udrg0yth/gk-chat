@@ -47,10 +47,18 @@ module.exports = function(application, genericConstants, tokenHandler, iqMysqlHa
             });
           }
 
+          if(!user.isMember) {
+            if(!user.iqQuestionsRemaining) {
+                return res.status(genericConstants.UNAUTHORIZED).json({
+                    error: genericConstants.NO_MORE_IQ_QUESTIONS.message
+                });
+            }
+          }
+
           var requestTime = (Date.now() - data.reqtimestamp)/1000;
 
           iqService
-         .getRandomQuestion(user.id, requestTime, res)
+         .getRandomQuestion(user, requestTime, res)
          .catch(function(error) {
          	res.status(genericConstants.INTERNAL_ERROR).json({
          		message: error.message,
