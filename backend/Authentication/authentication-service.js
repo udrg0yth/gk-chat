@@ -71,11 +71,11 @@ module.exports = function(application, authenticationConstants, genericConstants
 		},
 		resendEmail: function(email, res) {
 			return authMysqlHandler
-		    .retrieveUserByEmail(email)
+		    .getIdFromEmail(email)
 		    .then(function(rows) {
 				if(rows.length > 0) {
 					var message = 
-								authenticationConstants.EMAIL_TEMPLATE.replace('$hash', genericTools.encrypt(rows[0].user_id.toString()));
+					authenticationConstants.EMAIL_TEMPLATE.replace('$hash', genericTools.encrypt(rows[0].user_id.toString()));
 					authenticationTools.sendActivationLink(email, message);
 				} else {
 					res.status(genericConstants.UNAUTHORIZED).json({
@@ -87,7 +87,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 		activateAccount: function(hash, res) {
 			var userId = genericTools.decrypt(hash);
 			return authMysqlHandler
-					.retrieveUserById(userId)
+					.getAccountStatus(userId)
 					.then(function(rows) {
 						if(rows[0].account_status === 'ACTIVE') {
 							res.status(genericConstants.UNAUTHORIZED).json({
@@ -112,7 +112,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 			var credentials = authenticationTools.getCredentials(header);
 
 			return authMysqlHandler
-				.retrieveUserByEmail(credentials[0])
+				.getUserDataByEmail(credentials[0])
 				.then(function(rows) {
 					if(rows.length === 0) {
 						return res.status(genericConstants.UNAUTHORIZED).json({
@@ -163,7 +163,7 @@ module.exports = function(application, authenticationConstants, genericConstants
 				.registerUser(data)
 				.then(function(data) {
 					 authMysqlHandler
-					.retrieveUserById(data.insertId)
+					.getEmailFromId(data.insertId)
 					.then(function(user) {
 						var encryptedId = genericTools.encrypt(data.insertId.toString()),
 							message = 

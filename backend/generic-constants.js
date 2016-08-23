@@ -49,7 +49,22 @@ module.exports = function() {
 		PERONALITY_STATISTICS_QUERY: 'SELECT current_personality as personality, count(*) AS count FROM user GROUP BY current_personality',
 		GENERAL_KNOWLEDGE_STATISTICS_QUERY: 'SELECT FORMAT(STD(current_gk_score),2) AS standardDeviation, AVG(current_gk_score) AS averageScore FROM user',
 		IQ_STATISTICS_QUERY: 'SELECT FORMAT(STD(current_iq_score),2) AS standardDeviation, AVG(current_iq_score) AS averageScore FROM user',
+		COUNT_IQ_QUESTIONS_QUERY: 'SELECT count(*) AS questionCount FROM iq_questions',
+		COUNT_GK_QUESTIONS_QUERY: 'SELECT count(*) AS questionCount FROM gk_questions',
 
+		SET_USER_PROFILE_QUERY: 'UPDATE user SET username="$username", birthdate="$birthdate", gender="$gender",last_login_date=NOW() WHERE user_id="$userId"',
+		GET_ID_FROM_EMAIL_QUERY: 'SELECT user_id FROM user WHERE email="$email"',
+		GET_EMAIL_FROM_ID_QUERY: 'SELECT email FROM user where user_id="$userId"',
+		CHECK_PROFILE_COMPLETION_QUERY: 'SELECT username FROM user WHERE user_id="$userId"',
+		ACTIVATE_ACCOUNT_QUERY: 'UPDATE user SET account_status="ACTIVE" WHERE user_id="$userId"',
+		CHECK_EMAIL_EXISTENCE_QUERY: 'SELECT email FROM user WHERE email="$email"',
+		CHECK_USERNAME_EXISTENCE_QUERY: 'SELECT username FROM user WHERE username="$username"',
+		GET_ACCOUNT_STATUS_QUERY: 'SELECT account_status FROM user WHERE user_id="$userId"',
+		GET_USER_DATA_BY_EMAIL_QUERY: 'SELECT username, password, account_status, remaining_iq_questions, remaining_gk_questions, membership_expiration, currenct_gk_score, current_iq_score, current_personality FROM user WHERE email="$email"',
+		REGISTER_USER_QUERY: 'INSERT INTO user (email, password, account_status, current_personality_question_id, current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers, correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers, total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration, remaining_iq_questions, remaining_gk_questions, remaining_match_trials) VALUES ("$email", "$password", "INACTIVE", "1", "0.0.0.0", "ESFJ", "0", "0", "0", "0", "0", "0", "0", "0", "90", "0", NOW() + INTERVAL 1 MONTH, "$remainingIqQuestions", "$remainingGkQuestions", "$remainingMatchTrials"'),
+
+		GET_NEXT_PERSONALITY_QUESTION_QUERY: 'SELECT personality_question_id, personality_question, negatively_affected_type FROM user JOIN personality_questions ON (current_personality_question_id=personality_question_id) WHERE user_id="$userId"',
+		UPDATE_NEXT_QUESTION_AND_PERSONALITY_QUERY: 'UPDATE user SET current_personality_question_id=current_personality_question_id+1',
 		//users
 		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status,current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
