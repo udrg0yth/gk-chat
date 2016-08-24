@@ -64,7 +64,29 @@ module.exports = function() {
 		REGISTER_USER_QUERY: 'INSERT INTO user (email, password, account_status, current_personality_question_id, current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers, correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers, total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration, remaining_iq_questions, remaining_gk_questions, remaining_match_trials) VALUES ("$email", "$password", "INACTIVE", "1", "0.0.0.0", "ESFJ", "0", "0", "0", "0", "0", "0", "0", "0", "90", "0", NOW() + INTERVAL 1 MONTH, "$remainingIqQuestions", "$remainingGkQuestions", "$remainingMatchTrials"'),
 
 		GET_NEXT_PERSONALITY_QUESTION_QUERY: 'SELECT personality_question_id, personality_question, negatively_affected_type FROM user JOIN personality_questions ON (current_personality_question_id=personality_question_id) WHERE user_id="$userId"',
-		UPDATE_NEXT_QUESTION_AND_PERSONALITY_QUERY: 'UPDATE user SET current_personality_question_id=current_personality_question_id+1',
+		UPDATE_NEXT_QUESTION_AND_PERSONALITY_QUERY: 'UPDATE user SET current_personality_question_id=current_personality_question_id+1, current_personality_raw="$currentPersonalityRaw", current_personality="$currentPersonality" WHERE user_id="$userId"',
+		GET_CURRENT_PERSONALITY_ROW_QUERY: 'SELECT current_personality_raw FROM user WHERE user_id="$userId"',
+
+		UPDATE_REMAINING_IQ_QUESTIONS_QUERY: 'UPDATE user SET remaining_iq_questions="$remainingIqQuestions"',
+		GET_REMAINING_IQ_QUESTIONS_FOR_USER: 'SELECT remaining_iq_questions FROM user WHERE user_id="$userId"',
+		GET_IQ_QUESTION_FOR_USER_QUERY: 'SELECT current_timestamp - t1.timestamp as diftime, t2.difficulty, t1.iq_question_id, l1.link as question, ' +
+							  't2.iq_answer1 as iq_answer1Id, l2.link as answer1, t2.iq_answer2 as iq_answer2Id, l3.link as answer2, ' + 
+							  't2.iq_answer3 as iq_answer3Id, l4.link as answer3, t2.iq_answer4 as iq_answer4Id, l5.link as answer4, ' +
+							  't2.iq_answer5 as iq_answer5Id, l6.link as answer5, t2.iq_answer6 as iq_answer6Id, l7.link as answer6, ' +
+							  't2.iq_correct_answer as correctAnswerId FROM iq_question_user t1 JOIN iq_questions t2 ON ' + 
+							  '(t1.iq_question_id = t2.iq_question_id) LEFT JOIN iq_links l1 ON (t2.iq_question = l1.iq_links_id) ' +
+							  'LEFT JOIN iq_links l2 ON (t2.iq_answer1 = l2.iq_links_id) LEFT JOIN iq_links l3 ON (t2.iq_answer2 = l3.iq_links_id) ' +
+							  'LEFT JOIN iq_links l4 ON (t2.iq_answer3 = l4.iq_links_id) LEFT JOIN iq_links l5 ON (t2.iq_answer4 = l5.iq_links_id) ' +
+							  'LEFT JOIN iq_links l6 ON (t2.iq_answer5 = l6.iq_links_id) LEFT JOIN iq_links l7 ON (t2.iq_answer6 = l7.iq_links_id) ' +
+							  'WHERE t1.user_id="$userId"',
+		GET_IQ_QUESTION_BY_ID_QUERY: 'SELECT i.iq_question_id, i.difficulty, l1.link as question,i.iq_answer1 as iq_answer1Id, l2.link as answer1, ' + 
+							  'i.iq_answer2 as iq_answer2Id, l3.link as answer2, i.iq_answer3 as iq_answer3Id, l4.link as answer3, ' +
+							  'i.iq_answer4 as iq_answer4Id, l5.link as answer4, i.iq_answer5 as iq_answer5Id, l6.link as answer5, ' + 
+							  'i.iq_answer6 as iq_answer6Id, l7.link as answer6, i.iq_correct_answer as correctAnswerId FROM ' +
+							  'iq_questions i LEFT JOIN iq_links l1 ON (i.iq_question = l1.iq_links_id) LEFT JOIN iq_links l2 ON (i.iq_answer1 = l2.iq_links_id) ' +
+							  'LEFT JOIN iq_links l3 ON (i.iq_answer2 = l3.iq_links_id) LEFT JOIN iq_links l4 ON (i.iq_answer3 = l4.iq_links_id) ' +
+							  'LEFT JOIN iq_links l5 ON (i.iq_answer4 = l5.iq_links_id) LEFT JOIN iq_links l6 ON (i.iq_answer5 = l6.iq_links_id) ' +
+							  'LEFT JOIN iq_links l7 ON (i.iq_answer6 = l7.iq_links_id) WHERE i.iq_question_id="$questionId"'
 		//users
 		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status,current_personality_question_id,'
 					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
