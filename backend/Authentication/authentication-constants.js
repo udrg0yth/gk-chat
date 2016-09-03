@@ -17,7 +17,15 @@ module.exports = function() {
 		EMAIL_IN_USE: new Error('EMAIL_IN_USE'),
 		USERNAME_IN_USE: new Error('USERNAME_IN_USE'),
 		ACCOUNT_ALREADY_ACTIVE: new Error('ACCOUNT_ALREADY_ACTIVE'),
-		INCOMPLETE_PROFILE: new Error('INCOMPLETE_PROFILE')
+		INCOMPLETE_PROFILE: new Error('INCOMPLETE_PROFILE'),
+
+		MAIL_SERVER: {
+   		    service: 'Gmail',
+	        auth: {
+	            user: 'vladradu97150@gmail.com',
+	            pass: 'vladradu1995'
+	        }
+		}
 		
 	};
 };

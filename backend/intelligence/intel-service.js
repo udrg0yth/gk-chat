@@ -2,23 +2,43 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 	var schedule = require('node-schedule'),
 		questionCount = 0;
 
-	var removeTimedOutQuestions = function(difficulty, timeout) {
+	var removeAllDifficultiesTimedOutQuestions = function() {
 		 iqMysqlHandler
-		.updateUserScoreGlobal(difficulty, timeout)
+		.updateUserScoreGlobalEasy()
 		.then(function() {
 			iqMysqlHandler
-		   .removeTimedOutQuestions(difficulty, timeout)
+		   .removeTimedOutQuestionsEasy()
 		   .catch(function(error) {
-		   		console.log('Error while cleaning gk_question_user from timed out questions!', error.message);
+		   		console.log('Error while cleaning iq_question_user from easy timed out questions!', error.message);
 		   });
 		})
 		.catch(function(error) {
-	   		console.log('Error while updating score for timed out questions!', error.message);
-	   });
-	}, removeAllDifficultiesTimedOutQuestions = function() {
-		removeTimedOutQuestions(0, iqConstants.IQ_TIME_LIMIT_EASY);
-		removeTimedOutQuestions(1, iqConstants.IQ_TIME_LIMIT_MEDIUM);
-  		removeTimedOutQuestions(2, iqConstants.IQ_TIME_LIMIT_HARD);
+	   		console.log('Error while updating score for easy timed out questions!', error.message);
+	    });
+		iqMysqlHandler
+		.updateUserScoreGlobalMedium()
+		.then(function() {
+			iqMysqlHandler
+		   .removeTimedOutQuestionsMedium()
+		   .catch(function(error) {
+		   		console.log('Error while cleaning iq_question_user from medium timed out questions!', error.message);
+		   });
+		})
+		.catch(function(error) {
+	   		console.log('Error while updating score for medium timed out questions!', error.message);
+	    });
+  		iqMysqlHandler
+		.updateUserScoreGlobalHard()
+		.then(function() {
+			iqMysqlHandler
+		   .removeTimedOutQuestionsHard()
+		   .catch(function(error) {
+		   		console.log('Error while cleaning iq_question_user from hard timed out questions!', error.message);
+		   });
+		})
+		.catch(function(error) {
+	   		console.log('Error while updating score for hard timed out questions!', error.message);
+	    });
 	},  count = function() {
 		 iqMysqlHandler
 		.countQuestions()
@@ -29,28 +49,29 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		  	console.log('Error while counting iq questions!', error.message);
 		});
 	}, getIqExchangeModel = function(timeLimit, rows) {
+		console.log(rows[0]);
 		return {
 			timeLeft: timeLimit,
 			questionId: rows[0].iq_question_id,
 			question: rows[0].question,
 			answers: genericConstants.SHUFFLE_ARRAY(
 			[{ 
-				id: rows[0].answer1Id,
+				id: rows[0].iq_answer1Id,
 				link: rows[0].answer1
 			}, {
-					id: rows[0].answer2Id,
+					id: rows[0].iq_answer2Id,
 					link: rows[0].answer2
 			}, {
-					id: rows[0].answer3Id,
+					id: rows[0].iq_answer3Id,
 					link: rows[0].answer3
 			}, {
-					id: rows[0].answer4Id,
+					id: rows[0].iq_answer4Id,
 					link: rows[0].answer4
 			}, {
-					id: rows[0].answer5Id,
+					id: rows[0].iq_answer5Id,
 					link: rows[0].answer5
 			}, {
-					id: rows[0].answer6Id,
+					id: rows[0].iq_answer6Id,
 					link: rows[0].answer6
 		    }])
 		};
@@ -60,38 +81,14 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 		.catch(function(error) {
 			console.log('Error while updating global remaining IQ questions', error.message);
 		});
-	};
-
-	if(!count) {
-		count();
-		console.log("IQ question count: ",count);
-	}
-	removeAllDifficultiesTimedOutQuestions();
-	updateRemainingIqQuestions();
-
-	//should run every day!
-	schedule.scheduleJob('10 * * * *', function(){
-		count();
-	});
-
-	//update remaining questions every day for everyone
-	schedule.scheduleJob('* 10 * * *', function(){
-		updateRemainingIqQuestions();
-	});
-
-	//should run every hour!
-	schedule.scheduleJob('* * 1 * *', function(){
-		removeAllDifficultiesTimedOutQuestions();
-	});
-
-	var  sendNewQuestion = function (userId, res) {
+	}, sendNewQuestion = function (userId, res) {
 		var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
 		 iqMysqlHandler
 		.getQuestionById(random)
 		.then(function(rows) {
-			    var timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
-				 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
-				  iqConstants.IQ_TIME_LIMIT_HARD);
+			    var timeLimit = parseInt(rows[0].difficulty) === 0 ? genericConstants.GET_VALUES.IQ_TIME_LIMIT_EASY:
+				 (parseInt(rows[0].difficulty) === 1? genericConstants.GET_VALUES.IQ_TIME_LIMIT_MEDIUM : 
+				  genericConstants.GET_VALUES.IQ_TIME_LIMIT_HARD);
 			 iqMysqlHandler
 		    .setTimeout(userId, rows[0].iq_question_id)
 		    .then(function() {
@@ -111,26 +108,28 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				trace: 'IQ-SCE-GRQ'
 			});
 		});
-	}, updateScore = function(forProfile, answer, claims, difficulty, correct, trace, res) {
+	}, removeTimeout = function(forProfile, answer, claims, rows, res) {
+		if(!forProfile) {
+			 iqMysqlHandler
+			.removeTimeout(claims)
+			.then(function() {
+				if(!answer) {
+					claims.iqScore = rows[0].current_iq_score;
+				 	sendNewQuestion(claims, res);
+				} else {
+					claims.iqQuestionsRemaining = parseInt(rows[0].remaining_iq_questions) > 0;
+					res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
+					res.end();
+				}
+			})
+			.catch(function(err) {
+			});
+		}
+	}, updateEasyScore = function(forProfile, answer, claims, correct, trace, res) {
 		 iqMysqlHandler
-		.updateUserScore(forProfile?claims:claims.ky, parseInt(difficulty), correct)
+		.updateUserScoreEasy(forProfile?claims:claims.ky, correct)
 		.then(function(rows) {
-			if(!forProfile) {
-				 iqMysqlHandler
-				.removeTimeout(claims)
-				.then(function() {
-					if(!answer) {
-						claims.iqScore = rows[0].current_iq_score;
-					 	sendNewQuestion(claims, res);
-					} else {
-						claims.iqQuestionsRemaining = parseInt(rows[0].remaining_iq_questions) > 0;
-						res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(claims)});
-						res.end();
-					}
-				})
-				.catch(function(err) {
-				});
-			}
+			removeTimeout(forProfile, answer, claims, rows, res);
 		})
 		.catch(function(error) {
 			res.status(genericConstants.INTERNAL_ERROR).json({
@@ -138,25 +137,76 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				trace: trace
 			});
 		});
+	}, updateMediumScore = function(forProfile, answer, claims, correct, trace, res) {
+		 iqMysqlHandler
+		.updateUserScoreMedium(forProfile?claims:claims.ky, correct)
+		.then(function(rows) {
+			removeTimeout(forProfile, answer, claims, rows, res);
+		})
+		.catch(function(error) {
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message: error.message,
+				trace: trace
+			});
+		});
+	}, updateHardScore = function(forProfile, answer, claims, correct, trace, res) {
+		 iqMysqlHandler
+		.updateUserScoreHard(forProfile?claims:claims.ky, correct)
+		.then(function(rows) {
+			removeTimeout(forProfile, answer, claims, rows, res);
+		})
+		.catch(function(error) {
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message: error.message,
+				trace: trace
+			});
+		});
+	}, updateScore = function(forProfile, answer, claims, difficulty, correct, trace, res) {
+		switch(parseInt(difficulty)) {
+			case 0: 
+				updateEasyScore(forProfile, answer, claims, correct, trace, res);
+			break;
+			case 1:
+				updateMediumScore(forProfile, answer, claims, correct, trace, res);
+			break;
+			case 2:
+				updateHardScore(forProfile, answer, claims, correct, trace, res);
+		}
 	};
+
+	if(!count) {
+		count();
+	}
+	removeAllDifficultiesTimedOutQuestions();
+	updateRemainingIqQuestions();
+
+	//should run every day!
+	schedule.scheduleJob('10 * * * *', function(){
+		count();
+	});
+
+	//update remaining questions every day for everyone
+	schedule.scheduleJob('* 10 * * *', function(){
+		updateRemainingIqQuestions();
+	});
+
+	//should run every hour!
+	schedule.scheduleJob('* * 1 * *', function(){
+		removeAllDifficultiesTimedOutQuestions();
+	});
+
 
 	return {
 		getRandomQuestionForProfile: function(res) {
 			 var random  = genericConstants.GENERATE_RANDOM(questionCount)+1;
-			 iqMysqlHandler
+			 return iqMysqlHandler
 			.getQuestionById(random)
 			.then(function(rows) {
 				return res.status(genericConstants.OK).json(getIqExchangeModel(null, rows));
-			})
-			.catch(function(error) {
-				return res.status(genericConstants.INTERNAL_ERROR).json({
-					message: error.message,
-					trace: 'IQ-SRV-GRQPRF'
-				});
 			});
 		},
 		answerQuestionForProfile: function(userId, question, res) {
-			 iqMysqlHandler
+			 return iqMysqlHandler
 			.getQuestionById(question.questionId)
 			.then(function(rows) {
 				 if(question.answerId === rows[0].correctAnswerId) {
@@ -164,12 +214,6 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 				} else {
 					updateScore(true, true, userId, rows[0].difficulty, false, 'IQ-SRV-AQPRF', res);
 				}
-			})
-			.catch(function(error) {
-				return res.status(genericConstants.INTERNAL_ERROR).json({
-					message: error.message,
-					trace: 'IQ-SRV-AQPRF'
-				});
 			});
 		},
 		getRandomQuestion: function(claims, requestTime, res) {
@@ -178,12 +222,12 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			.then(function(rows) {
 				var timeLimit = 0;
 				if(rows.length>0) {
-					 timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
-					 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
-					  iqConstants.IQ_TIME_LIMIT_HARD);
+					 timeLimit = parseInt(rows[0].difficulty) === 0 ? genericConstants.GET_VALUES.IQ_TIME_LIMIT_EASY:
+					 (parseInt(rows[0].difficulty) === 1? genericConstants.GET_VALUES.IQ_TIME_LIMIT_MEDIUM : 
+					  genericConstants.GET_VALUES.IQ_TIME_LIMIT_HARD);
 				}
-				if(rows.length>0 
-				&& parseInt(rows[0].diftime) < (timeLimit + 2*requestTime)) {
+				if(rows.length >0 && 
+				parseInt(rows[0].diftime) < (timeLimit + 2*requestTime)) {
 							res.status(genericConstants.OK).json(
 								getIqExchangeModel(timeLimit-(rows[0].diftime + requestTime), rows));
 				} else {
@@ -200,18 +244,18 @@ module.exports = function(application, iqConstants, genericConstants, iqMysqlHan
 			return iqMysqlHandler
 			.getQuestionForUser(claims.ky)
 			.then(function(rows) {
+				var timeLimit = 0;
 				if(rows.length > 0) {
-					var timeLimit = parseInt(rows[0].difficulty) == 0 ? iqConstants.IQ_TIME_LIMIT_EASY:
-					 (parseInt(rows[0].difficulty) == 1? iqConstants.IQ_TIME_LIMIT_MEDIUM : 
-					  iqConstants.IQ_TIME_LIMIT_HARD);
+						timeLimit = parseInt(rows[0].difficulty) === 0 ? genericConstants.GET_VALUES.IQ_TIME_LIMIT_EASY:
+					 (parseInt(rows[0].difficulty) === 1? genericConstants.GET_VALUES.IQ_TIME_LIMIT_MEDIUM : 
+					  genericConstants.GET_VALUES.IQ_TIME_LIMIT_HARD);
 				}
-				if(rows.length>0 
-				&& parseInt(rows[0].diftime) > (timeLimit 
-				+ 2*requestTime)) {
+				if(rows.length>0 &&
+				parseInt(rows[0].diftime) > (timeLimit + 2*requestTime)) {
 					  if(question.answerId === rows[0].correctAnswerId) {
-							updateScore(false, true, claims, rows[0].difficulty, true, 'IQ-SRV-AQ', res, updatedScoreRows.iq_questions_remaining);
+							updateScore(false, true, claims, rows[0].difficulty, true, 'IQ-SRV-AQ', res);
 					} else {
-						    updateScore(false, true, claims, rows[0].difficulty, false, 'IQ-SRV-AQ', res, updatedScoreRows.iq_questions_remaining);
+						    updateScore(false, true, claims, rows[0].difficulty, false, 'IQ-SRV-AQ', res);
 					}
 				} else {
 					res.status(genericConstants.UNAUTHORIZED).json({

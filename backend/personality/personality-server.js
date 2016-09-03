@@ -2,13 +2,11 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
 	var personalityConstants		 	  	=  require('./personality-constants')(),
 		  personalityService  		  	  =  require('./personality-service')(application, personalityConstants, genericConstants, persMysqlHandler);
 
+
 	application.post(genericConstants.NEXT_PERSONALITY_QUESTION_URL, function(req, res) {
   		var data = req.body,
   			  token = req.headers['x-auth-token'],
-			    user = token? tokenHandler.decodeToken(token): 
-          (data.hash?{id: genericTools.decrypt(data.hash)}:null);
-
-      console.log(user);
+			    user = token? tokenHandler.decodeToken(token):null;
 
       if(!user) {
         return res.status(genericConstants.UNAUTHORIZED).json({
@@ -29,10 +27,11 @@ module.exports = function(application, genericConstants, tokenHandler, persMysql
   application.post(genericConstants.ANSWER_PERSONALITY_QUESTION_URL, function(req, res) {
       var question = req.body;
       var token = req.headers['x-auth-token'],
-          user = tokenHandler.decodeToken(token);
+          user = token? tokenHandler.decodeToken(token): null;
 
-      if(!question.answer
-      || !question.negativelyAffectedType) {
+      if(!question.answer ||
+      !question.negativelyAffectedType ||
+      !user) {
         return res.status(genericConstants.UNAUTHORIZED).json({
             error: genericConstants.INCOMPLETE_DATA.message
         });

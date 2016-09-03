@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(constantValues) {
 	// to break down into files
 	return {
 		//http status
@@ -17,6 +17,7 @@ module.exports = function() {
 		ACTIVATE_ACCOUNT_URL:   '/auth/activateAccount',
 		RESEND_EMAIL_URL: 		'/auth/resendEmail',
 		SET_PROFILE_URL:        '/auth/setProfile',
+		GET_PROFILE_QUESTIONS_URL: '/auth/getProfileQuestions',
 		STATISTICS_URL: 		'/auth/statistics',
 		GET_HASH_URL: 			'/auth/getHash',
 		CHECK_HASH_URL: 		'/auth/checkHash',
@@ -25,14 +26,10 @@ module.exports = function() {
 		ANSWER_PERSONALITY_QUESTION_URL: 	'/personality/answerQuestion',
 
 		RANDOM_GK_QUESTION_URL: '/gk/randomQuestion',
-		RANDOM_GK_QUESTION_FOR_PROFILE_URL: '/gk/randomProfileQuestion',
 		ANSWER_GK_QUESTION_URL: '/gk/answerQuestion',
-		ANSWER_GK_QUESTION_FOR_PROFILE_URL: '/gk/answerProfileQuestion',
 
 		RANDOM_IQ_QUESTION_URL: '/iq/randomQuestion',
-		RANDOM_IQ_QUESTION_FOR_PROFILE_URL: '/iq/randomProfileQuestion',
 		ANSWER_IQ_QUESTION_URL: '/iq/answerQuestion',
-		ANSWER_IQ_QUESTION_FOR_PROFILE_URL: '/iq/answerProfileQuestion',
 
 		MYSQL_SOURCE: {
 		    host: 		'localhost',
@@ -40,11 +37,6 @@ module.exports = function() {
 		    password: 	'1234',
 		    database: 	'chat_database'
 		},
-
-		INSERT_TEMPLATE: 	'INSERT INTO $table ($columns) VALUES ($values) ',
-		SELECT_TEMPLATE: 	'SELECT $columns FROM $table ',
-		UPDATE_TEMPLATE: 	'UPDATE $table SET $map ',
-		CRITERIA_TEMPLATE:  'WHERE $criteria ',
 
 		PERONALITY_STATISTICS_QUERY: 'SELECT current_personality as personality, count(*) AS count FROM user GROUP BY current_personality',
 		GENERAL_KNOWLEDGE_STATISTICS_QUERY: 'SELECT FORMAT(STD(current_gk_score),2) AS standardDeviation, AVG(current_gk_score) AS averageScore FROM user',
@@ -61,12 +53,13 @@ module.exports = function() {
 		CHECK_USERNAME_EXISTENCE_QUERY: 'SELECT username FROM user WHERE username="$username"',
 		GET_ACCOUNT_STATUS_QUERY: 'SELECT account_status FROM user WHERE user_id="$userId"',
 		GET_USER_DATA_BY_EMAIL_QUERY: 'SELECT username, password, account_status, remaining_iq_questions, remaining_gk_questions, membership_expiration, ' + 
-									'currenct_gk_score, current_iq_score, current_personality FROM user WHERE email="$email"',
+									'current_gk_score, current_iq_score, current_personality FROM user WHERE email="$email"',
 		REGISTER_USER_QUERY: 'INSERT INTO user (email, password, account_status, current_personality_question_id, current_personality_raw, current_personality, ' + 
 							'correct_easy_iq_answers, total_easy_iq_answers, correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers, total_hard_iq_answers, ' + 
 							'correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration, remaining_iq_questions, remaining_gk_questions, ' + 
 							'remaining_match_trials) VALUES ("$email", "$password", "INACTIVE", "1", "0.0.0.0", "ESFJ", "0", "0", "0", "0", "0", "0", "0", "0", "90", "0", NOW() + ' + 
-							'INTERVAL 1 MONTH, "$remainingIqQuestions", "$remainingGkQuestions", "$remainingMatchTrials"'),
+							'INTERVAL 1 MONTH, "' + constantValues.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS + '", "' + constantValues.GK_MAX_QUESTIONS_FOR_NON_MEMBERS + '", "' + 
+							constantValues.MATCH_MAX_TRIALS_FOR_NON_MEMBERS + '")',
 
 		GET_NEXT_PERSONALITY_QUESTION_QUERY: 'SELECT personality_question_id, personality_question, negatively_affected_type FROM user JOIN personality_questions ON ' + 
 											'(current_personality_question_id=personality_question_id) WHERE user_id="$userId"',
@@ -74,7 +67,7 @@ module.exports = function() {
 										'current_personality="$currentPersonality" WHERE user_id="$userId"',
 		GET_CURRENT_PERSONALITY_ROW_QUERY: 'SELECT current_personality_raw FROM user WHERE user_id="$userId"',
 
-		UPDATE_REMAINING_IQ_QUESTIONS_QUERY: 'UPDATE user SET remaining_iq_questions="$remainingIqQuestions"',
+		UPDATE_REMAINING_IQ_QUESTIONS_QUERY: 'UPDATE user SET remaining_iq_questions="' + constantValues.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS + '"',
 		GET_REMAINING_IQ_QUESTIONS_FOR_USER: 'SELECT remaining_iq_questions FROM user WHERE user_id="$userId"',
 		GET_IQ_QUESTION_FOR_USER_QUERY: 'SELECT current_timestamp - t1.timestamp as diftime, t2.difficulty, t1.iq_question_id, l1.link as question, ' +
 							  't2.iq_answer1 as iq_answer1Id, l2.link as answer1, t2.iq_answer2 as iq_answer2Id, l3.link as answer2, ' + 
@@ -97,84 +90,54 @@ module.exports = function() {
 		SET_IQ_TIMEOUT_QUERY: 'INSERT INTO iq_question_user (user_id, iq_question_id) VALUES ("$userId","$questionId")',
 		REMOVE_IQ_TIMEOUT_QUERY: 'DELETE FROM iq_question_user WHERE user_id="$userId"',
 		UPDATE_USER_IQ_EASY_SCORE_QUERY: 'UPDATE user SET correct_easy_iq_answers = correct_easy_iq_answers + $isCorrect, total_easy_iq_answers = ' +
-										'total_easy_iq_answers + 1, current_iq_score = current_iq_score + ((correct_easy_iq_answers * (total_easy_iq_answers + 2) ' + 
-										'+ (correct_easy_iq_answers + $isCorrect)(total_easy_iq_answers+1))/((total_easy_iq_answers+1)(total_easy_iq_answers+2)) * ' + 
-										'$easyIqWeight, remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id="$userId"',
+										'total_easy_iq_answers + 1, current_iq_score = current_iq_score + (correct_easy_iq_answers * (total_easy_iq_answers + 2) ' + 
+										'+ (correct_easy_iq_answers + $isCorrect) * (total_easy_iq_answers+1))/((total_easy_iq_answers+1) * (total_easy_iq_answers+2)) * ' + 
+										constantValues.EASY_IQ_WEIGHT + ', remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id="$userId"',
 		UPDATE_USER_IQ_MEDIUM_SCORE_QUERY: 'UPDATE user SET correct_medium_iq_answers = correct_medium_iq_answers + $isCorrect, total_medium_iq_answers = ' + 
-										'total_medium_iq_answers + 1, current_iq_score = current_iq_score + ((correct_medium_iq_answers * (total_meidum_iq_answers + 2) ' + 
-										'+ (correct_medium_iq_answers + $isCorrect)(total_medium_iq_answers+1))/((total_medium_iq_answers+1)(total_medium_iq_answers+2)) * ' + 
-										'$mediumIqWeight, remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id="$userId"',
+										'total_medium_iq_answers + 1, current_iq_score = current_iq_score + (correct_medium_iq_answers * (total_medium_iq_answers + 2) ' + 
+										'+ (correct_medium_iq_answers + $isCorrect) * (total_medium_iq_answers+1))/((total_medium_iq_answers+1) * (total_medium_iq_answers+2)) * ' + 
+										constantValues.MEDIUM_IQ_WEIGHT + ', remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id="$userId"',
 		UPDATE_USER_IQ_HARD_SCORE_QUERY: 'UPDATE user SET correct_hard_iq_answers = correct_hard_iq_answers + $isCorrect, total_hard_iq_answers = ' + 
-										'total_hard_iq_answers + 1, current_iq_score = current_iq_score + ((correct_hard_iq_answers * (total_hard_iq_answers + 2) ' + 
-										'+ (correct_hard_iq_answers + $isCorrect)(total_hard_iq_answers+1))/((total_hard_iq_answers+1)(total_hard_iq_answers+2)) * ' + 
-										'$hardIqWeight, remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id ="$userId"',
+										'total_hard_iq_answers + 1, current_iq_score = current_iq_score + (correct_hard_iq_answers * (total_hard_iq_answers + 2) ' + 
+										'+ (correct_hard_iq_answers + $isCorrect) * (total_hard_iq_answers+1))/((total_hard_iq_answers+1) * (total_hard_iq_answers+2)) * ' + 
+										constantValues.HARD_IQ_WEIGHT + ', remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id ="$userId"',
+		UPDATE_USER_IQ_EASY_SCORE_GLOBAL_QUERY: 'UPDATE user SET total_easy_iq_answers = total_easy_iq_answers + 1, current_iq_score = current_iq_score + (correct_easy_iq_answers * (total_easy_iq_answers + 2) ' + 
+										'+ correct_easy_iq_answers * (total_easy_iq_answers+1))/((total_easy_iq_answers+1) * (total_easy_iq_answers+2)) * ' + 
+										constantValues.EASY_IQ_WEIGHT + ', remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id IN ' +
+										'(SELECT user_id FROM iq_question_user WHERE current_timestamp - timestamp > ' + constantValues.IQ_TIME_LIMIT_EASY + ')',
+		UPDATE_USER_IQ_MEDIUM_SCORE_GLOBAL_QUERY: 'UPDATE user SET total_medium_iq_answers = total_medium_iq_answers + 1, current_iq_score = current_iq_score + (correct_medium_iq_answers * (total_medium_iq_answers + 2) ' + 
+										'+ correct_medium_iq_answers * (total_medium_iq_answers+1))/((total_medium_iq_answers+1) * (total_medium_iq_answers+2)) * ' + 
+										constantValues.MEDIUM_IQ_WEIGHT + ', remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id IN ' +
+										'(SELECT user_id FROM iq_question_user WHERE current_timestamp - timestamp > ' + constantValues.IQ_TIME_LIMIT_MEDIUM + ')',
+		UPDATE_USER_IQ_HARD_SCORE_GLOBAL_QUERY: 'UPDATE user SET total_hard_iq_answers = total_hard_iq_answers + 1, current_iq_score = current_iq_score + (correct_hard_iq_answers * (total_hard_iq_answers + 2) ' + 
+										'+ correct_hard_iq_answers * (total_hard_iq_answers+1))/((total_hard_iq_answers+1) * (total_hard_iq_answers+2)) * ' + 
+										constantValues.HARD_IQ_WEIGHT + ', remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0) WHERE user_id IN ' +
+										'(SELECT user_id FROM iq_question_user WHERE current_timestamp - timestamp > ' + constantValues.IQ_TIME_LIMIT_HARD + ')',
+		REMOVE_TIMED_OUT_IQ_EASY_QUESTIONS_GLOBAL_QUERY: 'DELETE FROM iq_question_user WHERE current_timestamp - timestamp > ' + constantValues.IQ_TIME_LIMIT_EASY,
+		REMOVE_TIMED_OUT_IQ_MEDIUM_QUESTIONS_GLOBAL_QUERY: 'DELETE FROM iq_question_user WHERE current_timestamp - timestamp > ' + constantValues.IQ_TIME_LIMIT_MEDIUM,
+		REMOVE_TIMED_OUT_IQ_HARD_QUESTIONS_GLOBAL_QUERY: 'DELETE FROM iq_question_user WHERE current_timestamp - timestamp > ' + constantValues.IQ_TIME_LIMIT_HARD,
 
-		//users
-		USER_COLUMNS: 'username, email, password, gender, birthdate, account_status,current_personality_question_id,'
-					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
-					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration,'
-					+ ' last_login_date, remaining_iq_questions, remaining_gk_questions, remaining_match_trials',
-		USER_COLUMNS_WITH_ID: 'user_id, username, email, password, gender, birthdate, account_status, current_personality_question_id,'
-					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
-					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration,'
-					+ ' last_login_date, remaining_iq_questions, remaining_gk_questions, remaining_match_trials',
-		REGISTRATION_COLUMNS: 'email, password, account_status, current_personality_question_id,'
-					+ ' current_personality_raw, current_personality, correct_easy_iq_answers, total_easy_iq_answers,'
-					+ ' correct_medium_iq_answers, total_medium_iq_answers, correct_hard_iq_answers,'
-					+ ' total_hard_iq_answers, correct_gk_answers, total_gk_answers, current_iq_score, current_gk_score, membership_expiration,'
-					+ ' remaining_iq_questions, remaining_gk_questions, remaining_match_trials',
-		PROFILE_COLUMNS: 'username, birthdate, gender',
-		USER_TABLE: 'user',
-
-		//gk questions
-		GK_QUESTION_COLUMNS: 'gk_question, category_id, gk_answer1, gk_answer2, gk_answer3, gk_answer4',
-		GK_QUESTION_COLUMNS_WITH_ID: 'gk_question_id, gk_question, category_id, gk_answer1, gk_answer2, gk_answer3, gk_answer4',
-		GK_QUESTION_TABLE: 'gk_questions',
-
-		//iq questions
-		IQ_QUESTION_COLUMNS: 'difficulty, iq_question, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
-		IQ_QUESTION_COLUMNS_WITH_ID: 'iq_question_id, difficulty, iq_question, iq_answer1, iq_answer2, iq_answer3, iq_answer4, iq_answer5, iq_answer6, iq_correct_answer',
-		IQ_QUESTION_TABLE: 'iq_questions',
-
-		//iq question links
-		IQ_LINK_COLUMNS: 'link',
-		IQ_LINK_COLUMNS_WITH_ID: 'iq_link_id, link',
-		IQ_LINK_TABLE: 'iq_links',
-
-		//gk question user
-		GK_QUESTION_USER_COLUMNS: 'user_id, gk_question_id',
-		GK_QUESTION_USER_COLUMNS_WITH_ID: 'gk_question_user_id, user_id, gk_question_id',
-		GK_QUESTION_USER_TABLE: 'gk_question_user',
-
-		//iq question user
-		IQ_QUESTION_USER_COLUMNS: 'user_id, iq_question_id',
-		IQ_QUESTION_USER_COLUMNS_WITH_ID: 'iq_question_user_id, user_id, iq_question_id',
-		IQ_QUESTION_USER_TABLE: 'iq_question_user',
-
-		//categories
-		CATEGORY_COLUMNS: 'category',
-		CATEGORY_COLUMNS_WITH_ID: 'category_id, category',
-		CATEGORY_TABLE: 'category',
-
-		//personality questions
-		PERSONALITY_QUESTION_COLUMNS: 'personality_question, negatively_affected_type',
-		PERSONALITY_QUESTION_COLUMNS_WITH_ID: 'personality_question_id, personality_question, negatively_affected_type',
-		PERSONALITY_QUESTIONS_TABLE: 'personality_questions',
+		UPDATE_REMAINING_GK_QUESTIONS_QUERY: 'UPDATE user SET remaining_iq_questions="' + constantValues.GK_MAX_QUESTIONS_FOR_NON_MEMBERS + '"',
+		GET_REMAINING_IQ_QUESTIONS_FOR_USER_QUERY: 'SELECT remaining_gk_questions FROM user WHERE user_id="$userId"',
+		GET_GK_QUESTION_FOR_USER_QUERY: 'SELECT current_timestamp - timestamp as diftime, gk_question_id, gk_question, category, gk_answer1, ' + 
+									'gk_answer2, gk_answer3, gk_answer4 FROM gk_question_user JOIN gk_questions USING(gk_question_id) JOIN ' + 
+									'category USING(category_id) WHERE user_id="$userId"',
+		GET_GK_QUESTION_BY_ID_QUERY: 'SELECT gk_question_id, gk_question, category, gk_answer1, gk_answer2, gk_answer3, gk_answer4 FROM gk_questions ' + 
+									'JOIN category USING(category_id) WHERE gk_question_id="$questionId"',
+		SET_GK_TIMEOUT_QUERY: 'INSERT INTO gk_question_user (user_id, gk_question_id) VALUES ("$userId","$questionId")',
+		REMOVE_GK_TIMEOUT_QUERY: 'DELETE FROM gk_question_user WHERE user_id="$userId"',
+		UPDATE_USER_GK_SCORE_QUERY: 'UPDATE user SET correct_gk_answers = correct_gk_answers + $isCorrect, ' + 
+						'total_gk_answers = total_gk_answers + 1, current_gk_score = correct_gk_answers/total_gk_answers WHERE user_id="$userId"',
+		UPDATE_USER_GK_SCORE_GLOBAL_QUERY: 'UPDATE user SET total_gk_answers = total_gk_answers + 1, current_gk_score = correct_gk_answers/total_gk_answers ' + 
+						'WHERE user_id IN (SELECT user_id FROM gk_question_user WHERE current_timestamp - timestamp > ' + constantValues.GK_TIME_LIMIT + ')',
+		REMOVE_TIMED_OUT_GK_QUESTIONS_GLOBAL_QUERY: 'DELETE FROM gk_question_user WHERE current_timestamp - timestamp > ' + constantValues.GK_TIME_LIMIT,
 
 		//conversation history
 		CONVERSATION_HISTORY_COLUMNS: 'first_user_id, second_user_id, engage_date',
 		CONVERSATION_HISTORY_COLUMNS_WITH_ID: 'conversation_history_id, first_user_id, second_user_id, engage_date',
 		CONVERSATION_HISTORY_TABLE: 'conversation_history',
 
-		IQ_MAX_QUESTIONS_FOR_NON_MEMBERS: 5,
-		GK_MAX_QUESTIONS_FOR_NON_MEMBERS: 10,
-		MATCH_MAX_TRIALS_FOR_NON_MEMBERS: 10,
-		FREE_IQ_WEIGHT: 50,
-		EASY_IQ_WEIGHT: 110,
-		MEDIUM_IQ_WEIGHT: 80,
-		HARD_IQ_WEIGHT: 60,
+		GET_VALUES: constantValues,
 
 		INVALID_TOKEN: new Error('INVALID_TOKEN'),
 		UNKNOWN_USER: new Error('UNKNOWN_USER'),
@@ -202,6 +165,7 @@ module.exports = function() {
 		    }
 		    return array;
 		}
-	}
+
+	};
 
 };

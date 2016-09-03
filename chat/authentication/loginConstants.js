@@ -1,6 +1,8 @@
 angular.module('loginModule').constant('loginConstant', {
 	BASE_URL: 'http://localhost:8080',
 	LOGIN_URL: '/auth/login',
+	SET_PROFILE: '/auth/setProfile',
+	GET_PROFILE_QUESTIONS: '/auth/getProfileQuestions',
 	REGISTRATION_URL: '/auth/register',
 	VERIFY_TOKEN_URL: '/auth/verifyToken',
 	CHECK_USERNAME_URL: '/auth/usernameUse',

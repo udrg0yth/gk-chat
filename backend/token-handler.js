@@ -5,39 +5,46 @@ module.exports = function(application,
 	var secretKey   =  uuid.v4(); 
 
 	function tokenInterceptor(req, res, next) {
-		if(req.url === genericConstants.LOGIN_URL
-		|| req.url === genericConstants.REGISTRATION_URL) {
+		if(req.url === genericConstants.LOGIN_URL ||
+		req.url === genericConstants.REGISTRATION_URL ||
+		req.url === genericConstants.ACTIVATE_ACCOUNT_URL ||
+		req.url === genericConstants.USERNAME_CHECK_URL ||
+		req.url === genericConstants.EMAIL_CHECK_URL ||
+		req.url === genericConstants.GET_HASH_URL ||
+		req.url === genericConstants.CHECK_HASH_URL ||
+		req.url === genericConstants.SET_PROFILE_URL ||
+		req.url === genericConstants.GET_PROFILE_QUESTIONS_URL) {
 			return next();
 		}
+		var token = req.headers['x-auth-token'];
 
-		
-		var data = req.body;
-		if(!data.token){
-			res.status(genericConstants.UNAUTHORIZED).json({
+		if(!token){
+			return res.status(genericConstants.UNAUTHORIZED).json({
 				error: genericConstants.INVALID_TOKEN.message
 			});	
 		}
+
 		try {
-			jwt.verify(data.token, secretKey);
+			jwt.verify(token, secretKey);
 		} catch(ex) {
-			res.status(genericConstants.UNAUTHORIZED).json({
+			return res.status(genericConstants.UNAUTHORIZED).json({
 				error: genericConstants.INVALID_TOKEN.message
 			});
 		}
 
 		if(req.url === genericConstants.RANDOM_GK_QUESTION_URL) {
-			var token = jwt.decode(token);
-			if(!token.gkr) {
-				res.status(genericConstants.UNAUTHORIZED).json({
+			var decodedToken = jwt.decode(token);
+			if(!decodedToken.gkr) {
+				return res.status(genericConstants.UNAUTHORIZED).json({
 					error: genericConstants.NO_MORE_GK_QUESTIONS.message
 				});
 			}
 		}
 
 		if(req.url === genericConstants.RANDOM_IQ_QUESTION_URL) {
-			var token = jwt.decode(token);
-			if(!token.gkr) {
-				res.status(genericConstants.UNAUTHORIZED).json({
+			var decodedToken = jwt.decode(token);
+			if(!decodedToken.gkr) {
+				return res.status(genericConstants.UNAUTHORIZED).json({
 					error: genericConstants.NO_MORE_IQ_QUESTIONS.message
 				});
 			}

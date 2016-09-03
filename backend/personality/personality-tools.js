@@ -19,7 +19,7 @@ module.exports = function() {
 					return alterPersonality(splitPersonality, negativelyAffectedType, -10);
 				case '4':
 					return alterPersonality(splitPersonality, negativelyAffectedType, -20);
-			};
+			}
 		},
 		formatPersonality: function(currentPersonality) {
 			var splitPersonality = currentPersonality.split('.');
@@ -43,10 +43,10 @@ module.exports = function() {
 			};
 		},
 		reducePersonality: function(formattedPersonality) {
-			return formattedPersonality.type1.label
-			+	   formattedPersonality.type2.label
-			+	   formattedPersonality.type3.label
-			+      formattedPersonality.type4.label;
+			return formattedPersonality.type1.label +
+				   formattedPersonality.type2.label	+
+				   formattedPersonality.type3.label +      
+				   formattedPersonality.type4.label;
 		}
 	};
-}
+};

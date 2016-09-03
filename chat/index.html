@@ -11,9 +11,10 @@
 	<link rel="stylesheet" type="text/css" href="bower_components/angular-wizard/dist/angular-wizard.min.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/angularjs-slider/dist/rzslider.min.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/perfect-scrollbar/min/perfect-scrollbar.min.css" />
 	
-	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
 	<script src="bower_components/angular-route/angular-route.min.js"></script>
@@ -29,9 +30,14 @@
 	<script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
 	<script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
  	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-svg-round-progressbar/0.4.4/roundProgress.min.js"></script>
+ 	<script src="bower_components/perfect-scrollbar/min/perfect-scrollbar.min.js"></script>
+	<script src="bower_components/perfect-scrollbar/min/perfect-scrollbar.with-mousewheel.min.js"></script>
+	<script src="bower_components/angular-perfect-scrollbar/src/angular-perfect-scrollbar.js"></script>
 
 
 	<script src="mainModule.js"></script>
+	<script src="genericConstants.js"></script>
+
 	<!-- start login component -->
 	<script src="authentication/loginModule.js"></script>
 	<script src="authentication/loginConstants.js"></script>
@@ -39,20 +45,31 @@
 	<script src="authentication/facebookService.js"></script>
 	<script src="authentication/tokenService.js"></script>
 	<script src="authentication/loginController.js"></script>
-	<script src="authentication/profileController.js"></script>
-	<script src="authentication/personalityService.js"></script>
-	<script src="authentication/iqService.js"></script>
-	<script src="authentication/iqConstants.js"></script>
-	<script src="authentication/gkService.js"></script>
-	<script src="authentication/gkConstants.js"></script>
-	<script src="authentication/personalityConstants.js"></script>
-	<script src="genericConstants.js"></script>
-	<script src="chat/modalDirective.js"></script>
 	<!-- end login component -->
+
+	<!-- start personality -->
+	<script src="personality/personalityService.js"></script>
+	<script src="personality/personalityConstants.js"></script>
+	<!-- end personality -->
+
+	<!-- start intelligence -->
+	<script src="intelligence/iqService.js"></script>
+	<script src="intelligence/iqConstants.js"></script>
+	<!-- end intelligence -->
+
+	<!-- start general knowledge -->
+	<script src="general_knowledge/gkService.js"></script>
+	<script src="general_knowledge/gkConstants.js"></script>
+	<!-- end general knowledge -->
+
+	<!-- start profile -->
+	<script src="profile/profileController.js"></script>
+	<!-- end profile -->
 
 	<!-- start chat component -->
 	<script src="chat/chatModule.js"></script>
 	<script src="chat/chatController.js"></script>
+	<script src="chat/modalDirective.js"></script>
 	<!-- end chat component -->
 
 

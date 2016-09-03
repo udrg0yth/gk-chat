@@ -1,13 +1,7 @@
 module.exports = function(authenticationConstants) {
 	var passwordHash = require('password-hash'),
 	    nodemailer = require('nodemailer'),
-	    transporter = nodemailer.createTransport({
-       		    service: 'Gmail',
-		        auth: {
-		            user: 'vladradu97150@gmail.com',
-		            pass: 'vladradu1995'
-		        }
-		});
+	    transporter = nodemailer.createTransport(authenticationConstants.MAIL_SERVER);
 
 	return {
 		hashPassword: function(rawPass) {
@@ -38,10 +32,10 @@ module.exports = function(authenticationConstants) {
 			    if(error){
 			        console.log(error);
 			    }else{
-			        console.log('Message sent: ' + info.response);
-			    };
+			        console.log('Message sent: ', info.response);
+			    }
 			});
 		},
 		
-	}
-}
+	};
+};

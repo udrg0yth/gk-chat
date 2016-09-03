@@ -5,16 +5,7 @@ angular.module('loginModule').service('tokenService', ['$state', '$http', 'login
 	 		if(!$localStorage.token) {
 	 			return false;
 	 		}
-	 		$http.post(loginConstant.authBaseUrl + loginConstant.verifyTokenUrl, {
-	 			token: $localStorage.token
-	 		})
-	 		.success(function(){
-	 			return true;
-	 		})
-	 		.error(function() {
-	 			return false;
-	 		});
-	 		return false;
+	 		return true;
 	 	},
 	 	deleteToken: function() {
 	 		delete $localStorage.token;

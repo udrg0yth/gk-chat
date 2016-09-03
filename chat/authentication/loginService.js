@@ -26,6 +26,14 @@ angular.module('loginModule').service('loginService', ['$http', 'loginConstant',
 	 			hash: hash
 	 		});
 	 	},
+	 	getProfileQuestions: function(hash) {
+	 		return $http.post(genericConstant.BASE_URL + loginConstant.GET_PROFILE_QUESTIONS, {
+	 			hash: hash
+	 		});
+	 	},
+	 	setProfile: function(data) {
+	 		return $http.post(genericConstant.BASE_URL + loginConstant.SET_PROFILE, data);
+	 	},
 	 	checkUsername: function(username) {
 	 		return $http.post(genericConstant.BASE_URL + loginConstant.CHECK_USERNAME_URL, {
 	 			username: username

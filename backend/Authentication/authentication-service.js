@@ -1,7 +1,5 @@
-module.exports = function(application, authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, genericTools) {
-	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants),
-		profileTools  			 =  require('./profile-tools')(authenticationConstants);
-
+module.exports = function(application, authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, personalityMysqlHandler, iqMysqlHandler, gkMysqlHandler, genericTools, personalityTools) {
+	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants);
 	var schedule = require('node-schedule'),
 		statistics = {};
 
@@ -32,15 +30,95 @@ module.exports = function(application, authenticationConstants, genericConstants
 		  .catch(function(error) {
 		  	console.log('Error while gathering IQ statistics!', error.message);
 		  });
-
-		  	authMysqlHandler
-		  .gatherGenderStatistics()
-		  .then(function(rows) {
-		    statistics.genderStatistics = rows[0];
-		  })
-		  .catch(function(error) {
-		    console.log('Error while gathering gender statistics!', error.message);
-		  });
+	}, getPersonalityExchangeModel = function(rows) {
+		return {
+			questionId: rows[0].personality_question_id,
+			negativelyAffectedType: rows[0].negatively_affected_type,
+			question: rows[0].personality_question
+		};
+	}, getGKExchangeModel = function(timeLeft, rows) {
+		return {
+    		timeLeft: timeLeft,
+			questionId: rows[0].gk_question_id,
+			question: rows[0].gk_question,
+			answers: genericConstants.SHUFFLE_ARRAY(
+				[rows[0].gk_answer1,
+				rows[0].gk_answer2,
+				rows[0].gk_answer3,
+				rows[0].gk_answer4])
+		};
+	}, getIqExchangeModel = function(timeLimit, rows) {
+		console.log(rows[0]);
+		return {
+			timeLeft: timeLimit,
+			questionId: rows[0].iq_question_id,
+			question: rows[0].question,
+			answers: genericConstants.SHUFFLE_ARRAY(
+			[{ 
+				id: rows[0].iq_answer1Id,
+				link: rows[0].answer1
+			}, {
+					id: rows[0].iq_answer2Id,
+					link: rows[0].answer2
+			}, {
+					id: rows[0].iq_answer3Id,
+					link: rows[0].answer3
+			}, {
+					id: rows[0].iq_answer4Id,
+					link: rows[0].answer4
+			}, {
+					id: rows[0].iq_answer5Id,
+					link: rows[0].answer5
+			}, {
+					id: rows[0].iq_answer6Id,
+					link: rows[0].answer6
+		    }])
+		};
+	}, updateGKScore = function(forToken, claims, correct, trace, res) {
+		 gkMysqlHandler
+		.updateUserScore(claims, correct)
+		.then(function(gk) {
+			var user = {};
+			user.isMember = new Date(forToken.memberExp) <= new Date();
+			if(!user.isMember) {
+				user.iqQuestionsRemaining = true;
+				user.gkQuestionsRemaining = true;
+				user.matchTrialsRemaining = true;
+			}
+			user.iqScore = forToken.iqScore;
+			user.gkScore = gk.current_gk_score;
+			user.personality = forToken.personality;
+			
+			res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
+			res.end();
+		})
+		.catch(function(error) {
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message: error.message,
+				trace: trace
+			});
+		});
+	}, updateIqScore = function(forToken, claims, gkAnswer, correct, trace, res) {
+		 iqMysqlHandler
+		.updateUserScoreEasy(claims, correct)
+		.then(function(iq) {
+			 forToken.iqScore = iq.current_iq_score;
+			 gkMysqlHandler
+			.getQuestionById(gkAnswer.questionId)
+			.then(function(gk) {
+				 if(gkAnswer.answer === gk[0].answer4) {
+					updateGKScore(forToken, claims, true, 'A-SCE-AQPRF', res);
+				} else {
+					updateGKScore(forToken, claims, false, 'A-SCE-AQPRF', res);
+				}
+			});
+		})
+		.catch(function(error) {
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message: error.message,
+				trace: trace
+			});
+		});
 	};
 
 
@@ -63,7 +141,6 @@ module.exports = function(application, authenticationConstants, genericConstants
 		checkEmailExistence: function(email){
 			return authMysqlHandler
 			.checkEmailExistence(email);
-
 		},
 		checkUsernameExistence: function(username) {
 		    return authMysqlHandler
@@ -107,6 +184,26 @@ module.exports = function(application, authenticationConstants, genericConstants
 							});
 						}
 					});
+		},
+		getProfileQuestions: function(hash, res) {
+			 var userId = genericTools.decrypt(hash);
+			 return personalityMysqlHandler
+			.getNextQuestion(userId)
+			.then(function(personality) {
+				 return iqMysqlHandler
+				.getQuestionById(genericConstants.GET_VALUES.PROFILE_IQ_QUESTION)
+				.then(function(iq) {
+					 gkMysqlHandler
+					.getQuestionById(genericConstants.GET_VALUES.PROFILE_GK_QUESTION)
+					.then(function(gk) {
+						  res.status(genericConstants.OK).json({
+							personalityQuestion: getPersonalityExchangeModel(personality),
+							iqQuestion: getIqExchangeModel(null, iq),
+							gkQuestion: getGKExchangeModel(null, gk)
+						  });
+					});
+				});
+			});
 		},
 		loginUser: function(header, res) {
 			var credentials = authenticationTools.getCredentials(header);
@@ -187,23 +284,35 @@ module.exports = function(application, authenticationConstants, genericConstants
 		},
 		setUserProfile: function(data, res) {
 				var userId = genericTools.decrypt(data.hash);
-				delete data.hash;
 				return authMysqlHandler
-					.setUserProfile(userId, data)
-					.then(function(rows) {
-						var user = {};
-							user.isMember = new Date(user.membership_expiration) <= new Date();
-							if(!user.isMember) {
-								user.iqQuestionsRemaining = parseInt(rows[0].remaining_iq_questions) > 0;
-								user.gkQuestionsRemaining = parseInt(rows[0].remaining_gk_questions) > 0;
-								user.matchTrialsRemaining = parseInt(rows[0].remaining_match_trials) > 0;
-							}
-							user.iqScore = rows[0].current_iq_score;
-							user.gkScore = rows[0].current_gk_score;
-							user.personality = rows[0].current_personality;
-							
-						res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
-						res.end();
+					.setUserBasicInfo(userId, data.basicInfo)
+					.then(function(basicInfo) {
+						 personalityMysqlHandler
+						.getCurrentPersonalityRaw(userId)
+						.then(function(personality) {
+							var updatedPersonality = personalityTools.updatePersonality(personality[0].current_personality_raw, 
+								parseInt(data.personalityAnswer.negativelyAffectedType), data.personalityAnswer.answer),
+								formattedPersonality = personalityTools.formatPersonality(updatedPersonality);
+							 personalityMysqlHandler
+							.updateNextQuestionAndPersonality(userId, updatedPersonality,
+									personalityTools.reducePersonality(formattedPersonality))
+							.then(function(currentPersonality) {
+								var forToken = {
+									memberExp: basicInfo.membership_expiration,
+									personality: currentPersonality.current_personality
+								};
+
+								 iqMysqlHandler
+								.getQuestionById(data.iqAnswer.questionId)
+								.then(function(iq) {
+									 if(data.iqAnswer.answer === iq[0].correctAnswerId) {
+										updateIqScore(forToken, userId, data.gkAnswer, true, 'IQ-SRV-AQPRF', res);
+									} else {
+										updateIqScore(forToken, userId, data.gkAnswer, false, 'IQ-SRV-AQPRF', res);
+									}
+								});
+							});
+						});
 					});
 		},
 		getHash: function(email, res) {
@@ -237,5 +346,5 @@ module.exports = function(application, authenticationConstants, genericConstants
 		},
 		logoutUser: function() {
 		}
-	}
+	};
 };

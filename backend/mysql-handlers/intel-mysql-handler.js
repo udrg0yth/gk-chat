@@ -4,120 +4,72 @@ module.exports = function(genericConstants, connection) {
 		  	return connection.query(genericConstants.COUNT_IQ_QUESTIONS_QUERY);
 		},
 		updateRemainingIqQuestions: function() {
-			var queryString = 'UPDATE user set remaining_iq_questions="' + + genericConstants.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS + '"';
-		  	return connection.query(queryString);
+		  	return connection.query(genericConstants.UPDATE_REMAINING_IQ_QUESTIONS_QUERY);
 		},
 		getRemainingIqQuestionsForUser: function(userId) {
-			var queryString = 'SELECT remaining_iq_questions FROM user WHERE user_id="' + userId + '"';
-			return connection.query(queryString);
+			return connection.query(genericConstants
+							.GET_REMAINING_IQ_QUESTIONS_FOR_USER
+							.replace('$userId', userId));
 		},
 		getQuestionForUser: function(userId) {
-			return connection.query(queryString);
+			return connection.query(genericConstants
+								.GET_IQ_QUESTION_FOR_USER_QUERY
+								.replace('$userId', userId));
 		},
 		getQuestionById: function(questionId) {
-			'SELECT i.iq_question_id, i.difficulty, l1.link as question,i.iq_answer1 as iq_answer1Id, l2.link as answer1, ' + 
-			'i.iq_answer2 as iq_answer2Id, l3.link as answer2, i.iq_answer3 as iq_answer3Id, l4.link as answer3, ' +
-			'i.iq_answer4 as iq_answer4Id, l5.link as answer4, i.iq_answer5 as iq_answer5Id, l6.link as answer5, ' + 
-			'i.iq_answer6 as iq_answer6Id, l7.link as answer6, i.iq_correct_answer as correctAnswerId FROM ' +
-			'iq_questions i LEFT JOIN iq_links l1 ON (i.iq_question = l1.iq_links_id) LEFT JOIN iq_links l2 ON (i.iq_answer1 = l2.iq_links_id) ' +
-			'LEFT JOIN iq_links l3 ON (i.iq_answer2 = l3.iq_links_id) LEFT JOIN iq_links l4 ON (i.iq_answer3 = l4.iq_links_id) ' +
-			'LEFT JOIN iq_links l5 ON (i.iq_answer4 = l5.iq_links_id) LEFT JOIN iq_links l6 ON (i.iq_answer5 = l6.iq_links_id) ' +
-			'LEFT JOIN iq_links l7 ON (i.iq_answer6 = l7.iq_links_id) WHERE i.iq_question_id="$questionId"'
-			var queryString = genericConstants
-							.SELECT_TEMPLATE
-							.replace('$table', genericConstants.IQ_QUESTION_TABLE + ' i LEFT JOIN ' +
-								genericConstants.IQ_LINK_TABLE + ' l1 ON (i.iq_question = l1.iq_links_id) ' +
-								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l2 ON (i.iq_answer1 = l2.iq_links_id) ' +
-								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l3 ON (i.iq_answer2 = l3.iq_links_id) ' +
-								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l4 ON (i.iq_answer3 = l4.iq_links_id) ' +
-								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l5 ON (i.iq_answer4 = l5.iq_links_id) ' +
-								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l6 ON (i.iq_answer5 = l6.iq_links_id) ' +
-								'LEFT JOIN ' + genericConstants.IQ_LINK_TABLE + ' l7 ON (i.iq_answer6 = l7.iq_links_id)')
-							.replace('$columns', 'i.iq_question_id, i.difficulty, l1.link as question,i.iq_answer1 as iq_answer1Id, l2.link as answer1, ' + 
-								'i.iq_answer2 as iq_answer2Id, l3.link as answer2, i.iq_answer3 as iq_answer3Id, l4.link as answer3, ' +
-								'i.iq_answer4 as iq_answer4Id, l5.link as answer4, i.iq_answer5 as iq_answer5Id, l6.link as answer5, ' + 
-								'i.iq_answer6 as iq_answer6Id, l7.link as answer6, i.iq_correct_answer as correctAnswerId')
-							+ genericConstants.CRITERIA_TEMPLATE
-							.replace('$criteria', 'i.iq_question_id="' + questionId + '"');
-			return connection.query(queryString);
+			return connection.query(genericConstants
+								.GET_IQ_QUESTION_BY_ID_QUERY
+								.replace('$questionId', questionId));
 		},
 		setTimeout: function(userId, questionId) {
-			var values = '"' + userId + '",' +
- 					 	 '"' + questionId +'"',
-				queryString = genericConstants
-							.INSERT_TEMPLATE
-							.replace('$table', genericConstants.IQ_QUESTION_USER_TABLE)
-							.replace('$columns', genericConstants.IQ_QUESTION_USER_COLUMNS)
-							.replace('$values', values);
-			console.log(queryString);
-			return connection.query(queryString);
+			return connection.query(genericConstants
+								.SET_IQ_TIMEOUT_QUERY
+								.replace('$userId', userId)
+								.replace('$questionId', questionId));
 		},
 		removeTimeout: function(userId) {
-			var queryString = 'DELETE FROM ' + genericConstants.IQ_QUESTION_USER_TABLE + ' ' +
-						     genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id="' + userId + '"');
-							console.log(queryString);
-			return connection.query(queryString);
+			return connection.query(genericConstants
+								.REMOVE_IQ_TIMEOUT_QUERY
+								.replace('$userId', userId));
 		},
-		updateUserScore: function(userId, difficulty, isCorrect) {
-			var map = '';
-			switch(difficulty) {
-				case 0:
-					map = map + 'correct_easy_iq_answers = correct_easy_iq_answers + ' + (isCorrect?'1':'0') + ', ';
-				break;
-				case 1:
-					map = map +'correct_medium_iq_answers = correct_medium_iq_answers + ' + (isCorrect?'1':'0') + ', ';
-				break;
-				case 2:
-					map = map + 'correct_hard_iq_answers = correct_hard_iq_answers + ' + (isCorrect?'1':'0') + ', ';
-				break;
-				default:
-					map = '';
-			};
-
-			map += 'remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0)';
-			
-			var queryString = genericConstants
-							.UPDATE_TEMPLATE
-							.replace('$table', genericConstants.USER_TABLE)
-							.replace('$map', map)
-							+ genericConstants
-							.CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id="' + userId + '"');
-			console.log(queryString);
-			return connection.query(queryString);
+		updateUserScoreEasy: function(userId, isCorrect) {
+			return connection.query(genericConstants
+				.UPDATE_USER_IQ_EASY_SCORE_QUERY
+				.replace('$userId', userId)
+				.replace('$isCorrect', isCorrect)
+				.replace('$isCorrect', isCorrect));
 		},
-		updateUserScoreGlobal: function(difficulty, timeout) {
-			var map = (difficulty == 0?'total_easy_iq_answers = total_easy_iq_answers + 1, current_iq_score = current_iq_score - ((correct_easy_iq_answers/(total_easy_iq_answers*(total_easy_iq_answers+1)))*60),': '') +
-					  (difficulty == 1?'total_medium_iq_answers = total_medium_iq_answers + 1, current_iq_score = current_iq_score - ((correct_medium_iq_answers/(total_medium_iq_answers*(total_medium_iq_answers+1)))*30),': '') +
-					  (difficulty == 2?'total_hard_iq_answers = total_hard_iq_answers + 1, current_iq_score = current_iq_score - ((correct_hard_iq_answers/(total_hard_iq_answers*(total_hard_iq_answers+1)))*30),': '') +
-					  'remaining_iq_questions=IF(remaining_iq_questions>0,remaining_iq_questions-1, 0)';
-			var queryString = genericConstants
-							.UPDATE_TEMPLATE
-							.replace('$table', genericConstants.USER_TABLE)
-							.replace('$map', map)
-							+ genericConstants
-							.CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id IN ( ')
-						    + genericConstants
-						    .SELECT_TEMPLATE
-						    .replace('$table', genericConstants.IQ_QUESTION_USER_TABLE)
-						    .replace('$columns', 'user_id')
-						    + genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout)
-							+ ')';
-			console.log(queryString);
-			return connection.query(queryString);
+		updateUserScoreMedium: function(userId, isCorrect) {
+			return connection.query(genericConstants
+				.UPDATE_USER_IQ_MEDIUM_SCORE_QUERY
+				.replace('$userId', userId)
+				.replace('$isCorrect', iscorrect)
+				.replace('$isCorrect', isCorrect));
 		},
-		removeTimedOutQuestions: function(difficulty, timeout) {
-			var queryString = 'DELETE FROM ' + genericConstants.IQ_QUESTION_USER_TABLE + ' '
-							+ genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria','current_timestamp - timestamp > ' + timeout);
-			console.log(queryString);
-			return connection.query(queryString);
+		updateUserScoreHard: function(userId, isCorrect) {
+			return connection.query(genericConstants
+				.UPDATE_USER_IQ_HARD_SCORE_QUERY
+				.replace('$userId', userId)
+				.replace('$isCorrect', iscorrect)
+				.replace('$isCorrect', isCorrect));
+		},
+		updateUserScoreGlobalEasy: function() {
+			return connection.query(genericConstants.UPDATE_USER_IQ_EASY_SCORE_GLOBAL_QUERY);
+		},
+		updateUserScoreGlobalMedium: function() {
+			return connection.query(genericConstants.UPDATE_USER_IQ_MEDIUM_SCORE_GLOBAL_QUERY);
+		},
+		updateUserScoreGlobalHard: function() {
+			return connection.query(genericConstants.UPDATE_USER_IQ_HARD_SCORE_GLOBAL_QUERY);
+		},
+		removeTimedOutQuestionsEasy: function() {
+			return connection.query(genericConstants.REMOVE_TIMED_OUT_IQ_EASY_QUESTIONS_GLOBAL_QUERY);
+		},
+		removeTimedOutQuestionsMedium: function() {
+			return connection.query(genericConstants.REMOVE_TIMED_OUT_IQ_MEDIUM_QUESTIONS_GLOBAL_QUERY);
+		},
+		removeTimedOutQuestionsHard: function() {
+			return connection.query(genericConstants.REMOVE_TIMED_OUT_IQ_HARD_QUESTIONS_GLOBAL_QUERY);
 		}
 	};
 };

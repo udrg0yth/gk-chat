@@ -1,13 +1,15 @@
 var express    			=  require('express'),
 	bodyParser 			=  require('body-parser'),
 	application         =  express(),
-	genericConstants 	= require('./generic-constants')(),
-	tokenHandler 		= require('./token-handler')(application, genericConstants),
-	mysql      			= require('promise-mysql');
+	constantValues		=  require('./constant-values')(),
+	genericConstants 	=  require('./generic-constants')(constantValues),
+	tokenHandler 		=  require('./token-handler')(application, genericConstants),
+	mysql      			=  require('promise-mysql'),
+	personalityTools    =  require('./personality/personality-tools')();
 
 var corsOptions = {
     origin : 'localhost' 
-}
+};
 
 mysql.createConnection(genericConstants.MYSQL_SOURCE)
 .then(function(connection){
@@ -18,10 +20,10 @@ mysql.createConnection(genericConstants.MYSQL_SOURCE)
 		genericTools 		= require('./generic-tools')(genericConstants);
 		
 	    require('./authentication/authentication-server')(application, 
-			genericConstants, tokenHandler, authMysqlHandler, genericTools);
+			genericConstants, tokenHandler, authMysqlHandler, persMysqlHandler, intelMysqlHandler, gkMysqlHandler, genericTools, personalityTools);
 		require('./personality/personality-server')(application, genericConstants, tokenHandler, persMysqlHandler, genericTools);
 		require('./intelligence/intel-server')(application, genericConstants, tokenHandler, intelMysqlHandler, genericTools);
-		require('./general_knowledge/gk-server')(application, genericConstants, tokenHandler, gkMysqlHandler);
+		require('./general_knowledge/gk-server')(application, genericConstants, tokenHandler, gkMysqlHandler, genericTools);
 });
 
 application.use(bodyParser.json());

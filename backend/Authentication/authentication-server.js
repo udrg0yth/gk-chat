@@ -1,8 +1,8 @@
-module.exports = function(application, genericConstants, tokenHandler, authMysqlHandler, genericTools) {
+module.exports = function(application, genericConstants, tokenHandler, authMysqlHandler, personalityMysqlHandler, iqMysqlHandler, gkMysqlHandler, genericTools, personalityTools) {
 	var authenticationConstants 	  	=  require('./authentication-constants')(),
-		corsFilter    					=  require('./cors-filter')(application, authenticationConstants),
+		corsFilter    					=  require('./cors-filter')(application),
 		authenticationService  		  	=  require('./authentication-service')(application, 
-			authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, genericTools);
+			authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, personalityMysqlHandler, iqMysqlHandler, gkMysqlHandler, genericTools, personalityTools);
   
   	application.get(genericConstants.STATISTICS_URL, function(req, res) {
   		authenticationService.getStatistics(res);
@@ -109,6 +109,24 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 		});
 	});
 
+	application.post(genericConstants.GET_PROFILE_QUESTIONS_URL, function(req,res) {
+		var data = req.body;
+		if(!data.hash){
+    		return res.status(genericConstants.UNAUTHORIZED).json({
+    			message : authenticationConstants.INCOMPLETE_DATA.message
+    		});
+    	}
+
+    	authenticationService
+		.getProfileQuestions(data.hash, res)
+		.catch(function(error){
+			res.status(genericConstants.INTERNAL_ERROR).json({
+				message : error.message,
+    			trace: 'A-SRV-GPRFQ'
+			});
+		});
+	});
+
 	application.post(genericConstants.GET_HASH_URL, function(req, res) {
 		var data = req.body;
 		if(!data.email){
@@ -167,10 +185,26 @@ module.exports = function(application, genericConstants, tokenHandler, authMysql
 
 	application.post(genericConstants.SET_PROFILE_URL, function(req, res) {
 		var data = req.body;
-		if(!data.hash
-		|| !data.username
-		|| !data.birthdate
-		|| !data.gender) {
+		console.log(data);
+		if(!data.hash ||
+		!data.basicInfo ||
+		!data.personalityAnswer ||
+		!data.iqAnswer ||
+		!data.gkAnswer) {
+			return res.status(genericConstants.UNAUTHORIZED).json({
+				message: genericConstants.INCOMPLETE_DATA.message
+			});
+		}
+
+		if(data.basicInfo.gender == null||
+		   data.basicInfo.birthdate == null ||
+		   data.basicInfo.username == null||
+		   data.personalityAnswer.negativelyAffectedType  == null ||
+		   data.personalityAnswer.answer == null ||
+		   data.gkAnswer.questionId == null||
+           data.gkAnswer.answer == null ||
+           data.iqAnswer.questionId  == null ||
+           data.iqAnswer.answer == null) {
 			return res.status(genericConstants.UNAUTHORIZED).json({
 				message: genericConstants.INCOMPLETE_DATA.message
 			});

@@ -11,7 +11,7 @@ module.exports = function(genericConstants, connection) {
 		gatherIQStatistics: function() {
 		  return connection.query(genericConstants.IQ_STATISTICS_QUERY);
 		},
-		setUserProfile: function(userId, profile) {
+		setUserBasicInfo: function(userId, profile) {
 		  return connection.query(genericConstants
 						.SET_USER_PROFILE_QUERY
 						.replace('$username', profile.username)
@@ -38,10 +38,7 @@ module.exports = function(genericConstants, connection) {
 			return connection.query(genericConstants
 							.REGISTER_USER_QUERY
 							.replace('$email', user.email)
-							.replace('$password', user.password)
-							.replace('$remainingIqQuestions', genericConsntants.IQ_MAX_QUESTIONS_FOR_NON_MEMBERS)
-							.replace('$remainingGkQuestions', genericConsntants.GK_MAX_QUESTIONS_FOR_NON_MEMBERS)
-							.replace('$remainingMatchTrials', genericConsntants.MATCH_MAX_TRIALS_FOR_NON_MEMBERS));
+							.replace('$password', user.password));
 		},
 		activateAccount: function(userId) {
 			return connection.query(genericConstants

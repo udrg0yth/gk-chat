@@ -1,96 +1,46 @@
 module.exports = function(genericConstants, connection) {
 	return  {
 		countQuestions: function() {
-		   var queryString = 'SELECT count(*) AS questionCount FROM ' + genericConstants.GK_QUESTION_TABLE;
-		   return connection.query(queryString);
+		   return connection.query(genericConstants.COUNT_GK_QUESTIONS_QUERY);
 		}, 
-		getQuestionForUser: function(userId) {
-			var queryString = genericConstants
-							.SELECT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE + ' JOIN ' + genericConstants.GK_QUESTION_TABLE
-							 + ' USING (gk_question_id)')
-							.replace('$columns', 'current_timestamp - timestamp as diftime, ' + genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
-							+ genericConstants.CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id="' + userId + '"');
-			return connection.query(queryString);
-		},
 		updateRemainingGKQuestions: function() {
-			var queryString = genericConstants
-		  				.UPDATE_TEMPLATE
-		  				.replace('$table', genericConstants.USER_TABLE)
-		  				.replace('$map', 'remaining_gk_questions="' + genericConstants.GK_MAX_QUESTIONS_FOR_NON_MEMBERS + '"');
-		  	return connection.query(queryString);
+		  	return connection.query(genericConstants.UPDATE_REMAINING_GK_QUESTIONS_QUERY);
 		},
-		setTimeout: function(userId, questionId) {
-			var values = '"' + userId + '",' +
-					 	 '"' + questionId +'"';
-			var	queryString = genericConstants
-							.INSERT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_USER_TABLE)
-							.replace('$columns', genericConstants.GK_QUESTION_USER_COLUMNS)
-							.replace('$values', values);
-			return connection.query(queryString);
-		},
-		removeTimeout: function(userId) {
-			var quryString = 'DELETE FROM ' + genericConstants.GK_QUESTION_USER_TABLE + ' ' +
-							+ genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id="' + userId + '"');
-			return connection.query(queryString);
-		},
-		updateUserScoreGlobal: function(timeout) {
-			var map = 'total_gk_answers = total_gk_answers + 1, current_gk_score = correct_gk_answers/total_gk_answers';
-			var queryString = genericConstants
-							.UPDATE_TEMPLATE
-							.replace('$table', genericConstants.USER_TABLE)
-							.replace('$map', map)
-							+ genericConstants
-							.CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id IN ( ')
-						    + genericConstants
-						    .SELECT_TEMPLATE
-						    .replace('$table', genericConstants.GK_QUESTION_USER_TABLE)
-						    .replace('$columns', 'user_id')
-						    + genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout)
-							+ ')';
-			console.log(queryString);
-			return connection.query(queryString);
-		},
-		removeTimedOutQuestions: function(timeout) {
-			var queyString = 'DELETE FROM ' + genericConstants.GK_QUESTION_USER_TABLE + ' ' +
-							+ genericConstants.
-							CRITERIA_TEMPLATE
-							.replace('$criteria', 'current_timestamp - timestamp > ' + timeout);
-			console.log(queryString);
-			return connection.query(queryString);
+		getQuestionForUser: function(userId) {
+			return connection.query(genericConstants
+							.GET_GK_QUESTION_FOR_USER_QUERY
+							.replace('$userId', userId));
 		},
 		getQuestionById: function(questionId) {
-			var queryString = genericConstants
-							.SELECT_TEMPLATE
-							.replace('$table', genericConstants.GK_QUESTION_TABLE)
-							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS_WITH_ID)
-							+ genericConstants.CRITERIA_TEMPLATE
-							.replace('$criteria', 'gk_question_id="' + questionId + '"');
-			console.log(queryString);
-			return connection.query(queryString);
+			return connection.query(genericConstants
+							.GET_GK_QUESTION_BY_ID_QUERY
+							.replace('$questionId', questionId));
+		},
+		setTimeout: function(userId, questionId) {
+			return connection.query(genericConstants
+							.SET_GK_TIMEOUT_QUERY
+							.replace('$userId', userId)
+							.replace('$questionId', questionId));
 		},
 		updateUserScore: function(userId, isCorrect) {
-			var map = 'correct_gk_answers = correct_gk_answers + ' + isCorrect?1:0 + 
-			+ ', total_gk_answers = total_gk_answers + 1, current_gk_score = correct_gk_answers/total_gk_answers';
-
-			var queryString = genericConstants
-							.UPDATE_TEMPLATE
-							.replace('$table', genericConstants.USER_TABLE)
-							.replace('$map', map)
-							+ genericConstants
-							.CRITERIA_TEMPLATE
-							.replace('$criteria', 'user_id="' + userId + '"');
-			return connection.query(queryString);
+			return connection.query(genericConstants
+							.UPDATE_USER_GK_SCORE_QUERY
+							.replace('$userId', userId)
+							.replace('$isCorrect', isCorrect));
+		},
+		updateUserScoreGlobal: function() {
+			return connection.query(genericConstants.UPDATE_USER_GK_SCORE_GLOBAL_QUERY);
+		},
+		removeTimeout: function(userId) {
+			return connection.query(genericConstants
+								.REMOVE_GK_TIMEOUT_QUERY
+								.replace('$userId', userId));
+		},
+		removeTimedOutQuestions: function() {
+			return connection.query(genericConstants.REMOVE_TIMED_OUT_GK_QUESTIONS_GLOBAL_QUERY);
 		},
 		saveQuestion: function(question) {
-			var values = '"' + question.question + '",' +
+			/*var values = '"' + question.question + '",' +
 						 '"' + question.answer1 + '",' +
 						 '"' + question.answer2 + '",' +
 						 '"' + question.answer3 + '",' +
@@ -101,7 +51,7 @@ module.exports = function(genericConstants, connection) {
 							.replace('$table', genericConstants.GK_QUESTION_TABLE)
 							.replace('$columns', genericConstants.GK_QUESTION_COLUMNS)
 							.replace('$values', values);
-			return connection.query(queryString);			 
+			return connection.query(queryString);	*/		 
 		}
 	};
 };

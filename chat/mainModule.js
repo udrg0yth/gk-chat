@@ -1,5 +1,5 @@
 angular
-.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard', 'ui.bootstrap'])
+.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard', 'ui.bootstrap','perfect_scrollbar'])
 .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 	$stateProvider
 	.state('main', {
@@ -40,7 +40,6 @@ angular
      controller: 'loginController'
 	})
 	.state('chat', {
-     controller: 'chatController',
      url: '/chat',
 	      views: {
 	    		mainView : {
@@ -50,4 +49,5 @@ angular
 	});
 
 	$urlRouterProvider.otherwise('/main/auth');
+
 }]);
