@@ -56,13 +56,13 @@ module.exports = function(application,
 	return {
 		generateToken: function(user) {
 			return jwt.sign({
-							ky: user.user_id,
+							ky: user.id,
 							usr: user.username,
-							bd: user.birthdate,
+							bd: user.age,
 							g: user.gender,
-							iq: user.current_iq_score,
-							gk: user.current_gk_score,
-							p: user.current_personality,
+							iq: user.iqScore,
+							gk: user.gkScore,
+							p: user.personality,
 							m: user.isMember,
 							iqr: user.iqQuestionsRemaining,
 							gkr: user.gkQuestionsRemaining,

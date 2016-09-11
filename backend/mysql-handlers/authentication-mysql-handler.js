@@ -29,6 +29,11 @@ module.exports = function(genericConstants, connection) {
 								.GET_EMAIL_FROM_ID_QUERY
 								.replace('$userId', userId));
 		},
+		getIqGkScore: function(userId) {
+			return connection.query(genericConstants
+								.IQ_GK_SCORES
+								.replace('$userId', userId));
+		},
 		checkProfileCompletionById: function(userId) {
 			return connection.query(genericConstants
 								.CHECK_PROFILE_COMPLETION_QUERY

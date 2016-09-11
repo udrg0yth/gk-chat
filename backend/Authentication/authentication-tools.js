@@ -36,6 +36,12 @@ module.exports = function(authenticationConstants) {
 			    }
 			});
 		},
-		
+		computeAge: function(birthdate) {
+			console.log('birthage', birthdate);
+		    var ageDifMs = Date.now() - new Date(birthdate).getTime(),
+		    	ageDate = new Date(ageDifMs);
+		    	console.log(ageDifMs, ageDate, ageDate.getUTCFullYear());
+		    return Math.abs(ageDate.getUTCFullYear() - 1970);
+		}
 	};
 };

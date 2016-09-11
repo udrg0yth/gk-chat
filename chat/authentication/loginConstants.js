@@ -1,5 +1,4 @@
 angular.module('loginModule').constant('loginConstant', {
-	BASE_URL: 'http://localhost:8080',
 	LOGIN_URL: '/auth/login',
 	SET_PROFILE: '/auth/setProfile',
 	GET_PROFILE_QUESTIONS: '/auth/getProfileQuestions',

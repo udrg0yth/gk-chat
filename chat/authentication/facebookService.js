@@ -1,4 +1,4 @@
-angular.module('loginModule').factory('facebookService', [ 'loginService', '$state', '$localStorage', function(loginService, $state, $localStorage) {
+angular.module('loginModule').factory('facebookService', [ 'loginService', '$state', '$localStorage', 'tokenService', function(loginService, $state, $localStorage, tokenService) {
 
     var activateAccount = function(hash) {
          loginService
@@ -24,8 +24,11 @@ angular.module('loginModule').factory('facebookService', [ 'loginService', '$sta
                         .authenticate(user)
                         .success(function(data, status, headers) {
                             var head = headers();
+                            
+                              console.log(head['x-auth-token']);
                             if(head['x-auth-token']) {
                               $localStorage.token = head['x-auth-token'];
+                              console.log(tokenService.decodeToken());
                               $state.go('chat');
                             }
                         })
@@ -35,7 +38,7 @@ angular.module('loginModule').factory('facebookService', [ 'loginService', '$sta
                                   .register(user, false)
                                   .success(function(data) {
                                         $localStorage.hash = data.hash;
-                                        activateAccount(hash);
+                                        activateAccount(data.hash);
                                   });
                            } else if(err.message === 'INCOMPLETE_PROFILE') {
                                    loginService

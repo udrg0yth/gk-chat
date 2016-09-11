@@ -12,7 +12,8 @@
 	<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/angularjs-slider/dist/rzslider.min.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/perfect-scrollbar/min/perfect-scrollbar.min.css" />
-	
+	<link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css" />
+
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -29,14 +30,14 @@
 	<script src="bower_components/Chart.js/Chart.js"></script>
 	<script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
 	<script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-svg-round-progressbar/0.4.4/roundProgress.min.js"></script>
+ 	<script src="bower_components/angular-svg-round-progressbar/build/roundProgress.min.js"></script>
  	<script src="bower_components/perfect-scrollbar/min/perfect-scrollbar.min.js"></script>
 	<script src="bower_components/perfect-scrollbar/min/perfect-scrollbar.with-mousewheel.min.js"></script>
 	<script src="bower_components/angular-perfect-scrollbar/src/angular-perfect-scrollbar.js"></script>
+	<script src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
 
 
 	<script src="mainModule.js"></script>
-	<script src="genericConstants.js"></script>
 
 	<!-- start login component -->
 	<script src="authentication/loginModule.js"></script>
@@ -68,8 +69,14 @@
 
 	<!-- start chat component -->
 	<script src="chat/chatModule.js"></script>
+	<script src="chat/adapter.js"></script>
+	<script src="chat/socket.min.js"></script>
+	<script src="chat/chatConstant.js"></script>
 	<script src="chat/chatController.js"></script>
 	<script src="chat/modalDirective.js"></script>
+	<script src="chat/signalingService.js"></script>
+
+	<script src="genericConstants.js"></script>
 	<!-- end chat component -->
 
 

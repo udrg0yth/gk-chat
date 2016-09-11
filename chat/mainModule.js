@@ -1,5 +1,6 @@
 angular
-.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 'mgo-angular-wizard', 'ui.bootstrap','perfect_scrollbar'])
+.module('mainModule', ['ui.router', 'ngStorage', 'loginModule', 'chatModule', 'base64', 
+	'mgo-angular-wizard', 'ui.bootstrap','perfect_scrollbar', 'angular-jwt'])
 .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 	$stateProvider
 	.state('main', {
@@ -30,7 +31,7 @@ angular
 	.state('completeProfile', {
 		url: '/complete/:userHash',
 		parent: 'main',
-		templateUrl: 'authentication/profile.html',
+		templateUrl: 'profile/profile.html',
 		controller: 'profileController'
 	})
 	.state('registration', {
@@ -43,7 +44,8 @@ angular
      url: '/chat',
 	      views: {
 	    		mainView : {
-	      			templateUrl: 'chat/chat.html'
+	      			templateUrl: 'chat/chat.html',
+	      			controller: 'chatController'
 	      		}
 	      }
 	});

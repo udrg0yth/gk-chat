@@ -28,7 +28,7 @@ function($scope, $state, loginService, tokenService, $localStorage, $rootScope, 
      var js, fjs = d.getElementsByTagName(s)[0];
      if (d.getElementById(id)) {return;}
      js = d.createElement(s); js.id = id;
-     js.src = "http://connect.facebook.net/en_US/sdk.js";
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 
@@ -52,9 +52,8 @@ function($scope, $state, loginService, tokenService, $localStorage, $rootScope, 
 		.success(function(data, status, headers) {
 			var head = headers();
 			if(head['x-auth-token']) {
-				console.log(head['x-auth-token']);
 				$localStorage.token = head['x-auth-token'];
-				//$state.go('chat');
+				$state.go('chat');
 			}
  		}).error(function(e) {
  			if(e.error === 'INCOMPLETE_PROFILE') {

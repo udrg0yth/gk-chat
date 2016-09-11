@@ -1,6 +1,8 @@
 var express    			=  require('express'),
 	bodyParser 			=  require('body-parser'),
 	application         =  express(),
+	fs 					=  require('fs'),
+	https 				=  require('https'),
 	constantValues		=  require('./constant-values')(),
 	genericConstants 	=  require('./generic-constants')(constantValues),
 	tokenHandler 		=  require('./token-handler')(application, genericConstants),
@@ -31,9 +33,12 @@ application.use(bodyParser.urlencoded({
     extended : true
 }));
 
+var options = {
+    key: fs.readFileSync('C:/Clone/newkey.pem'),
+    cert: fs.readFileSync('C:/Clone/cert.pem')
+};
 
 
-application.listen(8080, function () {
-  console.log('Listening on port 8080!');
+https.createServer(options, application).listen(8080, function(){
+  console.log("Express server listening on port " + 8080);
 });
-

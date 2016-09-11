@@ -1,6 +1,6 @@
 module.exports = function(application, authenticationConstants, genericConstants, tokenHandler, authMysqlHandler, personalityMysqlHandler, iqMysqlHandler, gkMysqlHandler, genericTools, personalityTools) {
-	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants);
-	var schedule = require('node-schedule'),
+	var authenticationTools 	 =  require('./authentication-tools')(authenticationConstants),
+		schedule = require('node-schedule'),
 		statistics = {};
 
 	var gatherStatistics = function() {
@@ -78,19 +78,15 @@ module.exports = function(application, authenticationConstants, genericConstants
 		 gkMysqlHandler
 		.updateUserScore(claims, correct)
 		.then(function(gk) {
-			var user = {};
-			user.isMember = new Date(forToken.memberExp) <= new Date();
-			if(!user.isMember) {
-				user.iqQuestionsRemaining = true;
-				user.gkQuestionsRemaining = true;
-				user.matchTrialsRemaining = true;
-			}
-			user.iqScore = forToken.iqScore;
-			user.gkScore = gk.current_gk_score;
-			user.personality = forToken.personality;
+			 authMysqlHandler
+			.getIqGkScore(claims)
+			.then(function(scores) {
+				forToken.iqScore = scores[0].current_iq_score;
+				forToken.gkScore = scores[0].current_gk_score;
+				res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(forToken)});
+				res.end();
+			});
 			
-			res.writeHead(genericConstants.OK, {'X-Auth-Token': tokenHandler.generateToken(user)});
-			res.end();
 		})
 		.catch(function(error) {
 			res.status(genericConstants.INTERNAL_ERROR).json({
@@ -102,7 +98,6 @@ module.exports = function(application, authenticationConstants, genericConstants
 		 iqMysqlHandler
 		.updateUserScoreEasy(claims, correct)
 		.then(function(iq) {
-			 forToken.iqScore = iq.current_iq_score;
 			 gkMysqlHandler
 			.getQuestionById(gkAnswer.questionId)
 			.then(function(gk) {
@@ -233,6 +228,8 @@ module.exports = function(application, authenticationConstants, genericConstants
 							message: authenticationConstants.BAD_CREDENTIALS.message
 						});
 					} 
+					console.log(rows[0]);
+					
 					var user = {};
 						user.isMember = new Date(user.membership_expiration) <= new Date();
 						if(!user.isMember) {
@@ -240,6 +237,10 @@ module.exports = function(application, authenticationConstants, genericConstants
 							user.gkQuestionsRemaining = parseInt(rows[0].remaining_gk_questions) > 0;
 							user.matchTrialsRemaining = parseInt(rows[0].remaining_match_trials) > 0;
 						}
+						user.id = rows[0].user_id;
+						user.username = rows[0].username;
+						user.age = authenticationTools.computeAge(rows[0].birthdate);
+						user.gender = rows[0].gender;
 						user.iqScore = rows[0].current_iq_score;
 						user.gkScore = rows[0].current_gk_score;
 						user.personality = rows[0].current_personality;
@@ -292,14 +293,22 @@ module.exports = function(application, authenticationConstants, genericConstants
 						.then(function(personality) {
 							var updatedPersonality = personalityTools.updatePersonality(personality[0].current_personality_raw, 
 								parseInt(data.personalityAnswer.negativelyAffectedType), data.personalityAnswer.answer),
-								formattedPersonality = personalityTools.formatPersonality(updatedPersonality);
+								formattedPersonality = personalityTools.formatPersonality(updatedPersonality),
+								reducedPersonality = personalityTools.reducePersonality(formattedPersonality);
 							 personalityMysqlHandler
 							.updateNextQuestionAndPersonality(userId, updatedPersonality,
-									personalityTools.reducePersonality(formattedPersonality))
+									reducedPersonality)
 							.then(function(currentPersonality) {
 								var forToken = {
-									memberExp: basicInfo.membership_expiration,
-									personality: currentPersonality.current_personality
+									id: basicInfo.insertId,
+									isMember: false,
+									iqQuestionsRemaining: true,
+									gkQuestionsRemaining: true,
+									matchTrialsRemaining: true,
+									username: data.basicInfo.username,
+									age: authenticationTools.computeAge(data.basicInfo.birthdate),
+									gender: data.basicInfo.gender,
+									personality: reducedPersonality,
 								};
 
 								 iqMysqlHandler
